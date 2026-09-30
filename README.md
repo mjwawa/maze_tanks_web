@@ -48,6 +48,7 @@ Każda mapa ma swoją zasadę specjalną. Jej nazwa pojawia się na początku ru
 ## Zasady
 
 - Pociski odbijają się od ścian i drzew. Uważaj, własny rykoszet też zabiera życie.
+- Pocisk ma kolor czołgu, który go wystrzelił. Gdy mruga, nie ma już odbić w zapasie – przy następnej ścianie zniknie.
 - Rundę wygrywa ostatni czołg na polu bitwy.
 - Jeśli zniszczone zostaną wszystkie czołgi graczy, a na polu zostało kilka botów, punkt dostaje bot, który pokonał ostatniego gracza (a gdy ten zginął od rykoszetu, żaru lub wybuchu – najmniej uszkodzony bot).
 - Kto pierwszy wygra 5 rund (albo 3 lub 7, do wyboru w menu), zdobywa **złoty medal**. Medale zbierają się w gablocie.
@@ -62,6 +63,7 @@ Każda mapa ma swoją zasadę specjalną. Jej nazwa pojawia się na początku ru
 | Tempo strzałów | bardzo szybkie | średnie | wolne |
 | Pociski naraz | 6 | 4 | 2 |
 | Odbicia pocisku | 3 | 3 | 2 |
+| Wygląd | smukły, wieża z przodu, krótka lufa | wieża z tyłu, długa lufa | szeroki, duża wieża, krótka gruba lufa |
 
 ## Zainstaluj jako aplikację
 
