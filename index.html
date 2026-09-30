@@ -66,9 +66,6 @@
   #pause { z-index: 40; }
   #victory { z-index: 30; }
   .hint { color: var(--muted); font-size: 13px; text-align: center; margin-top: 10px; }
-  .touchkeys { display: none; }
-  body.ctl-touch .keys { display: none !important; }
-  body.ctl-touch .touchkeys { display: block; }
   kbd { background: var(--panel2); border: 1px solid #4a573f; border-bottom-width: 2px; border-radius: 4px; padding: 0 6px; font-family: inherit; font-size: 12px; color: var(--text); margin: 0 1px; }
 
   button {
@@ -249,49 +246,8 @@
     #victory .big { width: 90px; height: 114px; }
     .rank .r { padding: 3px 10px; }
   }
-  /* ---------- sterowanie dotykowe ---------- */
-  #touch {
-    position: fixed; inset: 0; z-index: 10; display: none; touch-action: none;
-    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
-  }
-  body.tm #touch { display: block; }
   html { touch-action: manipulation; background: #161b14; }
-  body.playing { background: radial-gradient(ellipse at top, #243020 0%, var(--bg) 60%); }
   body.playing { position: fixed; inset: 0; overflow: hidden; }
-  body.tm, body.tm * { touch-action: none; }
-  body.tm { overflow: hidden; touch-action: none; -webkit-user-select: none; user-select: none; overscroll-behavior: none; }
-  body.tm #help { display: none; }
-  body.tm #hud { padding: 4px; min-height: 0; gap: 4px; }
-  body.tm .card { padding: 2px 8px 2px 5px; font-size: 12px; }
-  body.tm .card .sw { height: 20px; width: 7px; }
-  body.tm .card .tp { display: none; }
-  body.tm .card .pts { font-size: 16px; }
-  body.tm #wrap { width: min(100vw, calc((100vh - 40px) * 1.5)); width: min(100vw, calc((100dvh - 40px) * 1.5)); padding: 3px; border-radius: 6px; }
-  .joy {
-    position: absolute; width: 130px; height: 130px; margin: -65px 0 0 -65px; border-radius: 50%;
-    background: radial-gradient(circle, rgba(236,230,210,.10) 0%, rgba(236,230,210,.18) 70%, rgba(236,230,210,.28) 100%);
-    border: 2px solid rgba(236,230,210,.45); pointer-events: none; transition: opacity .15s;
-  }
-  .joy .knob {
-    position: absolute; left: 50%; top: 50%; width: 58px; height: 58px; margin: -29px 0 0 -29px; border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #d9cf9e, #8f8558); border: 2px solid rgba(255,255,255,.6);
-    box-shadow: 0 4px 10px rgba(0,0,0,.4);
-  }
-  .joy.fire .knob { background: radial-gradient(circle at 35% 30%, #ffb45c, #c0561c); }
-  .joy .lbl { position: absolute; left: 0; right: 0; bottom: -22px; text-align: center; font-size: 12px; font-weight: 700; letter-spacing: 1px; color: rgba(236,230,210,.8); text-shadow: 0 1px 3px #000; }
-  .joy.idle { opacity: .55; }
-  .tbtn {
-    position: absolute; top: calc(8px + env(safe-area-inset-top)); width: 44px; height: 44px; border-radius: 50%; padding: 0;
-    background: rgba(20,26,17,.65); border: 1px solid rgba(236,230,210,.4); color: var(--text); font-size: 16px; font-weight: 700;
-  }
-  #tpause { right: calc(12px + env(safe-area-inset-right)); }
-  #rotate {
-    display: none; position: fixed; inset: 0; z-index: 30; background: rgba(12,16,10,.96); color: var(--text);
-    flex-direction: column; align-items: center; justify-content: center; gap: 12px; font-size: 18px; text-align: center; padding: 24px;
-  }
-  #rotate .ph { width: 70px; height: 42px; border: 3px solid var(--khaki); border-radius: 8px; animation: rot 1.6s ease-in-out infinite; }
-  @keyframes rot { 0%,20% { transform: rotate(-90deg); } 60%,100% { transform: rotate(0); } }
-  @media (orientation: portrait) { body.tm #rotate { display: flex; } }
   @media (pointer: coarse) { button { padding: 10px 14px; } }
 </style>
 </head>
@@ -300,12 +256,6 @@
 <div id="wrap">
   <canvas id="c"></canvas>
 </div>
-<div id="touch">
-  <div class="joy idle" id="joyL"><div class="lbl"></div><div class="knob"></div></div>
-  <div class="joy idle" id="joyR"><div class="lbl"></div><div class="knob"></div></div>
-  <button class="tbtn" id="tpause" aria-label="Pauza">II</button>
-</div>
-<div id="rotate"><div class="ph"></div>Obróć urządzenie poziomo</div>
 
 <!-- ===================== EKRAN POWITALNY ===================== -->
 <div class="screen" id="splash">
@@ -1428,39 +1378,38 @@ function updateEngines(silent) {
 
 // ===================== USTAWIENIA GRACZA =====================
 const DEFAULT_NAMES = ['Gracz 1', 'Gracz 2'];
-// główny wskaźnik to palec (telefon, iPad); iPad w trybie „komputerowym” przedstawia się jak Mac
+// główny wskaźnik to palec (telefon, iPad) – wtedy podpowiadamy wersję mobilną; iPad w trybie „komputerowym” przedstawia się jak Mac
 const IS_TOUCH = (window.matchMedia && matchMedia('(pointer: coarse)').matches)
   || (navigator.maxTouchPoints > 1 && /Macintosh|iPad/.test(navigator.userAgent));
-let settings = { control: IS_TOUCH ? 'touch' : 'keys', layout: 'left', winRounds: 5, mode: 1, bots: 1, diff: 'normal', map: 'random', types: ['wilk', 'wilk'], names: DEFAULT_NAMES.slice() };
+let settings = { winRounds: 5, mode: 1, bots: 1, diff: 'normal', map: 'random', types: ['wilk', 'wilk'], names: DEFAULT_NAMES.slice() };
 
-// wszystkie ustawienia w jednym wpisie; stare klucze (imiona, sterowanie) są przenoszone przy pierwszym uruchomieniu
-const SETTINGS_KEY = 'maze-tanks-web-ustawienia', OLD_KEYS = ['czolgi-imiona', 'czolgi-sterowanie'];
+// Wszystkie ustawienia w jednym wpisie. Wersja mobilna (maze_tanks_mobile) działa pod tym samym adresem i dzieli z nami
+// localStorage: przy pierwszym uruchomieniu bierzemy stare wpisy wspólne dla obu wersji, ale niczego nie kasujemy – są jej potrzebne.
+const SETTINGS_KEY = 'maze-tanks-web-ustawienia';
 function loadSettings() {
   const read = k => { try { return JSON.parse(localStorage.getItem(k)); } catch (_) { return null; } };
-  let s = read(SETTINGS_KEY) || read('maze-tanks-ustawienia'), migrated = false;
-  if (!s || typeof s !== 'object') {
-    const names = read(OLD_KEYS[0]), ctl = read(OLD_KEYS[1]) || {};
-    s = { names, control: ctl.control, layout: ctl.layout };
-    migrated = true;
+  const isObj = v => v && typeof v === 'object';
+  let s = read(SETTINGS_KEY), first = false;
+  if (!isObj(s)) {
+    first = true;
+    s = read('maze-tanks-ustawienia');
+    if (!isObj(s)) s = { names: read('czolgi-imiona') };
   }
   const oneOf = (v, list, def) => list.includes(v) ? v : def;
-  settings.control = oneOf(s.control, ['keys', 'touch'], settings.control);
-  settings.layout = oneOf(s.layout, ['left', 'right'], settings.layout);
   settings.winRounds = oneOf(s.winRounds, [3, 5, 7], settings.winRounds);
   settings.mode = oneOf(s.mode, [1, 2], settings.mode);
   settings.bots = oneOf(s.bots, [0, 1, 2, 3], settings.bots);
   settings.diff = oneOf(s.diff, Object.keys(DIFF), settings.diff);
   settings.map = oneOf(s.map, ['random', ...Object.keys(THEMES)], settings.map);
-  if (Array.isArray(s.types)) s.types.forEach((t, i) => { if (i < 2 && TYPES[t]) settings.types[i] = t; });
+  if (Array.isArray(s.types)) s.types.forEach((t, i) => { if (i < 2 && TYPE_KEYS.includes(t)) settings.types[i] = t; });
   if (Array.isArray(s.names)) s.names.forEach((n, i) => { if (n && i < 2) settings.names[i] = String(n).slice(0, 12); });
   if (typeof s.sound === 'boolean') soundOn = s.sound;
-  if (migrated) { saveSettings(); try { OLD_KEYS.forEach(k => localStorage.removeItem(k)); } catch (_) {} }
+  if (first) saveSettings();
 }
 function saveSettings() {
-  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify({ v: 1, ...settings, sound: soundOn })); } catch (_) {}
+  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify({ v: 2, ...settings, sound: soundOn })); } catch (_) {}
 }
 loadSettings();
-settings.control = 'keys'; // wersja przeglądarkowa: zawsze klawiatura
 
 // gablota medali – złote medale za wygrane mecze, zapamiętane w przeglądarce
 let medals = {};
@@ -1497,7 +1446,6 @@ function newGame() {
   stopEngines();
   newRound();
   running = true; paused = false;
-  resetSticks();
 }
 
 function newRound() {
@@ -1533,6 +1481,7 @@ function newRound() {
     ai: { think: 0.4 + Math.random() * 0.3, aim: null, aimT: 0, wantFire: false, stuckT: 0, lastX: 0, lastY: 0, reverse: 0, revTurn: 1, goal: -1, field: null },
   }));
   for (const t of tanks) pushOut(t);
+  lastHumanDown = null;
   roundOver = false;
   const top = Math.max(0, ...scores);
   banner = top >= settings.winRounds ? 'Dogrywka! · ' + theme.name : 'Runda ' + roundNo + ' · ' + theme.name;
@@ -1661,97 +1610,11 @@ function driveTank(t, turn, move, dt, turnMult = 1) {
   }
 }
 
-// ===================== JOYSTICKI =====================
-const JOY_R = 58; // zasięg gałki w px
-const sticks = {
-  move: { active: false, id: null, bx: 0, by: 0, dx: 0, dy: 0, mag: 0 },
-  fire: { active: false, id: null, bx: 0, by: 0, dx: 0, dy: 0, mag: 0 },
-};
-const touchEl = document.getElementById('touch');
-const joyEl = {};
-for (const side of ['L', 'R']) {
-  const el = document.getElementById('joy' + side);
-  joyEl[side] = { el, lbl: el.querySelector('.lbl'), knob: el.querySelector('.knob'), last: {} };
-}
-function stickSide(name) { return (name === 'move') === (settings.layout === 'left') ? 'L' : 'R'; }
-function homePos(side) {
-  const m = 95;
-  return { x: side === 'L' ? m + 10 : innerWidth - m - 10, y: innerHeight - m - 10 };
-}
-// zapis do DOM tylko wtedy, gdy wartość się zmieniła (wywoływane co klatkę)
-function setIfChanged(j, key, val, apply) { if (j.last[key] !== val) { j.last[key] = val; apply(val); } }
-function drawJoys() {
-  for (const name of ['move', 'fire']) {
-    const st = sticks[name], side = stickSide(name), j = joyEl[side];
-    const p = st.active ? { x: st.bx, y: st.by } : homePos(side);
-    setIfChanged(j, 'left', p.x + 'px', v => j.el.style.left = v);
-    setIfChanged(j, 'top', p.y + 'px', v => j.el.style.top = v);
-    setIfChanged(j, 'idle', !st.active, v => j.el.classList.toggle('idle', v));
-    setIfChanged(j, 'name', name, v => { j.el.classList.toggle('fire', v === 'fire'); j.lbl.textContent = v === 'move' ? 'JAZDA' : 'STRZAŁ'; });
-    setIfChanged(j, 'knob', `translate(${st.dx * JOY_R}px, ${st.dy * JOY_R}px)`, v => j.knob.style.transform = v);
-  }
-}
-function setStick(st, x, y) {
-  let dx = (x - st.bx) / JOY_R, dy = (y - st.by) / JOY_R;
-  const m = Math.hypot(dx, dy);
-  if (m > 1) { dx /= m; dy /= m; }
-  st.dx = dx; st.dy = dy; st.mag = Math.min(1, m);
-}
-touchEl.addEventListener('pointerdown', e => {
-  if (e.target.closest('.tbtn')) return;
-  e.preventDefault();
-  const leftHalf = e.clientX < innerWidth / 2;
-  const name = (leftHalf === (settings.layout === 'left')) ? 'move' : 'fire';
-  const st = sticks[name];
-  if (st.active) return;
-  st.active = true; st.id = e.pointerId;
-  // podstawa joysticka w miejscu dotknięcia (ale cała widoczna na ekranie)
-  st.bx = clamp(e.clientX, 70, innerWidth - 70); st.by = clamp(e.clientY, 70, innerHeight - 70);
-  setStick(st, e.clientX, e.clientY);
-  try { touchEl.setPointerCapture(e.pointerId); } catch (_) {}
-  initAudio();
-});
-touchEl.addEventListener('pointermove', e => {
-  for (const st of Object.values(sticks)) if (st.active && st.id === e.pointerId) { e.preventDefault(); setStick(st, e.clientX, e.clientY); }
-});
-function clearStick(st) { st.active = false; st.id = null; st.dx = st.dy = st.mag = 0; }
-function releaseStick(e) { for (const st of Object.values(sticks)) if (st.id === e.pointerId) clearStick(st); }
-function resetSticks() { for (const st of Object.values(sticks)) clearStick(st); }
-touchEl.addEventListener('pointerup', releaseStick);
-touchEl.addEventListener('pointercancel', releaseStick);
-touchEl.addEventListener('contextmenu', e => e.preventDefault());
-// iOS Safari: bez tego podwójne stuknięcie (np. szybkie strzały) powiększa stronę
-for (const ev of ['touchstart', 'touchmove', 'touchend']) touchEl.addEventListener(ev, e => { if (e.cancelable) e.preventDefault(); }, { passive: false });
+// Safari: gest szczypania na gładziku nie powiększa strony w trakcie gry
 for (const ev of ['gesturestart', 'gesturechange', 'gestureend', 'dblclick'])
   document.addEventListener(ev, e => { if (running && !matchOver) e.preventDefault(); }, { passive: false });
-document.getElementById('tpause').addEventListener('pointerdown', e => { e.preventDefault(); e.stopPropagation(); sfx.click(); openPause(); });
-
-function touchUpdate(t, dt) {
-  const m = sticks.move, f = sticks.fire;
-  let turn = 0, move = 0, aimed = false;
-  const moving = m.active && m.mag > 0.2;
-  const aiming = f.active && f.mag > 0.35;
-  if (aiming) {
-    // celowanie prawym joystickiem: czołg obraca się w stronę celu, lewy joystick daje jazdę przód/tył
-    const d = angDiff(Math.atan2(f.dy, f.dx), t.a);
-    turn = clamp(d * 4, -1, 1);
-    aimed = Math.abs(d) < 0.12;
-    if (moving) move = Math.cos(angDiff(Math.atan2(m.dy, m.dx), t.a)) * m.mag;
-  } else if (moving) {
-    const ma = Math.atan2(m.dy, m.dx), d = angDiff(ma, t.a);
-    if (Math.abs(d) > 2.5) { // kierunek za czołgiem = cofanie
-      turn = clamp(angDiff(ma + Math.PI, t.a) * 4, -1, 1); move = -m.mag;
-    } else {
-      turn = clamp(d * 4, -1, 1);
-      move = Math.abs(d) < 1.0 ? m.mag * (1 - Math.abs(d) * 0.6) : 0;
-    }
-  }
-  driveTank(t, turn, move, dt);
-  if (f.active && (!aiming || aimed)) fire(t); // przytrzymanie = ogień seriami (tempo zależy od czołgu)
-}
 
 function humanUpdate(t, dt) {
-  if (settings.control === 'touch') return touchUpdate(t, dt);
   const k = t.ctrl;
   let turn = 0, move = 0;
   if (keys[k.left]) turn -= 1;
@@ -1865,9 +1728,10 @@ function explode(x, y, color, n) {
 
 const FIRE_ZONE = 24; // jak blisko wraku zaczyna parzyć (px od karoserii)
 const FIRE_TICK = 0.6; // co ile sekund żar zabiera 1 punkt pancerza
-function damageTank(t, dmg, hx, hy) {
+let lastHumanDown = null; // ostatni zniszczony gracz w tej rundzie (kto go pokonał – zapisane w killer)
+function damageTank(t, dmg, hx, hy, by = null) { // by: czyj pocisk trafił (null = żar, wybuch)
   t.hp -= dmg; t.flash = 0.15;
-  if (t.hp <= 0) { t.hp = 0; t.alive = false; explode(t.x, t.y, t.color, 45); scorch(t.x, t.y, t.r * 2.6, 0.75); updateHud(); sfx.explode(t.x); }
+  if (t.hp <= 0) { t.hp = 0; t.alive = false; t.killer = by; if (!t.isBot) lastHumanDown = t; explode(t.x, t.y, t.color, 45); scorch(t.x, t.y, t.r * 2.6, 0.75); updateHud(); sfx.explode(t.x); }
   else { explode(hx, hy, '#ffb020', 10); scorch(hx, hy, 7, 0.4); sfx.hit(t.x); }
 }
 // wybuch beczki (Miasto) lub skrzyni z amunicją (Baza): rani czołgi w pobliżu i odpala sąsiednie
@@ -1939,7 +1803,7 @@ function update(dt) {
     for (const t of tanks) {
       if (t.alive && bulletHits(b, t)) {
         b.dead = true;
-        damageTank(t, b.dmg, b.x, b.y);
+        damageTank(t, b.dmg, b.x, b.y, b.owner);
         break;
       }
     }
@@ -1955,19 +1819,21 @@ function update(dt) {
 
   // koniec rundy
   if (!roundOver) {
-    const alive = tanks.filter(t => t.alive);
-    const humansAlive = alive.filter(t => !t.isBot).length;
-    const humansTotal = tanks.filter(t => !t.isBot).length;
+    const alive = tanks.filter(t => t.alive), humans = tanks.filter(t => !t.isBot);
     if (alive.length <= 1) {
       roundOver = true; endTimer = 2.5;
       if (alive.length === 1) { scores[alive[0].id]++; banner = alive[0].name + ' wygrywa rundę!'; }
       else banner = 'Remis!';
       bannerT = 2.5; bannerSub = ''; updateHud();
       if (alive.length === 1 && !alive[0].isBot) sfx.win(); else sfx.lose();
-    } else if (humansTotal > 0 && humansAlive === 0) {
+    } else if (humans.length && humans.every(t => !t.alive)) {
+      // wszyscy gracze zniszczeni, a botów zostało kilka: punkt dostaje tylko bot, który pokonał ostatniego gracza (gdy ten
+      // zginął od rykoszetu, żaru lub wybuchu – najmniej uszkodzony bot). Punkt dla każdego żywego bota dawał ciągłe remisy i dogrywki.
+      const k = lastHumanDown && lastHumanDown.killer;
+      const w = k && k.isBot && k.alive ? k : alive.reduce((a, b) => b.hp / b.type.hp > a.hp / a.type.hp ? b : a);
       roundOver = true; endTimer = 2.5;
-      alive.forEach(t => scores[t.id]++);
-      banner = 'Boty wygrywają rundę!'; bannerT = 2.5; bannerSub = ''; updateHud();
+      scores[w.id]++;
+      banner = w.name + ' wygrywa rundę!'; bannerT = 2.5; bannerSub = ''; updateHud();
       sfx.lose();
     }
   } else {
@@ -2285,7 +2151,6 @@ function buildTankCards() {
 }
 
 function renderSplash() {
-  document.body.classList.toggle('ctl-touch', settings.control === 'touch');
   $('winTxt').textContent = settings.winRounds === 3 ? '3 rundy' : settings.winRounds + ' rund';
   $('stepMedal').innerHTML = medalSVG('gold');
   $('splashTanks').innerHTML = TYPE_KEYS.map(k => `<div class="mini"><img src="${tankIcon(k, COLORS[0])}" alt=""><b>${TYPES[k].name}</b><small>${TYPE_INFO[k].cls}</small></div>`).join('');
@@ -2299,24 +2164,18 @@ const SETUP_OPTS = {
   diff: { get: () => settings.diff,      set: v => { settings.diff = v; } },
   map:  { get: () => settings.map,       set: v => { settings.map = v; } },
   win:  { get: () => settings.winRounds, set: v => { settings.winRounds = +v; } },
-  ctl:  { get: () => settings.control,   set: v => { settings.control = v; } },
-  lay:  { get: () => settings.layout,    set: v => { settings.layout = v; } },
   snd:  { get: () => soundOn ? 1 : 0,    set: v => { initAudio(); setSound(v === '1'); } },
 };
 
 function renderSetup() {
-  if (settings.control === 'touch') settings.mode = 1;
   if (settings.mode === 1) editP = 0;
   if (settings.mode === 1 && settings.bots === 0) settings.bots = 1;
   if (settings.mode + settings.bots > 5) settings.bots = 5 - settings.mode;
-  document.body.classList.toggle('ctl-touch', settings.control === 'touch');
   for (const [attr, o] of Object.entries(SETUP_OPTS))
     document.querySelectorAll(`#setup [data-${attr}]`).forEach(b => b.classList.toggle('on', b.dataset[attr] === String(o.get())));
-  const m2 = document.querySelector('#setup [data-mode="2"]'); if (m2) m2.disabled = settings.control === 'touch';
   document.querySelectorAll('#setup [data-bots]').forEach(b => { const n = +b.dataset.bots; b.disabled = (settings.mode === 1 && n === 0) || settings.mode + n > 5; });
   $('rulenote').textContent = settings.map === 'random' ? 'Każda mapa ma swoją zasadę specjalną, np. poślizg na Zimie.'
     : RULES[THEMES[settings.map].rule].name + ' ' + RULES[THEMES[settings.map].rule].desc;
-  for (const id of ['layoutrow', 'touchnote']) { const el = $(id); if (el) el.style.display = settings.control === 'touch' ? '' : 'none'; }
   // zakładki graczy (tylko przy 2 graczach)
   $('ptabs').style.display = settings.mode === 2 ? '' : 'none';
   $('ptabs').innerHTML = [0, 1].map(i => `<button class="ptab${i === editP ? ' on' : ''}" data-p="${i}" style="--pc:${COLORS[i]}">
@@ -2352,10 +2211,6 @@ function goSplash() { stopEngines(); startDemo(); setScreen('splash'); renderSpl
 function goSetup() { if (!demo) { stopEngines(); startDemo(); } setScreen('setup'); renderSetup(); }
 function startGame() {
   initAudio();
-  if (settings.control === 'touch') { // pełny ekran, jeśli urządzenie pozwala (iPad tak, iPhone nie)
-    const d = document.documentElement, fs = d.requestFullscreen || d.webkitRequestFullscreen;
-    if (fs && !document.fullscreenElement && !document.webkitFullscreenElement) { try { const r = fs.call(d); if (r && r.catch) r.catch(() => {}); } catch (_) {} }
-  }
   if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
   newGame();
   setScreen('game');
@@ -2402,14 +2257,17 @@ if (ON_WEB && !IS_STANDALONE) { // Safari nie ma przycisku instalacji – pokazu
   const macSafari = !iOS && /Macintosh/.test(ua) && /Safari/.test(ua) && !/Chrome|Chromium|CriOS|Edg|Firefox|OPR/.test(ua);
   if (macSafari) { $('installHint').innerHTML = 'Zainstaluj grę na Macu: w Safari wybierz <b>Plik → Dodaj do Docka</b>.'; $('installHint').hidden = false; }
 }
-if (IS_STANDALONE) document.body.classList.add('standalone');
 if (IS_TOUCH) { // telefon / tablet → podpowiedź o wersji dotykowej
   $('otherEdition').innerHTML = 'Grasz na telefonie lub tablecie? Wybierz <a href="https://mjwawa.github.io/maze_tanks_mobile/">Maze Tanks Mobile</a> ze sterowaniem dotykowym.';
   $('otherEdition').hidden = false;
 }
 
-// gra sama pauzuje, gdy przełączysz kartę albo aplikację
-document.addEventListener('visibilitychange', () => { if (document.hidden) openPause(); });
+// gra sama pauzuje, gdy przełączysz kartę albo aplikację. Dźwięk wstrzymujemy tutaj, bo w tle pętla gry
+// nie działa i nie wyciszyłaby silnika (w karcie w tle buczałby aż do powrotu do gry).
+document.addEventListener('visibilitychange', () => {
+  if (document.hidden) { openPause(); if (actx && actx.state === 'running') actx.suspend().catch(() => {}); }
+  else if (actx && actx.state === 'suspended') actx.resume().catch(() => {});
+});
 
 // ===================== PĘTLA GRY =====================
 // Klatka jest dzielona na równe podkroki ≤ 1/120 s: fizyka i boty działają tak samo przy 60, 120 i 144 Hz,
@@ -2419,13 +2277,9 @@ let last = performance.now();
 function loop(now) {
   const frame = Math.min(0.1, (now - last) / 1000); last = now;
   const inGame = running && !demo && !matchOver;
-  const tm = inGame && settings.control === 'touch';
   if (document.body.classList.contains('demo') !== demo) document.body.classList.toggle('demo', demo);
-  if (document.body.classList.contains('tm') !== tm) { document.body.classList.toggle('tm', tm); if (!tm) resetSticks(); }
-  if (tm) drawJoys();
-  const playing = inGame;
-  if (document.body.classList.contains('playing') !== playing) document.body.classList.toggle('playing', playing);
-  if (playing && (window.scrollX || window.scrollY)) window.scrollTo(0, 0);
+  if (document.body.classList.contains('playing') !== inGame) document.body.classList.toggle('playing', inGame);
+  if (inGame && (window.scrollX || window.scrollY)) window.scrollTo(0, 0);
   if (running && !paused && !matchOver && frame > 0) {
     const n = Math.max(1, Math.ceil(frame / MAX_STEP - 0.05)), dt = frame / n;
     for (let i = 0; i < n && !paused && !matchOver; i++) update(dt);

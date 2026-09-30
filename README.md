@@ -49,6 +49,7 @@ Każda mapa ma swoją zasadę specjalną. Jej nazwa pojawia się na początku ru
 
 - Pociski odbijają się od ścian i drzew. Uważaj, własny rykoszet też zabiera życie.
 - Rundę wygrywa ostatni czołg na polu bitwy.
+- Jeśli zniszczone zostaną wszystkie czołgi graczy, a na polu zostało kilka botów, punkt dostaje bot, który pokonał ostatniego gracza (a gdy ten zginął od rykoszetu, żaru lub wybuchu – najmniej uszkodzony bot).
 - Kto pierwszy wygra 5 rund (albo 3 lub 7, do wyboru w menu), zdobywa **złoty medal**. Medale zbierają się w gablocie.
 
 ## Rodzaje czołgów
