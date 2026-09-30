@@ -483,7 +483,7 @@ const THEMES = {
 const RULES = {
   bushes:  { name: 'Kryjówki w krzakach!', desc: 'Przez krzaki można przejechać i się w nich schować. Pociski przez nie przelatują.' },
   wind:    { name: 'Wiatr!',               desc: 'Wiatr znosi pociski. Kierunek i siłę pokazuje strzałka u góry.' },
-  fire:    { name: 'Płonące samochody!',   desc: 'Nie podjeżdżaj za blisko płonących wraków – żar zabiera 1 punkt pancerza co sekundę.' },
+  fire:    { name: 'Płonące samochody!',   desc: 'Nie podjeżdżaj za blisko płonących wraków – żar parzy od razu i zabiera punkt pancerza co chwilę.' },
   sand:    { name: 'Grząski piasek!',      desc: 'Po długiej jeździe czołg grzęźnie. Zatrzymaj się albo cofnij, żeby się uwolnić.' },
   slide:   { name: 'Ślisko!',              desc: 'Czołgi ślizgają się, a na zamarzniętych kałużach jeszcze bardziej.' },
   ammo:    { name: 'Skrzynie z amunicją!', desc: 'Skrzynie wybuchają, gdy na nie najedziesz albo je trafisz, i ranią czołgi w pobliżu. Worki z piaskiem pochłaniają pociski.' },
@@ -1863,7 +1863,8 @@ function explode(x, y, color, n) {
   }
 }
 
-const FIRE_ZONE = 16; // jak blisko wraku zaczyna parzyć (px od karoserii)
+const FIRE_ZONE = 24; // jak blisko wraku zaczyna parzyć (px od karoserii)
+const FIRE_TICK = 0.6; // co ile sekund żar zabiera 1 punkt pancerza
 function damageTank(t, dmg, hx, hy) {
   t.hp -= dmg; t.flash = 0.15;
   if (t.hp <= 0) { t.hp = 0; t.alive = false; explode(t.x, t.y, t.color, 45); scorch(t.x, t.y, t.r * 2.6, 0.75); updateHud(); sfx.explode(t.x); }
@@ -1906,11 +1907,11 @@ function update(dt) {
     }
     t.cool -= dt; t.flash -= dt;
     if (t.isBot) botUpdate(t, dt); else humanUpdate(t, dt);
-    if (rule === 'fire') { // żar płonącego wraku: 1 punkt pancerza za każdą sekundę w pobliżu
+    if (rule === 'fire') { // żar płonącego wraku: 1 punkt pancerza od razu po wjechaniu, potem co FIRE_TICK s
       if (cars.some(c => circleRect(t.x, t.y, t.r + FIRE_ZONE, c))) {
         t.burnT += dt;
-        if (t.burnT >= 1) { t.burnT -= 1; damageTank(t, 1, t.x, t.y); if (!t.alive) continue; }
-      } else t.burnT = 0;
+        if (t.burnT >= FIRE_TICK) { t.burnT -= FIRE_TICK; damageTank(t, 1, t.x, t.y); if (!t.alive) continue; }
+      } else t.burnT = FIRE_TICK; // poza żarem licznik „naładowany” – wjazd od razu parzy
     }
     if (rule === 'ammo') for (const o of treeGrid[gridIdx(t.x, t.y)]) // najechanie na skrzynię z amunicją
       if (o.explosive && dist(t, o) < t.r + o.r + 1.5) { detonate(o); break; }

@@ -38,7 +38,7 @@ Każda mapa ma swoją zasadę specjalną. Jej nazwa pojawia się na początku ru
 |---|---|
 | Las | **Kryjówki w krzakach** – przez krzaki można przejechać i się w nich schować, pociski przez nie przelatują |
 | Pole | **Wiatr** – znosi pociski; kierunek i siłę pokazuje strzałka u góry |
-| Miasto | **Płonące samochody** – żar wraków zabiera 1 punkt pancerza co sekundę, gdy podjedziesz za blisko |
+| Miasto | **Płonące samochody** – żar wraków parzy od razu po wjechaniu i zabiera 1 punkt pancerza co 0,6 s |
 | Noc w mieście | **Ciemno** – widać tylko to, co jest w świetle; strzał zdradza pozycję |
 | Pustynia | **Grząski piasek** – po długiej jeździe czołg grzęźnie; postój lub cofanie uwalnia |
 | Zima | **Ślisko** – czołgi ślizgają się, na zamarzniętych kałużach jeszcze bardziej |
