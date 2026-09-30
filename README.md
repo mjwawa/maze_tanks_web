@@ -72,6 +72,6 @@ Po pierwszym uruchomieniu gra działa offline. Nowe wersje z GitHuba pobierają 
 
 ## Technicznie
 
-Cała gra to jeden plik `index.html` (HTML + JavaScript z wbudowanymi czcionkami, rysowanie na canvasie, dźwięki generowane przez Web Audio API). Nie potrzebuje serwera ani instalacji.
+Cała gra to plik `index.html` (HTML + JavaScript, rysowanie na canvasie, dźwięki generowane przez Web Audio API) i czcionki w folderze `fonts/`. Nie potrzebuje serwera gry ani instalacji – wystarczy zwykły hosting plików, np. GitHub Pages.
 
-Pliki aplikacji: `manifest.webmanifest` (nazwa, ikony), `sw.js` (praca offline), ikony `icon-512.png`, `icon-maskable-512.png`, `favicon-*.png`, `favicon.svg`, `apple-touch-icon.png`.
+Pliki aplikacji: `manifest.webmanifest` (nazwa, ikony), `sw.js` (praca offline – zapisuje stronę, czcionki i ikony), ikony `icon-512.png`, `icon-maskable-512.png`, `favicon-*.png`, `favicon.svg`, `apple-touch-icon.png`.
