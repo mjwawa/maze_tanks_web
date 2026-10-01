@@ -327,6 +327,9 @@
         <h3 class="mt">Ustawienia</h3>
         <div class="field"><span class="lab">Dźwięk</span>
           <div class="seg"><button data-snd="1">Włączony</button><button data-snd="0">Wyłączony</button></div></div>
+        <div class="field"><span class="lab">Podgląd toru pocisku</span>
+          <div class="seg"><button data-aim="1">Włączony</button><button data-aim="0">Wyłączony</button></div>
+          <span class="note">Kropki przed czołgiem pokazują, dokąd poleci pocisk – do pierwszego odbicia.</span></div>
       </section>
     </div>
     <div class="bottombar"><div class="summary" id="summary"></div><button class="cta" id="start">START</button></div>
@@ -1413,7 +1416,7 @@ const DEFAULT_NAMES = ['Gracz 1', 'Gracz 2'];
 // główny wskaźnik to palec (telefon, iPad) – wtedy podpowiadamy wersję mobilną; iPad w trybie „komputerowym” przedstawia się jak Mac
 const IS_TOUCH = (window.matchMedia && matchMedia('(pointer: coarse)').matches)
   || (navigator.maxTouchPoints > 1 && /Macintosh|iPad/.test(navigator.userAgent));
-let settings = { winRounds: 5, mode: 1, bots: 1, diff: 'normal', map: 'random', types: ['wilk', 'wilk'], names: DEFAULT_NAMES.slice() };
+let settings = { aimLine: true, winRounds: 5, mode: 1, bots: 1, diff: 'normal', map: 'random', types: ['wilk', 'wilk'], names: DEFAULT_NAMES.slice() };
 
 // Wszystkie ustawienia w jednym wpisie. Wersja mobilna (maze_tanks_mobile) działa pod tym samym adresem i dzieli z nami
 // localStorage: przy pierwszym uruchomieniu bierzemy stare wpisy wspólne dla obu wersji, ale niczego nie kasujemy – są jej potrzebne.
@@ -1435,6 +1438,7 @@ function loadSettings() {
   settings.map = oneOf(s.map, ['random', ...Object.keys(THEMES)], settings.map);
   if (Array.isArray(s.types)) s.types.forEach((t, i) => { if (i < 2 && TYPE_KEYS.includes(t)) settings.types[i] = t; });
   if (Array.isArray(s.names)) s.names.forEach((n, i) => { if (n && i < 2) settings.names[i] = String(n).slice(0, 12); });
+  if (typeof s.aimLine === 'boolean') settings.aimLine = s.aimLine;
   if (typeof s.sound === 'boolean') soundOn = s.sound;
   if (first) saveSettings();
 }
@@ -1916,6 +1920,40 @@ function update(dt) {
   bannerT -= dt;
 }
 
+// ===================== PODGLĄD TORU POCISKU =====================
+// Kropki tam, gdzie poleci pocisk z lufy (z wiatrem): do pierwszego odbicia i kawałek po nim, żeby było widać nowy kierunek.
+// Czołgi nie zatrzymują podglądu – inaczej zdradzałby przeciwników ukrytych w ciemności albo w krzakach.
+function aimPath(t) {
+  const L = barrelLen(t), B = bulletSpec(t);
+  const b = { x: t.x + Math.cos(t.a) * L, y: t.y + Math.sin(t.a) * L, vx: Math.cos(t.a) * B.speed, vy: Math.sin(t.a) * B.speed, b: 0, maxB: 1 };
+  if (hitsObstacle(b.x, b.y, BULLET_R)) return null; // lufa w przeszkodzie – strzał i tak nie wyleci
+  const pts = [{ x: b.x, y: b.y, after: false }];
+  let total = 0, after = 0;
+  for (let i = 0; i < 150 && total < 900 && after < 70; i++) {
+    const px = b.x, py = b.y, alive = moveBullet(b, 1 / 60), d = Math.hypot(b.x - px, b.y - py);
+    total += d; if (b.b > 0) after += d;
+    pts.push({ x: b.x, y: b.y, after: b.b > 0 });
+    if (!alive) break; // drugie odbicie, worki z piaskiem, skrzynia z amunicją
+  }
+  return pts;
+}
+function drawAimPath(t) {
+  const pts = aimPath(t);
+  if (!pts) return;
+  let acc = 8; // kropka co 12 px wzdłuż toru
+  for (let i = 1; i < pts.length; i++) {
+    const p = pts[i - 1], q = pts[i], seg = Math.hypot(q.x - p.x, q.y - p.y);
+    for (; acc <= seg; acc += 12) {
+      const f = acc / seg, x = p.x + (q.x - p.x) * f, y = p.y + (q.y - p.y) * f;
+      ctx.globalAlpha = q.after ? 0.4 : 0.85; // po odbiciu bledsze
+      ctx.fillStyle = 'rgba(15,20,12,.7)'; ctx.beginPath(); ctx.arc(x, y, 2.3, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = '#fff6d8'; ctx.beginPath(); ctx.arc(x, y, 1.4, 0, Math.PI * 2); ctx.fill();
+    }
+    acc -= seg;
+  }
+  ctx.globalAlpha = 1;
+}
+
 // ===================== RYSOWANIE =====================
 const hexA = (hex, a) => { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`; };
 function shade(hex, f) {
@@ -2115,6 +2153,8 @@ function draw() {
     }
   }
 
+  // podgląd toru: stale przed czołgami graczy
+  if (settings.aimLine && running && !demo && !matchOver) for (const t of tanks) if (!t.isBot && t.alive && true) drawAimPath(t);
   // pociski: kapsuła i smuga w kolorze strzelca; gdy nie ma już odbić w zapasie – mruga (zaraz zniknie)
   const blinkOff = (performance.now() / 70 | 0) % 2 === 0;
   for (const b of bullets) {
@@ -2274,6 +2314,7 @@ const SETUP_OPTS = {
   map:  { get: () => settings.map,       set: v => { settings.map = v; } },
   win:  { get: () => settings.winRounds, set: v => { settings.winRounds = +v; } },
   snd:  { get: () => soundOn ? 1 : 0,    set: v => { initAudio(); setSound(v === '1'); } },
+  aim:  { get: () => settings.aimLine ? 1 : 0, set: v => { settings.aimLine = v === '1'; } },
 };
 
 function renderSetup() {
