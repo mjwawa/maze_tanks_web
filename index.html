@@ -198,7 +198,7 @@
   .ptab { flex: 1; display: flex; align-items: center; gap: 10px; padding: 6px 10px; background: #1b2116; text-align: left; clip-path: var(--cut); }
   .ptab.on { border-color: var(--pc); background: #262d1e; }
   .ptab img { width: 40px; height: 40px; }
-  .ptab b { display: block; font-size: 17px; }
+  .ptab b { display: block; font-size: 17px; font-weight: 700; }
   .ptab small { color: var(--muted); font-size: 14px; }
   @media (max-height: 560px) { .hint { display: none; } .ptabs { margin-bottom: 8px; } }
   /* niskie ekrany (telefon poziomo) – wszystko ciaśniej, żeby najważniejsze przyciski były widoczne */
@@ -289,6 +289,7 @@
   .prize.dark img { filter: brightness(0); opacity: .6; } /* Tygrys jeszcze nie zdobyty – tylko sylwetka */
   #campReward { margin-bottom: 10px; }
   .achnote { margin: 12px 0 0; font-size: 15px; color: var(--text); }
+  .achcat { margin: -2px 0 8px; max-width: 760px; }
   .bteams { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 10px; }
   @media (max-width: 560px) { .bteams { grid-template-columns: 1fr; } }
   .unit.boss b { color: #f2a841; }
@@ -402,7 +403,7 @@
       <li><b>Jedź</b><p>Gracz 1: <kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd>, strzał <kbd>Spacja</kbd>. Gracz 2: <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>, strzał <kbd>Q</kbd>. Lufa strzela tam, gdzie patrzy czołg.</p></li>
       <li><b>Strzelaj</b><p>Każde naciśnięcie to jeden strzał. Kropki przed czołgiem pokazują, dokąd poleci pocisk.</p></li>
       <li><b>Odbijaj</b><p>Pociski odbijają się od ścian i drzew. Uważaj, Twój rykoszet też boli.</p></li>
-      <li><b>Wygrywaj</b><p>Rundę wygrywa ostatni czołg na placu. Kto pierwszy zdobędzie <span id="howWin">5</span> rund, dostaje złoty medal do gabloty.</p></li>
+      <li><b>Wygrywaj</b><p>Runda to jedna walka: wygrywa ją ostatni czołg na placu. Mecz to seria rund: kto pierwszy wygra <span id="howWin">5</span> rund, wygrywa mecz i dostaje złoty medal do gabloty.</p></li>
       <li><b>Poznaj mapy</b><p>Każda mapa ma swoją zasadę: kryjówki w krzakach, wiatr, grząski piasek, lód, płonące wraki, skrzynie z amunicją, ciemność i nieważkość.</p></li>
       <li><b>Skróty</b><p><kbd>Esc</kbd> albo <kbd>P</kbd> pauza, <kbd>M</kbd> dźwięk, <kbd>Enter</kbd> start i rewanż.</p></li>
     </ol>
@@ -450,8 +451,9 @@
             <button data-map="ksiezyc"><span>Księżyc</span></button>
           </div>
           <p class="note" id="rulenote"></p></div>
-        <div class="field"><span class="lab">Mecz do wygranych</span>
-          <div class="seg"><button data-win="3">3</button><button data-win="5">5</button><button data-win="7">7</button></div></div>
+        <div class="field"><span class="lab">Mecz do ilu wygranych rund</span>
+          <div class="seg"><button data-win="3">3</button><button data-win="5">5</button><button data-win="7">7</button></div>
+          <p class="note">Runda to jedna walka do ostatniego czołgu. Mecz wygrywa ten, kto pierwszy wygra tyle rund.</p></div>
       </section>
     </div>
     <div class="bottombar"><div class="summary" id="summary"></div><button class="cta" id="start">Do boju</button></div>
@@ -2594,11 +2596,11 @@ achFlag('Przetrwanie', 'pacifist', 'Pacyfista', 'Wygraj rundę bez oddania strza
 achFlag('Przetrwanie', 'marathon', 'Maraton', 'Wygraj rundę, która trwała ponad 90 sekund.');
 
 achTiers('Zwycięstwa', 'roundWins', [
-  [1, 'Pierwsza runda', 'Wygraj pierwszą rundę.'], [10, 'Dziesiątka', 'Wygraj 10 rund.'], [50, 'Wprawiony', 'Wygraj 50 rund.'],
-  [100, 'Setka', 'Wygraj 100 rund.'], [500, 'Marszałek', 'Wygraj 500 rund.']]);
+  [1, 'Pierwsza runda', 'Wygraj pierwszą rundę: zostań ostatnim czołgiem na planszy.'], [10, 'Dziesiątka', 'Wygraj 10 rund (pojedynczych walk).'], [50, 'Wprawiony', 'Wygraj 50 rund (pojedynczych walk).'],
+  [100, 'Setka', 'Wygraj 100 rund (pojedynczych walk).'], [500, 'Marszałek', 'Wygraj 500 rund (pojedynczych walk).']]);
 achTiers('Zwycięstwa', 'matchWins', [
-  [1, 'Zwycięzca', 'Wygraj pierwszy mecz.'], [5, 'Mistrz turnieju', 'Wygraj 5 meczów.'], [10, 'Czempion', 'Wygraj 10 meczów.'],
-  [50, 'Arcymistrz', 'Wygraj 50 meczów.'], [100, 'Nieśmiertelny', 'Wygraj 100 meczów.']]);
+  [1, 'Zwycięzca', 'Wygraj pierwszy mecz: jako pierwszy zdobądź ustaloną liczbę wygranych rund.'], [5, 'Mistrz turnieju', 'Wygraj 5 meczów (całych serii rund).'], [10, 'Czempion', 'Wygraj 10 meczów (całych serii rund).'],
+  [50, 'Arcymistrz', 'Wygraj 50 meczów (całych serii rund).'], [100, 'Nieśmiertelny', 'Wygraj 100 meczów (całych serii rund).']]);
 achTiers('Zwycięstwa', 'bestStreak', [
   [3, 'Złota seria', 'Wygraj 3 mecze z rzędu.'], [5, 'Nie do pokonania', 'Wygraj 5 meczów z rzędu.'], [10, 'Dynastia', 'Wygraj 10 meczów z rzędu.']]);
 achTiers('Zwycięstwa', 'wins_easy', [[1, 'Rekrut', 'Wygraj mecz z łatwymi botami.']]);
@@ -2648,6 +2650,9 @@ for (const [n, name] of [[25, 'Kolekcjoner'], [50, 'Łowca trofeów'], [75, 'Wie
   achTest('Kolekcja', 'col' + n, name, `Zdobądź ${n} osiągnięć.`, () => achCount() >= n, () => [Math.min(achCount(), n), n]);
 achTest('Kolekcja', 'colAll', 'Komplet', 'Zdobądź wszystkie pozostałe osiągnięcia.',
   () => achCount() >= ACH.length - 1, () => [Math.min(achCount(), ACH.length - 1), ACH.length - 1]);
+const ACH_NOTES = {
+  'Zwycięstwa': 'Runda to jedna walka – wygrywa ją ostatni czołg na planszy. Mecz to seria rund w Szybkiej bitwie: wygrywa go ten, kto pierwszy zdobędzie 3, 5 lub 7 wygranych rund (ustawiasz w garażu). Wygrana misja w kampanii liczy się jak wygrana runda.',
+};
 const ACH_CATS = ['Strzelanie', 'Wybuchy i ogień', 'Przetrwanie', 'Zwycięstwa', 'Mapy', 'Czołgi', 'Wytrwałość', 'Kolekcja', 'Ukryte'];
 
 function checkAch() {
@@ -2781,7 +2786,7 @@ function renderAch() {
     + `<div class="achpaints">${PAINTS.slice(1).map(p => `<span class="${paintOpen(p) ? 'got' : ''}"><img src="${tankIcon(settings.types[0], COLORS[0], true, p.key)}" alt="">${p.need}% · ${p.name}</span>`).join('')}</div>`;
   $('achList').innerHTML = ACH_CATS.map(cat => {
     const list = ACH.filter(a => a.cat === cat);
-    return `<h3>${cat}<span>${list.filter(a => ach.got[a.id]).length} / ${list.length}</span></h3><div class="achgrid">` + list.map(a => {
+    return `<h3>${cat}<span>${list.filter(a => ach.got[a.id]).length} / ${list.length}</span></h3>${ACH_NOTES[cat] ? `<p class="note achcat">${ACH_NOTES[cat]}</p>` : ''}<div class="achgrid">` + list.map(a => {
       const has = !!ach.got[a.id], secret = a.hidden && !has;
       let bar = '';
       if (!has && a.prog) {

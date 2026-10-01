@@ -55,9 +55,9 @@ Każda mapa ma swoją zasadę specjalną. Jej nazwa pojawia się na początku ru
 - Pocisk ma kolor czołgu, który go wystrzelił. Gdy mruga, nie ma już odbić w zapasie – przy następnej ścianie zniknie.
 - Żółte kropki pod paskiem pancerza Twojego czołgu to pociski gotowe do strzału (zgaszona kropka – pocisk jeszcze leci).
 - Kropki przed czołgiem pokazują, dokąd poleci pocisk – do pierwszego odbicia (można to wyłączyć w ustawieniach).
-- Każda runda zaczyna się odliczaniem 3, 2, 1. Rundę wygrywa ostatni czołg na polu bitwy.
+- **Runda** to jedna walka. Zaczyna się odliczaniem 3, 2, 1, a wygrywa ją ostatni czołg na polu bitwy.
 - Jeśli zniszczone zostaną wszystkie czołgi graczy, a na polu zostało kilka botów, punkt dostaje bot, który pokonał ostatniego gracza (a gdy ten zginął od rykoszetu, żaru lub wybuchu – najmniej uszkodzony bot).
-- Kto pierwszy wygra 5 rund (albo 3 lub 7, do wyboru w menu), zdobywa **złoty medal**. Medale zbierają się w gablocie.
+- **Mecz** to seria rund. Kto pierwszy wygra 5 rund (albo 3 lub 7, do wyboru w garażu), wygrywa mecz i zdobywa **złoty medal**. Medale zbierają się w gablocie.
 
 ## Osiągnięcia
 
