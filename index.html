@@ -16,7 +16,6 @@
 <meta name="theme-color" content="#161b14">
 <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
 <link rel="icon" type="image/png" sizes="192x192" href="favicon-192.png">
-<link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
 /* Czcionki w folderze fonts/ (offline z pamięci service workera): Big Shoulders Stencil Display i Barlow Semi Condensed, licencja SIL Open Font License 1.1 */
@@ -144,6 +143,10 @@
   .tcard { display: flex; flex-direction: column; gap: 3px; text-align: left; padding: 8px 10px 10px; background: #1b2116; clip-path: var(--cut); font-weight: 500; }
   .tcard:hover:not(.on) { background: #232a1c; }
   .tcard.on { border-color: var(--orange); background: #2e2a1b; }
+  .tcard.locked { cursor: default; }
+  .tcard.locked img { filter: brightness(0); opacity: .55; }
+  .tcard.locked .tname { color: var(--muted); }
+  .tlock { margin-top: auto; font-size: 13px; font-weight: 700; text-transform: uppercase; color: #e8b93a; }
   .tcard img { width: 100%; height: 88px; object-fit: contain; }
   .tcard .tclass { font-size: 14px; text-transform: uppercase; color: var(--khaki); font-weight: 700; }
   .tcard .tname { font-family: var(--f-head); font-weight: 900; text-transform: uppercase; font-size: 32px; line-height: .9; }
@@ -280,6 +283,12 @@
   .unlock img { width: 110px; height: 70px; object-fit: contain; }
   .unlock b { display: block; font-family: var(--f-head); font-weight: 900; font-size: 28px; text-transform: uppercase; color: #f2c230; line-height: 1; }
   .unlock span { font-size: 15px; line-height: 1.35; }
+  .prize { padding: 6px 12px; }
+  .prize img { width: 84px; height: 52px; }
+  .prize b { font-size: 22px; }
+  .prize.dark img { filter: brightness(0); opacity: .6; } /* Tygrys jeszcze nie zdobyty – tylko sylwetka */
+  #campReward { margin-bottom: 10px; }
+  .achnote { margin: 12px 0 0; font-size: 15px; color: var(--text); }
   .bteams { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 10px; }
   @media (max-width: 560px) { .bteams { grid-template-columns: 1fr; } }
   .unit.boss b { color: #f2a841; }
@@ -326,6 +335,23 @@
   .achpct { display: block; font-family: var(--f-head); font-weight: 900; font-size: 60px; line-height: 1; color: var(--khaki); }
   .achbar { height: 12px; max-width: 420px; margin: 8px auto 0; background: #33402c; border: 2px solid var(--line); }
   .achbar i { display: block; height: 100%; background: var(--orange); }
+  .achbar { position: relative; }
+  .achbar b { position: absolute; top: -6px; bottom: -6px; width: 3px; margin-left: -2px; background: var(--line-hi); }
+  .achbar b.got { background: var(--khaki); }
+  .achpaints { display: flex; flex-wrap: wrap; justify-content: center; gap: 4px 14px; margin-top: 10px; }
+  .achpaints span { display: flex; flex-direction: column; align-items: center; font-size: 13px; font-weight: 700; color: var(--muted); }
+  .achpaints img { width: 76px; height: 54px; object-fit: contain; filter: grayscale(1) brightness(.55); }
+  .achpaints .got { color: var(--text); }
+  .achpaints .got img { filter: none; }
+  .paints { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+  @media (max-width: 420px) { .paints { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+  .pt { display: flex; flex-direction: column; align-items: center; gap: 1px; padding: 4px 4px 6px; background: #1b2116; font-size: 14px; font-weight: 700; line-height: 1.1; }
+  .pt img { width: 100%; height: 46px; object-fit: contain; }
+  .pt small { font-size: 12px; font-weight: 600; color: var(--muted); }
+  .pt.on { border-color: var(--orange); background: #2e2a1b; }
+  .pt.locked { color: var(--muted); }
+  .pt.locked img { filter: grayscale(1) brightness(.5); }
+  #achToast em { display: block; margin-top: 3px; font-style: normal; font-size: 14px; font-weight: 700; color: var(--orange); }
   .achs h3 { margin: 10px 0 6px; font-family: var(--f-head); font-weight: 900; font-size: 28px; text-transform: uppercase; color: var(--khaki); }
   .achs h3 span { font-family: var(--f-ui); font-weight: 600; font-size: 16px; color: var(--muted); margin-left: 8px; }
   .achgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 6px; }
@@ -402,6 +428,7 @@
         <label class="field"><span class="lab" id="namelab">Twoje imię</span>
           <input class="name" id="nameInput" maxlength="12" autocomplete="off" spellcheck="false"></label>
         <div class="field"><span class="lab">Czołg</span><div class="tankcards" id="tankcards"></div></div>
+        <div class="field"><span class="lab">Malowanie</span><div class="paints" id="paints"></div><p class="note" id="paintnote"></p></div>
       </section>
       <section class="panel">
         <div class="field"><span class="lab">Gracze</span>
@@ -471,6 +498,7 @@
 <div class="screen" id="campaign">
   <div class="inner camp">
     <div class="topbar"><button class="ghost" id="campBack">‹ Menu</button><h2>Kampania</h2><span class="sp"></span><span class="campstars" id="campStars"></span></div>
+    <div class="unlock prize" id="campReward"></div>
     <div class="campgrid">
       <div class="chapters" id="chapters"></div>
       <section class="panel chapter" id="chapter"></section>
@@ -611,6 +639,19 @@ const RULES = {
 };
 
 const COLORS = ['#4f9a3a', '#2f6fd1', '#d13f2f', '#e8a02a', '#8a4fc9'];
+// malowania czołgu gracza – nagrody za postęp osiągnięć (need: ile procent); wzory są w odcieniach koloru gracza,
+// więc dalej widać, kto jest kim. Boty jeżdżą zawsze w standardowym.
+const PAINTS = [
+  { key: 'std',   name: 'Standard',  need: 0,   desc: 'Barwy fabryczne w Twoim kolorze.' },
+  { key: 'moro',  name: 'Moro',      need: 25,  desc: 'Plamy kamuflażu w odcieniach Twojego koloru.' },
+  { key: 'cyfr',  name: 'Cyfrowe',   need: 50,  desc: 'Kamuflaż z pikseli i biała gwiazda na wieży.' },
+  { key: 'ogien', name: 'Płomienie', need: 75,  desc: 'Ciemny kadłub, płomienie na przodzie i srebrna lufa.' },
+  { key: 'zloto', name: 'Złoty',     need: 100, desc: 'Cały ze złota, z paskiem w Twoim kolorze i koroną na wieży.' },
+];
+const PAINT_KEYS = PAINTS.map(p => p.key);
+const paintOpen = p => achPct() >= p.need;
+const usePaint = k => { const p = PAINTS.find(q => q.key === k); return p && paintOpen(p) ? k : 'std'; }; // zablokowane → standard
+const myPaint = () => usePaint(settings.paints[0]); // malowanie gracza w kampanii
 const CONTROLS = [
   { up: 'ArrowUp', down: 'ArrowDown', left: 'ArrowLeft', right: 'ArrowRight', fire: 'Space' },
   { up: 'KeyW', down: 'KeyS', left: 'KeyA', right: 'KeyD', fire: 'KeyQ' },
@@ -1571,7 +1612,7 @@ const DEFAULT_NAMES = ['Gracz 1', 'Gracz 2'];
 // główny wskaźnik to palec (telefon, iPad) – wtedy podpowiadamy wersję mobilną; iPad w trybie „komputerowym” przedstawia się jak Mac
 const IS_TOUCH = (window.matchMedia && matchMedia('(pointer: coarse)').matches)
   || (navigator.maxTouchPoints > 1 && /Macintosh|iPad/.test(navigator.userAgent));
-let settings = { aimLine: true, winRounds: 5, mode: 1, bots: 1, diff: 'normal', map: 'random', types: ['wilk', 'wilk'], names: DEFAULT_NAMES.slice() };
+let settings = { aimLine: true, winRounds: 5, mode: 1, bots: 1, diff: 'normal', map: 'random', types: ['wilk', 'wilk'], paints: ['std', 'std'], names: DEFAULT_NAMES.slice() };
 
 // Wszystkie ustawienia w jednym wpisie. Wersja mobilna (maze_tanks_mobile) działa pod tym samym adresem i dzieli z nami
 // localStorage: przy pierwszym uruchomieniu bierzemy stare wpisy wspólne dla obu wersji, ale niczego nie kasujemy – są jej potrzebne.
@@ -1592,6 +1633,7 @@ function loadSettings() {
   settings.diff = oneOf(s.diff, Object.keys(DIFF), settings.diff);
   settings.map = oneOf(s.map, ['random', ...Object.keys(THEMES)], settings.map);
   if (Array.isArray(s.types)) s.types.forEach((t, i) => { if (i < 2 && TYPE_KEYS.includes(t)) settings.types[i] = t; });
+  if (Array.isArray(s.paints)) s.paints.forEach((k, i) => { if (i < 2 && PAINT_KEYS.includes(k)) settings.paints[i] = k; });
   if (Array.isArray(s.names)) s.names.forEach((n, i) => { if (n && i < 2) settings.names[i] = String(n).slice(0, 12); });
   if (typeof s.aimLine === 'boolean') settings.aimLine = s.aimLine;
   if (typeof s.sound === 'boolean') soundOn = s.sound;
@@ -1632,7 +1674,7 @@ const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;'
 function newGame() {
   mission = null;
   roster = [];
-  for (let i = 0; i < settings.mode; i++) roster.push({ name: settings.names[i] || DEFAULT_NAMES[i], isBot: false, ctrl: CONTROLS[i], type: settings.types[i] });
+  for (let i = 0; i < settings.mode; i++) roster.push({ name: settings.names[i] || DEFAULT_NAMES[i], isBot: false, ctrl: CONTROLS[i], type: settings.types[i], paint: settings.paints[i] });
   for (let i = 0; i < settings.bots; i++) roster.push({ name: 'Bot ' + (i + 1), isBot: true, type: null });
   roster.forEach((p, i) => p.color = COLORS[i]);
   scores = roster.map(() => 0);
@@ -1693,7 +1735,7 @@ function newRoundInner() {
 function makeTank(p, i, cell) {
   const T = p.mods ? Object.assign({}, TYPES[p.curType], p.mods) : TYPES[p.curType];
   return {
-    id: i, name: p.name, isBot: p.isBot, diff: p.diff, turret: p.turret, boss: p.boss, ctrl: p.ctrl, color: p.color,
+    id: i, name: p.name, isBot: p.isBot, paint: p.isBot ? 'std' : usePaint(p.paint), diff: p.diff, turret: p.turret, boss: p.boss, ctrl: p.ctrl, color: p.color,
     typeKey: p.curType, type: T, r: T.r,
     hp: T.hp, flash: 0, trackD: 0, tread: 0, recoil: 0, vx: 0, vy: 0, sand: 0, vis: 1, fireT: 0, burnT: 0, rs: { kills: 0, shots: 0, hits: 0, dmg: 0, fireDmg: 0, stuck: false, lastKillT: -9 }, // rs: statystyki rundy do osiągnięć
     x: cell.c * CELL + CELL / 2, y: cell.r * CELL + CELL / 2,
@@ -2162,14 +2204,63 @@ function polyPath(c, pts, dx = 0) {
   pts.forEach(([x, y], i) => i ? c.lineTo(x + dx, y) : c.moveTo(x + dx, y));
   c.closePath();
 }
-function tankColors(color, state) {
+const GOLD = '#d6a62c';
+function shadeHex(hex, f) {
+  const n = parseInt(hex.slice(1), 16), ch = v => (clamp(v * f, 0, 255) | 0).toString(16).padStart(2, '0');
+  return '#' + ch(n >> 16) + ch((n >> 8) & 255) + ch(n & 255);
+}
+function tankColors(color, state, paint = 'std') {
   if (state === 'flash') return { hull: '#ffffff', hi: '#ffffff', tur: '#ffffff', turHi: '#ffffff', skirt: '#e8e8e8' };
-  const base = state === 'dead' ? '#4a4744' : color;
+  const base = state === 'dead' ? '#4a4744' : paint === 'zloto' ? GOLD : paint === 'ogien' ? shadeHex(color, 0.42) : color;
   return { hull: shade(base, 0.9), hi: shade(base, 1.18), tur: shade(base, 1.05), turHi: shade(base, 1.3), skirt: shade(base, 0.62) };
 }
 // gąsienice (frame 0–3 przesuwa ogniwa w czasie jazdy), osłony, kadłub
-function paintTankBase(c, k, color, state, frame) {
-  const d = TANK_LOOK[k], col = tankColors(color, state), alive = state !== 'dead';
+// wzór malowania na kadłubie albo wieży (rysowany w obrysie tej części, x0 – przesunięcie wieży)
+const MORO_HULL = [[-12, -7, 6.5, 3.6, 0.4, 0], [-3, 5, 7, 3.2, -0.3, 1], [8, -6, 6, 3, 0.2, 2], [13, 6, 4.5, 3, 0.6, 0],
+  [-14, 7, 4, 2.6, -0.5, 2], [2, -10, 4.5, 2.2, 0, 0], [4, 1, 3.5, 2.4, 0.8, 0], [-7, -1, 3, 2, 0.2, 2]];
+function paintPattern(c, d, color, paint, part) {
+  const x0 = part === 'tur' ? d.tx : 0;
+  if (paint === 'moro') {
+    const tones = [shade(color, 0.6), shade(color, 1.35), shade(color, 0.8)];
+    const blobs = part === 'tur' ? [[-5, -4, 4.2, 2.6, 0.3, 0], [3, 4, 3.8, 2.3, -0.4, 1], [4, -5, 2.6, 1.8, 0, 2]] : MORO_HULL;
+    for (const [x, y, rx, ry, a, t] of blobs) {
+      c.fillStyle = tones[t]; c.beginPath(); c.ellipse(x0 + x, y, rx, ry, a, 0, Math.PI * 2); c.fill();
+      c.beginPath(); c.arc(x0 + x + rx * 0.55, y + ry * 0.4, ry * 0.8, 0, Math.PI * 2); c.fill(); // nierówny brzeg plamy
+    }
+  } else if (paint === 'cyfr') {
+    const tones = [shade(color, 0.62), shade(color, 1.3), shade(color, 0.82)];
+    for (let x = -21; x < 21; x += 3) for (let y = -15; y < 15; y += 3) {
+      const h = Math.abs(Math.sin((x0 + x) * 12.9898 + y * 78.233 + (part === 'tur' ? 3.1 : 0)) * 43758.5453) % 1;
+      if (h < 0.42) { c.fillStyle = tones[h < 0.17 ? 0 : h < 0.3 ? 1 : 2]; c.fillRect(x0 + x, y, 3, 3); }
+    }
+  } else if (paint === 'ogien') { // języki ognia od przodu kadłuba i wieży
+    const pts = part === 'tur' ? d.tur : d.hull, fx = x0 + Math.max(...pts.map(q => q[0])) + 1, h = Math.max(...pts.map(q => q[1]));
+    const k = part === 'tur' ? 0.7 : 1, tongue = (len, w, col) => {
+      c.fillStyle = col; c.beginPath(); c.moveTo(fx, -h * w);
+      [[-6, -0.75], [-14, -0.45], [-5, -0.25], [-18, 0], [-5, 0.25], [-14, 0.45], [-6, 0.75]].forEach(([x, y], i) => {
+        const px = fx + x * len * k, py = y * h * 1.25 * w;
+        if (i % 2) c.lineTo(px, py); else c.quadraticCurveTo(px + 3 * k, py, px, py);
+      });
+      c.lineTo(fx, h * w); c.closePath(); c.fill();
+    };
+    tongue(1, 1, shade(color, 1.4)); tongue(0.6, 0.72, 'rgba(255,214,110,.92)');
+  } else if (paint === 'zloto' && part === 'base') {
+    c.fillStyle = color; c.fillRect(-24, -3, 48, 6); // pasek w kolorze gracza
+    c.fillStyle = 'rgba(70,45,0,.45)'; c.fillRect(-24, -3.8, 48, 0.8); c.fillRect(-24, 3, 48, 0.8);
+  }
+}
+// błysk przesuwający się po złotym kadłubie (rysowany co klatkę, nie w gotowym obrazku)
+function paintSheen(c, d, t) {
+  const p = (t % 2.4) / 2.4, x = -40 + p * 90;
+  if (x > 30) return;
+  c.save(); polyPath(c, d.hull); c.clip();
+  c.fillStyle = 'rgba(255,250,215,.55)';
+  c.beginPath(); c.moveTo(x, -16); c.lineTo(x + 6, -16); c.lineTo(x - 2, 16); c.lineTo(x - 8, 16); c.closePath(); c.fill();
+  c.restore();
+}
+function paintTankBase(c, k, color, state, frame, paint = 'std') {
+  const d = TANK_LOOK[k], col = tankColors(color, state, paint), alive = state !== 'dead';
+  if (state !== 'ok') paint = 'std';
   for (const [x, y, w, h] of d.tr) {
     c.fillStyle = alive ? '#1c1c1c' : '#2a2826'; roundRect(c, x, y, w, h, h / 2); c.fill();
     c.strokeStyle = OUTLINE; c.lineWidth = 1.3; c.stroke();
@@ -2184,6 +2275,7 @@ function paintTankBase(c, k, color, state, frame) {
   }
   polyPath(c, d.hull); c.fillStyle = col.hull; c.fill(); c.lineWidth = 1.6; c.strokeStyle = OUTLINE; c.stroke();
   c.save(); polyPath(c, d.hull); c.clip();
+  paintPattern(c, d, color, paint, 'base');
   c.fillStyle = col.hi; c.fillRect(-20, -14, 40, 5.5); // jaśniejsza górna krawędź
   c.fillStyle = 'rgba(0,0,0,.3)'; for (let i = 0; i < 3; i++) c.fillRect(d.grille + i * 2.3, -5, 1.2, 10); // kratka silnika
   if (d.stripe) { c.fillStyle = 'rgba(255,255,255,.5)'; c.fillRect(-15, -1, 11, 2); }
@@ -2197,22 +2289,30 @@ function paintTankBase(c, k, color, state, frame) {
   }
   c.restore();
 }
-function paintTankTurret(c, k, color, state) {
-  const d = TANK_LOOK[k], col = tankColors(color, state);
+function paintTankTurret(c, k, color, state, paint = 'std') {
+  const d = TANK_LOOK[k], col = tankColors(color, state, paint);
+  if (state !== 'ok') paint = 'std';
   polyPath(c, d.tur, d.tx); c.fillStyle = col.tur; c.fill(); c.lineWidth = 1.5; c.strokeStyle = OUTLINE; c.stroke();
-  c.save(); polyPath(c, d.tur, d.tx); c.clip(); c.fillStyle = col.turHi; c.fillRect(d.tx - 14, -12, 28, 4.5); c.restore();
-  if (d.tiger && state !== 'dead') { polyPath(c, d.tur, d.tx); c.strokeStyle = '#e8b93a'; c.lineWidth = 1.3; c.stroke(); } // złoty brzeg wieży
+  c.save(); polyPath(c, d.tur, d.tx); c.clip(); paintPattern(c, d, color, paint, 'tur'); c.fillStyle = col.turHi; c.fillRect(d.tx - 14, -12, 28, 4.5); c.restore();
+  if (paint === 'zloto') { polyPath(c, d.tur, d.tx); c.strokeStyle = color; c.lineWidth = 1.6; c.stroke(); } // brzeg wieży w kolorze gracza
+  else if (d.tiger && state !== 'dead') { polyPath(c, d.tur, d.tx); c.strokeStyle = '#e8b93a'; c.lineWidth = 1.3; c.stroke(); } // złoty brzeg wieży
   c.fillStyle = 'rgba(0,0,0,.4)'; c.beginPath(); c.arc(d.tx - 2.5, -2, d.hatch, 0, Math.PI * 2); c.fill(); // właz
-  if (state !== 'dead') { // znak na wieży
+  if (state !== 'dead') { // znak na wieży: romb, gwiazda (Cyfrowe) albo korona (Złoty)
     const m = d.tx - d.mark;
-    c.fillStyle = 'rgba(255,255,255,.85)';
-    c.beginPath(); c.moveTo(m - 2.5, 3); c.lineTo(m, 1); c.lineTo(m + 2.5, 3); c.lineTo(m, 5); c.closePath(); c.fill();
+    c.fillStyle = 'rgba(255,255,255,.88)';
+    c.beginPath();
+    if (paint === 'cyfr') for (let i = 0; i < 10; i++) { const r = i % 2 ? 1.4 : 3.2, a = -Math.PI / 2 + i * Math.PI / 5; c.lineTo(m + Math.cos(a) * r, 3 + Math.sin(a) * r); }
+    else if (paint === 'zloto') { c.fillStyle = color; [[-3, 5], [-3, 1], [-1.5, 3], [0, 0.5], [1.5, 3], [3, 1], [3, 5]].forEach(([x, y]) => c.lineTo(m + x, y + 0.5)); }
+    else { c.moveTo(m - 2.5, 3); c.lineTo(m, 1); c.lineTo(m + 2.5, 3); c.lineTo(m, 5); }
+    c.closePath(); c.fill();
+    if (paint === 'zloto') { c.strokeStyle = 'rgba(60,38,0,.8)'; c.lineWidth = 0.6; c.stroke(); }
   }
 }
 // lufa rysowana co klatkę (rec 0–1: odrzut po strzale)
-function paintTankBarrel(c, k, state, rec) {
+const BARREL_COL = { ogien: '#b9c0c8', zloto: '#b98a1e' }; // srebrna lufa Płomieni, złota lufa Złotego
+function paintTankBarrel(c, k, state, rec, paint = 'std') {
   const d = TANK_LOOK[k], b1 = d.b1 - rec * 3;
-  c.fillStyle = state === 'dead' ? '#333' : '#202020'; c.strokeStyle = OUTLINE; c.lineWidth = 1;
+  c.fillStyle = state === 'dead' ? '#333' : state === 'ok' && BARREL_COL[paint] || '#202020'; c.strokeStyle = OUTLINE; c.lineWidth = 1;
   for (const oy of d.twin ? [-d.twin, d.twin] : [0]) { // Tygrys ma podwójną lufę
     const y0 = oy - d.bw / 2;
     c.fillRect(d.b0, y0, b1 - d.b0, d.bw); c.strokeRect(d.b0, y0, b1 - d.b0, d.bw);
@@ -2222,8 +2322,8 @@ function paintTankBarrel(c, k, state, rec) {
 
 // gotowe obrazki części czołgu (part: 'base' – gąsienice i kadłub w 4 klatkach, 'tur' – wieża) dla rodzaju / koloru / stanu / skali
 const spriteCache = new Map();
-function tankSprite(typeKey, color, state, scale, part, frame = 0) {
-  const key = typeKey + '|' + (state === 'ok' ? color : state) + '|' + scale + '|' + part + frame;
+function tankSprite(typeKey, color, state, scale, part, frame = 0, paint = 'std') {
+  const key = typeKey + '|' + (state === 'ok' ? color + paint : state) + '|' + scale + '|' + part + frame;
   let sp = spriteCache.get(key);
   if (sp) return sp;
   const s = TYPES[typeKey].r / 14, half = 18 * s + 2;
@@ -2231,17 +2331,20 @@ function tankSprite(typeKey, color, state, scale, part, frame = 0) {
   cv.width = cv.height = Math.ceil(2 * half * scale);
   const c = cv.getContext('2d');
   c.scale(scale, scale); c.translate(half, half); c.scale(s, s);
-  if (part === 'base') paintTankBase(c, typeKey, color, state, frame); else paintTankTurret(c, typeKey, color, state);
+  if (part === 'base') paintTankBase(c, typeKey, color, state, frame, paint); else paintTankTurret(c, typeKey, color, state, paint);
   sp = { cv, half: cv.width / scale / 2 };
   spriteCache.set(key, sp);
   return sp;
 }
 // cały czołg w układzie czołgu: gąsienice i kadłub, lufa (z odrzutem), wieża
-function drawTankBody(c, typeKey, color, state, scale, frame, rec) {
-  const base = tankSprite(typeKey, color, state, scale, 'base', frame), tur = tankSprite(typeKey, color, state, scale, 'tur');
+// sheen – chwila błysku na złotym malowaniu (w sekundach)
+function drawTankBody(c, typeKey, color, state, scale, frame, rec, paint = 'std', sheen = 0.5) {
+  const base = tankSprite(typeKey, color, state, scale, 'base', frame, paint), tur = tankSprite(typeKey, color, state, scale, 'tur', 0, paint);
   const s = TYPES[typeKey].r / 14;
   c.drawImage(base.cv, -base.half, -base.half, base.half * 2, base.half * 2);
-  c.save(); c.scale(s, s); paintTankBarrel(c, typeKey, state, rec); c.restore();
+  c.save(); c.scale(s, s);
+  if (paint === 'zloto' && state === 'ok') paintSheen(c, TANK_LOOK[typeKey], sheen);
+  paintTankBarrel(c, typeKey, state, rec, paint); c.restore();
   c.drawImage(tur.cv, -tur.half, -tur.half, tur.half * 2, tur.half * 2);
 }
 
@@ -2260,7 +2363,7 @@ function drawTank(t) {
   const frame = t.alive ? Math.floor(((t.tread * 14 / t.r) % 4 + 4) % 4) : 0; // klatka ogniw gąsienic
   ctx.save();
   ctx.translate(t.x, t.y); ctx.rotate(t.a);
-  drawTankBody(ctx, t.typeKey, t.color, state, renderScale, frame, t.alive ? t.recoil : 0);
+  drawTankBody(ctx, t.typeKey, t.color, state, renderScale, frame, t.alive ? t.recoil : 0, t.paint, performance.now() / 1000 + t.id * 0.8);
   ctx.restore();
 
   if (t.alive && t.vis > 0.5) {
@@ -2355,7 +2458,7 @@ function draw() {
   }
 
   // podgląd toru: stale przed czołgami graczy
-  if (settings.aimLine && running && !demo && !matchOver) for (const t of tanks) if (!t.isBot && t.alive && true) drawAimPath(t);
+  if (settings.aimLine && running && !demo && !matchOver) for (const t of tanks) if (!t.isBot && t.alive) drawAimPath(t);
   // pociski: kapsuła i smuga w kolorze strzelca; gdy nie ma już odbić w zapasie – mruga (zaraz zniknie)
   const blinkOff = (performance.now() / 70 | 0) % 2 === 0;
   for (const b of bullets) {
@@ -2562,9 +2665,11 @@ function nextAchToast() {
   const q = achQueue.shift(), el = $('achToast');
   if (!q) { achShowing = false; return; }
   achShowing = true;
-  el.innerHTML = medalSVG('gold') + `<div><b>Osiągnięcie ${q.n}/${ACH.length}</b><span>${esc(q.a.name)}</span></div>`;
+  const pct = n => Math.floor(100 * n / ACH.length), paint = PAINTS.find(p => p.need && pct(q.n - 1) < p.need && pct(q.n) >= p.need);
+  el.innerHTML = medalSVG('gold') + `<div><b>Osiągnięcie ${q.n}/${ACH.length}</b><span>${esc(q.a.name)}</span>`
+    + (paint ? `<em>${paint.need}% osiągnięć: nowe malowanie ${paint.name}!</em>` : '') + '</div>';
   el.classList.add('show'); sfx.ach();
-  setTimeout(() => { el.classList.remove('show'); setTimeout(nextAchToast, 300); }, 2600);
+  setTimeout(() => { el.classList.remove('show'); setTimeout(nextAchToast, 300); }, paint ? 3800 : 2600);
 }
 
 // --- zdarzenia z gry ---
@@ -2664,11 +2769,16 @@ function achMatchEnd(w) { // w – indeks zwycięzcy meczu
 
 // --- ekrany ---
 function renderVictoryAch() {
-  $('vach').innerHTML = newAch.length ? '<b>Nowe osiągnięcia:</b> ' + newAch.map(a => esc(a.name)).join(', ') + `. Masz już ${achPct()}%.` : '';
+  const before = Math.floor(100 * (achCount() - newAch.length) / ACH.length);
+  const paints = PAINTS.filter(p => p.need > before && paintOpen(p));
+  $('vach').innerHTML = newAch.length ? '<b>Nowe osiągnięcia:</b> ' + newAch.map(a => esc(a.name)).join(', ') + `. Masz już ${achPct()}%.`
+    + (paints.length ? ` Nowe malowanie: <b>${paints.map(p => p.name).join(', ')}</b> – wybierz je w garażu.` : '') : '';
 }
 function renderAch() {
   $('achSum').innerHTML = `<span class="achpct">${achPct()}%</span>Zdobyte: ${achCount()} z ${ACH.length}`
-    + `<div class="achbar"><i style="width:${achPct()}%"></i></div>`;
+    + `<div class="achbar"><i style="width:${achPct()}%"></i>${PAINTS.slice(1).map(p => `<b class="${paintOpen(p) ? 'got' : ''}" style="left:${p.need}%"></b>`).join('')}</div>`
+    + '<p class="achnote">Nagrody: malowania czołgu za 25, 50, 75 i 100% osiągnięć. Wybierzesz je w garażu.</p>'
+    + `<div class="achpaints">${PAINTS.slice(1).map(p => `<span class="${paintOpen(p) ? 'got' : ''}"><img src="${tankIcon(settings.types[0], COLORS[0], true, p.key)}" alt="">${p.need}% · ${p.name}</span>`).join('')}</div>`;
   $('achList').innerHTML = ACH_CATS.map(cat => {
     const list = ACH.filter(a => a.cat === cat);
     return `<h3>${cat}<span>${list.filter(a => ach.got[a.id]).length} / ${list.length}</span></h3><div class="achgrid">` + list.map(a => {
@@ -2859,7 +2969,7 @@ function startMission(id, assist = false, tank = null) {
   initAudio();
   if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
   mission = { id, def, assist, tank, done: false, hold: 0, waveI: 0, nextWaveT: 0 };
-  roster = [{ name: settings.name || settings.names[0], isBot: false, type: tank, mods: assist ? { hp: TYPES[tank].hp + 2 } : null,
+  roster = [{ name: settings.name || settings.names[0], isBot: false, paint: myPaint(), type: tank, mods: assist ? { hp: TYPES[tank].hp + 2 } : null,
     ctrl: typeof CONTROLS !== 'undefined' ? CONTROLS[0] : undefined }];
   def.bots.forEach((b, i) => roster.push(botEntry(b, i, assist)));
   roster.forEach((p, i) => p.color = COLORS[i % COLORS.length]);
@@ -2972,6 +3082,10 @@ function goCampaign() { if (!demo) { stopEngines(); startDemo(); } setScreen('ca
 function renderCampaign() {
   const got = MISSIONS.reduce((n, m) => n + (camp.stars[m.id] || 0), 0);
   $('campStars').innerHTML = `${starSVG(true)}${got} / ${MISSIONS.length * 3}`;
+  $('campReward').classList.toggle('dark', !camp.tygrys);
+  $('campReward').innerHTML = `<img src="${tankIcon('tygrys', COLORS[0], true, myPaint())}" alt=""><div>` + (camp.tygrys
+    ? '<b>Tygrys zdobyty</b><span>Ultra czołg czeka w garażu. Możesz nim też grać w misjach, które już przeszedłeś.</span>'
+    : '<b>Nagroda: Tygrys</b><span>Ukończ kampanię, a dostaniesz ultra czołg z podwójną lufą: szybki jak Lis, pancerny jak Niedźwiedź.</span>') + '</div>';
   if (!chapterUnlocked(camp.sel)) camp.sel = 0;
   $('chapters').innerHTML = CHAPTERS.map((c, i) => {
     const ms = MISSIONS.filter(m => m.ch === i), open = chapterUnlocked(i);
@@ -2987,7 +3101,7 @@ function renderCampaign() {
     ms.map((m, k) => {
       const open = missionUnlocked(MISSIONS.indexOf(m));
       const where = c.elite ? THEMES[m.map].name : m.boss ? 'Szef' : 'Misja ' + (k + 1);
-      return `<button class="mis${open ? '' : ' locked'}" data-m="${m.id}"><img src="${tankIcon(m.tank || 'wilk', COLORS[0], true)}" alt="">` +
+      return `<button class="mis${open ? '' : ' locked'}" data-m="${m.id}"><img src="${tankIcon(m.tank || 'wilk', COLORS[0], true, myPaint())}" alt="">` +
         `<span><small>${where}, ${m.tank ? TYPES[m.tank].name : 'czołg do wyboru'}</small><b>${m.name}</b></span>${starRow(camp.stars[m.id] || 0)}</button>`;
     }).join('') + '</div>';
   $('chapter').querySelectorAll('.mis').forEach(b => b.onclick = () => { if (missionUnlocked(MISSIONS.findIndex(m => m.id === b.dataset.m))) openBrief(b.dataset.m); });
@@ -3005,9 +3119,9 @@ function openBrief(id, assist = false, tank = null) {
   briefId = id; briefAssist = assist; briefTank = choice.includes(tank) ? tank : choice[0];
   const foes = m.bots.map(unitCard).join('') + (m.waves || []).map((w, wi) => w.map((b, i) => unitCard(b, m.bots.length + i)).join('')).join('');
   const conds = [goalText(m), ...m.stars.map(c => c.text)].map((t, i) => `<li>${starSVG(i < best)}<span>${t}</span></li>`).join('');
-  $('briefBox').innerHTML = `<div class="kick">${CHAPTERS[m.ch].elite ? 'Misja elitarna, ' + THEMES[m.map].name : `Rozdział ${m.ch + 1}, ${m.boss ? 'szef' : 'misja ' + (k + 1)}`}</div><h2>${m.name}</h2><p>${m.desc}</p>
+  $('briefBox').innerHTML = `<div class="kick">${CHAPTERS[m.ch].elite ? 'Misja elitarna, ' + THEMES[m.map].name : `Rozdział ${m.ch + 1}, ${m.boss ? 'szef' : 'misja ' + (k + 1)}`}</div><h2>${m.name}</h2><p>${m.desc}</p>${m.final && !camp.tygrys ? `<div class="unlock prize dark"><img src="${tankIcon('tygrys', COLORS[0], true, myPaint())}" alt=""><div><b>Nagroda: Tygrys</b><span>Wygraj finał, a dostaniesz ultra czołg i medal Weteran kampanii.</span></div></div>` : ''}
     <div class="bteams"><div><span class="lab">${choice.length > 1 ? 'Wybierz czołg' : 'Twój czołg'}</span><div class="brow">${choice.map(t =>
-      `<${choice.length > 1 ? 'button' : 'div'} class="unit me${choice.length > 1 ? ' pick' + (t === briefTank ? ' on' : '') : ''}" data-t="${t}"><img src="${tankIcon(t, COLORS[0], true)}" alt=""><span><b>${TYPES[t].name}</b><small>${TYPE_INFO[t].cls}</small></span></${choice.length > 1 ? 'button' : 'div'}>`).join('')}</div></div>
+      `<${choice.length > 1 ? 'button' : 'div'} class="unit me${choice.length > 1 ? ' pick' + (t === briefTank ? ' on' : '') : ''}" data-t="${t}"><img src="${tankIcon(t, COLORS[0], true, myPaint())}" alt=""><span><b>${TYPES[t].name}</b><small>${TYPE_INFO[t].cls}</small></span></${choice.length > 1 ? 'button' : 'div'}>`).join('')}</div></div>
       <div><span class="lab">Przeciwnicy</span><div class="brow">${foes}</div></div></div>
     <div><span class="lab">Gwiazdki</span><ul class="conds">${conds}</ul></div>
     ${(camp.fails[id] || 0) >= 3 ? `<button class="assist${assist ? ' on' : ''}" id="assistBtn">${assist ? '✓ ' : ''}Wersja ułatwiona: +2 pancerza i słabsze boty, najwyżej 1 gwiazdka</button>` : ''}
@@ -3035,7 +3149,7 @@ function showMissionResult() {
     <div class="bigstars">${[0, 1, 2].map(i => starSVG(M.result[i], `animation-delay:${0.2 + i * 0.25}s`)).join('')}</div>
     ${M.win ? '' : `<p class="note">${M.reason}</p>`}
     ${M.assist ? '<p class="note">Wersja ułatwiona: najwyżej jedna gwiazdka.</p>' : ''}
-    ${M.unlocked ? `<div class="unlock"><img src="${tankIcon('tygrys', COLORS[0], true)}" alt=""><div><b>Kampania ukończona</b><span>Zdobywasz medal Weteran kampanii i Tygrysa, najlepszy czołg w grze. Wybierz go w garażu albo w misjach, które już przeszedłeś.</span></div></div>` : ''}
+    ${M.unlocked ? `<div class="unlock"><img src="${tankIcon('tygrys', COLORS[0], true, myPaint())}" alt=""><div><b>Kampania ukończona</b><span>Zdobywasz medal Weteran kampanii i Tygrysa, najlepszy czołg w grze. Wybierz go w garażu albo w misjach, które już przeszedłeś.</span></div></div>` : ''}
     ${M.win && !next && m.final ? `<p class="note">Misje elitarne otworzą się po zdobyciu ${ELITE_STARS} gwiazdek w rozdziałach 1–8. Masz ${mainStars()}.</p>` : ''}
     <ul class="conds">${rows}</ul>
     <div class="vbtns">${btns.map(([c, id, t]) => `<button class="${c}" id="${id}">${t}</button>`).join('')}</div>`;
@@ -3098,15 +3212,15 @@ const STAT_NAMES = ['Prędkość', 'Pancerz', 'Siła ognia', 'Tempo ognia'];
 
 // ikona czołgu rysowana tym samym kodem co w grze
 const iconCache = {};
-function tankIcon(typeKey, color, wide = false) { // wide – czołg poziomo (karty w garażu), inaczej lufą do góry
-  const k = typeKey + color + wide;
+function tankIcon(typeKey, color, wide = false, paint = 'std') { // wide – czołg poziomo (karty w garażu), inaczej lufą do góry
+  const k = typeKey + color + wide + paint;
   if (iconCache[k]) return iconCache[k];
   const cv = document.createElement('canvas'), sc = wide ? 3.6 : 3, a = wide ? 0 : -Math.PI / 2;
   cv.width = wide ? 250 : 168; cv.height = wide ? 176 : 168;
   const c = cv.getContext('2d');
   c.translate(wide ? 100 : 84, wide ? 86 : 92); c.scale(sc, sc);
   drawTankShadow(c, 0, 0, a, TYPES[typeKey].r);
-  c.rotate(a); drawTankBody(c, typeKey, color, 'ok', sc, 0, 0);
+  c.rotate(a); drawTankBody(c, typeKey, color, 'ok', sc, 0, 0, paint);
   return (iconCache[k] = cv.toDataURL());
 }
 
@@ -3145,17 +3259,17 @@ function mapThumb(key) {
 
 
 function buildTankCards() {
-  const keys = camp.tygrys ? [...PLAY_KEYS, 'tygrys'] : PLAY_KEYS;
+  const keys = [...PLAY_KEYS, 'tygrys']; // Tygrys zawsze widoczny – przed końcem kampanii jako zamknięta sylwetka
   $('tankcards').classList.toggle('four', keys.length > 3);
-  $('tankcards').innerHTML = keys.map(k => `
-    <button class="tcard" data-type="${k}">
+  $('tankcards').innerHTML = keys.map(k => { const lock = k === 'tygrys' && !camp.tygrys; return `
+    <button class="tcard${lock ? ' locked' : ''}" data-type="${k}">
       <img alt="">
       <span class="tclass">${TYPE_INFO[k].cls}</span>
       <span class="tname">${TYPES[k].name}</span>
-      <span class="tdesc">${TYPE_INFO[k].desc}</span>
-      ${STAT_NAMES.map((n, i) => `<span class="stat"><span>${n}</span><span class="bar">${[1, 2, 3, 4, 5].map(v => `<i class="${v <= TYPE_INFO[k].stats[i] ? 'f' : ''}"></i>`).join('')}</span></span>`).join('')}
-    </button>`).join('');
-  $('tankcards').querySelectorAll('.tcard').forEach(b => b.onclick = () => { settings.types[editP] = b.dataset.type; saveSettings(); renderSetup(); });
+      <span class="tdesc">${lock ? 'Nagroda za kampanię. Przejdź wszystkie 8 rozdziałów, żeby go odblokować.' : TYPE_INFO[k].desc}</span>
+      ${lock ? '<span class="tlock">Zamknięte</span>' : STAT_NAMES.map((n, i) => `<span class="stat"><span>${n}</span><span class="bar">${[1, 2, 3, 4, 5].map(v => `<i class="${v <= TYPE_INFO[k].stats[i] ? 'f' : ''}"></i>`).join('')}</span></span>`).join('')}
+    </button>`; }).join('');
+  $('tankcards').querySelectorAll('.tcard').forEach(b => b.onclick = () => { if (b.classList.contains('locked')) return; settings.types[editP] = b.dataset.type; saveSettings(); renderSetup(); });
   document.querySelectorAll('[data-map]').forEach(b => b.style.backgroundImage = `url(${mapThumb(b.dataset.map)})`);
 }
 
@@ -3175,6 +3289,22 @@ const SETUP_OPTS = {
   aim:  { get: () => settings.aimLine ? 1 : 0, set: v => { settings.aimLine = v === '1'; } },
 };
 
+// kafelki malowań w garażu; zablokowany kafelek mówi, ile osiągnięć jeszcze brakuje
+let paintMsg = '';
+function renderPaints() {
+  const cur = usePaint(settings.paints[editP]);
+  $('paints').innerHTML = PAINTS.map(p => `<button class="pt${p.key === cur ? ' on' : ''}${paintOpen(p) ? '' : ' locked'}" data-paint="${p.key}">
+      <img src="${tankIcon(settings.types[editP], COLORS[editP], true, p.key)}" alt="">${p.name}${paintOpen(p) ? '' : `<small>od ${p.need}%</small>`}</button>`).join('');
+  $('paints').querySelectorAll('.pt').forEach(b => b.onclick = () => {
+    const p = PAINTS.find(q => q.key === b.dataset.paint);
+    if (paintOpen(p)) { settings.paints[editP] = p.key; paintMsg = ''; saveSettings(); renderSetup(); return; }
+    paintMsg = `${p.name}: odblokujesz przy ${p.need}% osiągnięć (masz ${achPct()}%).`;
+    renderPaints();
+  });
+  const desc = PAINTS.find(p => p.key === cur).desc;
+  $('paintnote').textContent = paintMsg || (PAINTS.some(p => !paintOpen(p)) ? `${desc} Kolejne malowania odblokujesz za osiągnięcia (masz ${achPct()}%).` : desc);
+}
+
 function renderSetup() {
   settings.types = settings.types.map(t => t === 'tygrys' && !camp.tygrys ? 'wilk' : t); // Tygrys dopiero po kampanii
   if (settings.mode === 1) editP = 0;
@@ -3188,8 +3318,8 @@ function renderSetup() {
   // zakładki graczy (tylko przy 2 graczach)
   $('ptabs').style.display = settings.mode === 2 ? '' : 'none';
   $('ptabs').innerHTML = [0, 1].map(i => `<button class="ptab${i === editP ? ' on' : ''}" data-p="${i}" style="--pc:${COLORS[i]}">
-      <img src="${tankIcon(settings.types[i], COLORS[i])}" alt=""><span><b>${esc(settings.names[i])}</b><small>${TYPES[settings.types[i]].name}</small></span></button>`).join('');
-  $('ptabs').querySelectorAll('.ptab').forEach(b => b.onclick = () => { editP = +b.dataset.p; renderSetup(); });
+      <img src="${tankIcon(settings.types[i], COLORS[i], false, usePaint(settings.paints[i]))}" alt=""><span><b>${esc(settings.names[i])}</b><small>${TYPES[settings.types[i]].name}</small></span></button>`).join('');
+  $('ptabs').querySelectorAll('.ptab').forEach(b => b.onclick = () => { editP = +b.dataset.p; paintMsg = ''; renderSetup(); });
   $('tanktitle').textContent = settings.mode === 2 ? 'Czołgi graczy' : 'Twój czołg';
   $('namelab').textContent = settings.mode === 2 ? `Imię gracza ${editP + 1}` : 'Twoje imię';
   const inp = $('nameInput');
@@ -3197,8 +3327,9 @@ function renderSetup() {
   inp.placeholder = DEFAULT_NAMES[editP];
   document.querySelectorAll('#tankcards .tcard').forEach(b => {
     b.classList.toggle('on', b.dataset.type === settings.types[editP]);
-    b.querySelector('img').src = tankIcon(b.dataset.type, COLORS[editP], true);
+    b.querySelector('img').src = tankIcon(b.dataset.type, COLORS[editP], true, usePaint(settings.paints[editP]));
   });
+  renderPaints();
   // podsumowanie na dole
   const LV = { easy: 'Rekrut', normal: 'Żołnierz', hard: 'Komandos' };
   const pl = i => `${esc(settings.names[i])} (${TYPES[settings.types[i]].name})`;

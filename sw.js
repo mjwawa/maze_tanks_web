@@ -1,7 +1,7 @@
 // Service worker Maze Tanks (wersja przeglądarkowa) – dzięki niemu gra działa offline jak aplikacja.
 // Po zmianie ikon lub innych plików (poza index.html) zwiększ numer wersji poniżej.
 const PREFIX = 'maze-tanks-web-';
-const CACHE = PREFIX + 'v4';
+const CACHE = PREFIX + 'v5';
 const ASSETS = [
   './index.html', // strona zapisuje się tylko raz – także adres ./ dostaje tę kopię
   './manifest.webmanifest',
@@ -13,7 +13,6 @@ const ASSETS = [
   './fonts/barlow-600-latin-ext.woff2',
   './fonts/barlow-700-latin.woff2',
   './fonts/barlow-700-latin-ext.woff2',
-  './favicon.svg',
   './favicon-32.png',
   './favicon-192.png',
   './icon-512.png',

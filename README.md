@@ -63,6 +63,19 @@ Każda mapa ma swoją zasadę specjalną. Jej nazwa pojawia się na początku ru
 
 100 osiągnięć w 9 kategoriach: strzelanie (rykoszety, bilard, snajper), wybuchy i ogień, przetrwanie, zwycięstwa, mapy (po jednym zadaniu na każdą mapę), czołgi, wytrwałość, kolekcja i kilka ukrytych. Wiele ma kilka stopni (np. zniszcz 1, 10, 50… czołgów). Zdobyte osiągnięcie pokazuje się w grze, a pełną listę z postępem widać pod przyciskiem **Osiągnięcia** w menu – razem z ogólnym postępem w procentach. Postępy zapisują się w przeglądarce na tym urządzeniu.
 
+## Malowania
+
+Za postęp w osiągnięciach odblokowują się malowania czołgu. Wybiera się je w garażu pod kartami czołgów, a wybrane malowanie działa na każdym czołgu, także w kampanii.
+
+| Postęp | Malowanie |
+|---|---|
+| 25% | **Moro** – plamy kamuflażu w odcieniach koloru gracza |
+| 50% | **Cyfrowe** – kamuflaż z pikseli i biała gwiazda na wieży |
+| 75% | **Płomienie** – ciemny kadłub, płomienie na przodzie i srebrna lufa |
+| 100% | **Złoty** – cały złoty, z paskiem w kolorze gracza, koroną na wieży i przesuwającym się błyskiem |
+
+Wzory zachowują kolor gracza, więc zawsze widać, kto jest kim. Boty jeżdżą bez malowań. Każdy z dwóch graczy wybiera swoje malowanie osobno.
+
 ## Rodzaje czołgów
 
 | | Lis (lekki) | Wilk (średni) | Niedźwiedź (ciężki) |
@@ -86,4 +99,4 @@ Po pierwszym uruchomieniu gra działa offline. Nowe wersje z GitHuba pobierają 
 
 Cała gra to plik `index.html` (HTML + JavaScript, rysowanie na canvasie, dźwięki generowane przez Web Audio API) i czcionki w folderze `fonts/`. Nie potrzebuje serwera gry ani instalacji – wystarczy zwykły hosting plików, np. GitHub Pages.
 
-Pliki aplikacji: `manifest.webmanifest` (nazwa, ikony), `sw.js` (praca offline – zapisuje stronę, czcionki i ikony), ikony `icon-512.png`, `icon-maskable-512.png`, `favicon-*.png`, `favicon.svg`, `apple-touch-icon.png`.
+Pliki aplikacji: `manifest.webmanifest` (nazwa, ikony), `sw.js` (praca offline – zapisuje stronę, czcionki i ikony), ikony `icon-512.png`, `icon-maskable-512.png`, `favicon-*.png`, `apple-touch-icon.png`.
