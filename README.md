@@ -49,7 +49,8 @@ Każda mapa ma swoją zasadę specjalną. Jej nazwa pojawia się na początku ru
 
 - Pociski odbijają się od ścian i drzew. Uważaj, własny rykoszet też zabiera życie.
 - Pocisk ma kolor czołgu, który go wystrzelił. Gdy mruga, nie ma już odbić w zapasie – przy następnej ścianie zniknie.
-- Rundę wygrywa ostatni czołg na polu bitwy.
+- Żółte kropki pod paskiem pancerza Twojego czołgu to pociski gotowe do strzału (zgaszona kropka – pocisk jeszcze leci).
+- Każda runda zaczyna się odliczaniem 3, 2, 1. Rundę wygrywa ostatni czołg na polu bitwy.
 - Jeśli zniszczone zostaną wszystkie czołgi graczy, a na polu zostało kilka botów, punkt dostaje bot, który pokonał ostatniego gracza (a gdy ten zginął od rykoszetu, żaru lub wybuchu – najmniej uszkodzony bot).
 - Kto pierwszy wygra 5 rund (albo 3 lub 7, do wyboru w menu), zdobywa **złoty medal**. Medale zbierają się w gablocie.
 
@@ -58,8 +59,8 @@ Każda mapa ma swoją zasadę specjalną. Jej nazwa pojawia się na początku ru
 | | Lis (lekki) | Wilk (średni) | Niedźwiedź (ciężki) |
 |---|---|---|---|
 | Prędkość | szybki | średni | wolny |
-| Pancerz | 3 | 5 | 8 |
-| Siła rażenia | 1 | 2 | 3 |
+| Pancerz | 4 | 4 | 7 |
+| Siła rażenia | 1 | 2 | 2 |
 | Tempo strzałów | bardzo szybkie | średnie | wolne |
 | Pociski naraz | 6 | 4 | 2 |
 | Odbicia pocisku | 3 | 3 | 2 |

@@ -374,9 +374,9 @@ const BULLET_LIFE = 10;       // po ilu sekundach pocisk znika
 // speed: px/s, turn: rad/s, hp: pancerz, dmg: siła rażenia, cool: przerwa między strzałami (s),
 // maxB: pociski naraz, bspeed: prędkość pocisku, bounce: odbicia, r: wielkość
 const TYPES = {
-  lis:  { name: 'Lis',        label: 'lekki',  speed: 155, turn: 4.2, hp: 3, dmg: 1, cool: 0.2, maxB: 6, bspeed: 300, bounce: 3, r: 11 },
-  wilk: { name: 'Wilk',       label: 'średni', speed: 115, turn: 3.3, hp: 5, dmg: 2, cool: 0.4, maxB: 4, bspeed: 240, bounce: 3, r: 14 },
-  mis:  { name: 'Niedźwiedź', label: 'ciężki', speed: 80,  turn: 2.4, hp: 8, dmg: 3, cool: 0.8, maxB: 2, bspeed: 190, bounce: 2, r: 17 },
+  lis:  { name: 'Lis',        label: 'lekki',  speed: 155, turn: 4.2, hp: 4, dmg: 1, cool: 0.2, maxB: 6, bspeed: 300, bounce: 3, r: 11 },
+  wilk: { name: 'Wilk',       label: 'średni', speed: 115, turn: 3.3, hp: 4, dmg: 2, cool: 0.4, maxB: 4, bspeed: 240, bounce: 3, r: 14 },
+  mis:  { name: 'Niedźwiedź', label: 'ciężki', speed: 80,  turn: 2.4, hp: 7, dmg: 2, cool: 0.6, maxB: 2, bspeed: 190, bounce: 2, r: 17 },
 };
 const TYPE_KEYS = Object.keys(TYPES);
 // Wygląd czołgów w jednostkach rysunku (czołg o r = 14; rysunek skalowany przez r / 14).
@@ -476,6 +476,8 @@ const DIFF = {
 let screen = 'splash', editP = 0;          // widoczny ekran, gracz edytowany w ustawieniach
 let demo = false, running = false, paused = false, matchOver = false;
 let roundOver = false, endTimer = 0, bannerSub = '', banner = '', bannerT = 0, roundNo = 0;
+let countT = 0, goT = 0;                    // odliczanie przed rundą (gra stoi) i napis „START!” po nim
+const COUNT_STEP = 0.6;                     // 3, 2, 1 – po 0,6 s
 let tanks = [], bullets = [], particles = [], scores = [], roster = [];
 let needsDraw = true;                       // obraz stoi (pauza, koniec meczu) – rysuj tylko po zmianie
 
@@ -1212,16 +1214,20 @@ function neighbors(c, r) {
   if (r > 0 && !hW[r - 1][c]) n.push({ c, r: r - 1 });
   return n;
 }
-// mapa odległości (w komórkach) od celu – liczona raz przy „myśleniu” bota;
-// z każdej komórki wystarczy potem jechać do sąsiada o 1 bliżej celu
+// mapa odległości od celu – liczona przy zmianie celu bota; z każdej komórki bot jedzie do sąsiada bliżej celu.
+// Komórka z płonącym wrakiem (Miasto) kosztuje jak 8 zwykłych: bot ją omija, jeśli jest inna droga, bo żar parzy.
+const FIRE_CELL_COST = 8;
 function distField(goal) {
-  const d = new Int16Array(COLS * ROWS).fill(-1);
-  const q = [goal.r * COLS + goal.c]; d[q[0]] = 0;
-  for (let h = 0; h < q.length; h++) {
-    const i = q[h];
+  const N = COLS * ROWS, d = new Int16Array(N).fill(-1), done = new Uint8Array(N);
+  d[goal.r * COLS + goal.c] = 0;
+  for (;;) { // Dijkstra – plansza ma tylko 96 komórek, więc wystarczy zwykłe szukanie minimum
+    let i = -1;
+    for (let j = 0; j < N; j++) if (!done[j] && d[j] >= 0 && (i < 0 || d[j] < d[i])) i = j;
+    if (i < 0) break;
+    done[i] = 1;
     for (const n of neighbors(i % COLS, i / COLS | 0)) {
-      const j = n.r * COLS + n.c;
-      if (d[j] < 0) { d[j] = d[i] + 1; q.push(j); }
+      const j = n.r * COLS + n.c, w = carCells.has(j) ? FIRE_CELL_COST : 1;
+      if (!done[j] && (d[j] < 0 || d[i] + w < d[j])) d[j] = d[i] + w;
     }
   }
   return d;
@@ -1229,8 +1235,9 @@ function distField(goal) {
 function nextCell(field, cur) {
   const here = field[cur.r * COLS + cur.c];
   if (here <= 0) return null;
-  for (const n of neighbors(cur.c, cur.r)) if (field[n.r * COLS + n.c] === here - 1) return n;
-  return null;
+  let best = null, bv = here;
+  for (const n of neighbors(cur.c, cur.r)) { const v = field[n.r * COLS + n.c]; if (v >= 0 && v < bv) { best = n; bv = v; } }
+  return best;
 }
 
 // ===================== DŹWIĘKI (generowane, bez plików) =====================
@@ -1337,9 +1344,9 @@ const sfx = {
   },
   roundStart() {
     if (!this.ok()) return;
-    tone({ type: 'square', f0: 660, dur: 0.12, vol: 0.08 });
-    tone({ type: 'square', f0: 660, dur: 0.12, vol: 0.08, delay: 0.25 });
-    tone({ type: 'square', f0: 990, dur: 0.3, vol: 0.1, delay: 0.5 });
+    // piknięcia w rytm odliczania 3, 2, 1 i wyższy ton na START
+    for (let i = 0; i < 3; i++) tone({ type: 'square', f0: 660, dur: 0.12, vol: 0.08, delay: i * COUNT_STEP });
+    tone({ type: 'square', f0: 990, dur: 0.3, vol: 0.1, delay: 3 * COUNT_STEP });
   },
   win() {
     if (!this.ok()) return;
@@ -1503,7 +1510,7 @@ function newRound() {
     x: cells[i].c * CELL + CELL / 2, y: cells[i].r * CELL + CELL / 2,
     a: (Math.random() * 4 | 0) * Math.PI / 2,
     alive: true, cool: 0.5, fireHeld: true, shots: 0,
-    ai: { think: 0.4 + Math.random() * 0.3, aim: null, aimT: 0, wantFire: false, stuckT: 0, lastX: 0, lastY: 0, reverse: 0, revTurn: 1, goal: -1, field: null },
+    ai: { think: 0.4 + Math.random() * 0.3, aim: null, aimT: 0, wantFire: false, stuckT: 0, lastX: 0, lastY: 0, reverse: 0, revTurn: 1, goal: -1, field: null, moveT: 0, burstT: 0, aimHold: 0 },
   }));
   for (const t of tanks) pushOut(t);
   lastHumanDown = null;
@@ -1511,7 +1518,8 @@ function newRound() {
   const top = Math.max(0, ...scores);
   banner = top >= settings.winRounds ? 'Dogrywka! · ' + theme.name : 'Runda ' + roundNo + ' · ' + theme.name;
   bannerSub = rule ? RULES[rule].name : '';
-  bannerT = rule ? 2.2 : 1.5;
+  countT = demo ? 0 : 3 * COUNT_STEP; goT = 0;
+  bannerT = countT + (rule ? 1.2 : 0.4); // nazwa zasady specjalnej zostaje chwilę po starcie
   updateHud();
   sfx.roundStart();
   startEngines();
@@ -1653,6 +1661,15 @@ function humanUpdate(t, dt) {
   else t.fireHeld = false;
 }
 
+// wiatr znosi pocisk: kąt w pobliżu kierunku na cel, przy którym symulowany strzał trafia (null – żaden)
+function windAim(t, target) {
+  const a0 = Math.atan2(target.y - t.y, target.x - t.x);
+  for (let k = 0; k <= 15; k++) for (const sgn of k ? [1, -1] : [1]) {
+    const a = a0 + sgn * k * 0.04;
+    if (simShot(t, a, 2.5) === target) return a;
+  }
+  return null;
+}
 function botUpdate(t, dt) {
   const P = DIFF[demo ? 'normal' : settings.diff], ai = t.ai;
   // cel: najbliższy widoczny przeciwnik; jeśli nikogo nie widać (noc, krzaki) – jedzie w stronę najbliższego, ale nie strzela
@@ -1670,14 +1687,19 @@ function botUpdate(t, dt) {
   const goal = cellOf(target), gi = goal.r * COLS + goal.c;
   if (ai.goal !== gi) { ai.goal = gi; ai.field = distField(goal); }
 
-  ai.think -= dt; ai.aimT -= dt;
+  ai.think -= dt; ai.aimT -= dt; ai.moveT -= dt; ai.burstT -= dt;
+  // celuje od 3 s i nie strzela (żaden strzał nie trafia) – niech na chwilę zmieni pozycję, zamiast stać w miejscu
+  ai.aimHold = ai.aim !== null && t.cool <= 0 ? ai.aimHold + dt : 0;
+  if (ai.aimHold > 3) { ai.aim = null; ai.aimT = 0; ai.moveT = 1.5; ai.aimHold = 0; }
   if (ai.think <= 0) {
     ai.think = P.react * (0.7 + Math.random() * 0.6);
     const res = simShot(t, t.a, 2.5);
     ai.wantFire = !!res && res !== t && canSee(t, res) && Math.random() < P.fireChance;
-    if (!seen) ai.aim = null;
+    if (!seen || ai.moveT > 0) ai.aim = null;
     else if (lineOfSight(t, target)) {
-      ai.aim = Math.atan2(target.y - t.y, target.x - t.x) + (Math.random() - 0.5) * P.err;
+      // prosto w cel; przy wietrze z poprawką na znoszenie (gdy żaden kąt nie trafia – bot podjeżdża bliżej)
+      const a = wind ? windAim(t, target) : Math.atan2(target.y - t.y, target.x - t.x);
+      ai.aim = a === null ? null : a + (Math.random() - 0.5) * P.err;
       ai.aimT = 0.6;
     } else if (ai.aimT <= 0 && Math.random() < P.bank) {
       // szukaj strzału z rykoszetem
@@ -1691,6 +1713,13 @@ function botUpdate(t, dt) {
     } else if (ai.aimT <= 0) ai.aim = null;
   }
   if (ai.wantFire) { fire(t); ai.wantFire = false; }
+  // ogień ciągły: gdy działo gotowe, a pocisk trafi widocznego przeciwnika – kolejny strzał (sprawdzane co chwilę, nie co klatkę).
+  // Dzięki temu bot-Lis strzela seriami jak gracz, a nie raz na „namysł”.
+  if (t.cool <= 0 && t.shots < t.type.maxB && ai.burstT <= 0) {
+    ai.burstT = P.react * 0.5;
+    const r = simShot(t, t.a, 1.5);
+    if (r && r !== t && canSee(t, r) && Math.random() < P.fireChance) fire(t);
+  }
 
   let turn = 0, move = 0;
   if (ai.reverse > 0) {
@@ -1785,6 +1814,12 @@ function absorbed(b) { // pocisk wbity w worki z piaskiem
 }
 
 function update(dt) {
+  if (countT > 0) { // odliczanie: świat stoi, czołgi czekają
+    countT -= dt; bannerT -= dt;
+    if (countT <= 0) goT = 0.6;
+    return;
+  }
+  goT -= dt;
   for (const b of blasts) if ((b.t -= dt) <= 0) detonate(b.o);
   for (const c of cars) { // płomienie i dym nad wrakami
     const cx = c.x + c.w / 2, cy = c.y + c.h / 2;
@@ -2005,6 +2040,14 @@ function drawTank(t) {
     ctx.fillRect(t.x - bwid / 2, top, bwid * frac, 4);
     ctx.fillStyle = 'rgba(0,0,0,.5)';
     for (let k = 1; k < t.type.hp; k++) ctx.fillRect(t.x - bwid / 2 + bwid * k / t.type.hp - 0.5, top, 1, 4);
+    if (!t.isBot) { // amunicja: kropka = pocisk gotowy do strzału (zgaszona – leci jeszcze po planszy)
+      const n = t.type.maxB, gap = 6, x0 = t.x - (n - 1) * gap / 2;
+      for (let k = 0; k < n; k++) {
+        ctx.beginPath(); ctx.arc(x0 + k * gap, top + 10, 2.2, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(0,0,0,.6)'; ctx.fill();
+        if (k < n - t.shots) { ctx.beginPath(); ctx.arc(x0 + k * gap, top + 10, 1.5, 0, Math.PI * 2); ctx.fillStyle = '#ffd35c'; ctx.fill(); }
+      }
+    }
   }
 }
 
@@ -2124,6 +2167,13 @@ function draw() {
     if (bannerSub) { ctx.font = '700 20px Rubik, Arial'; ctx.fillStyle = '#f0a53c'; ctx.fillText(bannerSub, W / 2, H / 2 + 26); }
     ctx.textBaseline = 'alphabetic';
   }
+  if (!demo && !paused && (countT > 0 || goT > 0)) { // odliczanie pod banerem
+    const txt = countT > 0 ? String(Math.ceil(countT / COUNT_STEP)) : 'START!';
+    ctx.font = '400 56px "Black Ops One", Rubik, Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    ctx.lineWidth = 7; ctx.lineJoin = 'round'; ctx.strokeStyle = 'rgba(16,22,13,.85)'; ctx.strokeText(txt, W / 2, H / 2 + 100);
+    ctx.fillStyle = countT > 0 ? '#e8dcae' : '#f0a53c'; ctx.fillText(txt, W / 2, H / 2 + 100);
+    ctx.textBaseline = 'alphabetic';
+  }
 }
 
 function updateHud() {
@@ -2177,9 +2227,9 @@ function setScreen(name) {
 }
 
 const TYPE_INFO = {
-  lis:  { cls: 'lekki',  desc: 'Najszybszy na polu. Strzela seriami, ale wytrzyma tylko 3 trafienia.', stats: [5, 2, 1, 5] },
+  lis:  { cls: 'lekki',  desc: 'Najszybszy na polu. Strzela seriami, ale wytrzyma tylko 4 trafienia.', stats: [5, 3, 1, 5] },
   wilk: { cls: 'średni', desc: 'Uniwersalny: niezła prędkość, pancerz i siła ognia. Dobry na początek.', stats: [3, 3, 3, 3] },
-  mis:  { cls: 'ciężki', desc: 'Wolna forteca. Jeden strzał niszczy Lisa, ale naraz ma tylko 2 pociski.', stats: [1, 5, 5, 1] },
+  mis:  { cls: 'ciężki', desc: 'Wolna forteca z najgrubszym pancerzem. Naraz ma tylko 2 pociski.', stats: [1, 5, 3, 2] },
 };
 const STAT_NAMES = ['Prędkość', 'Pancerz', 'Siła ognia', 'Szybkostrzelność'];
 
