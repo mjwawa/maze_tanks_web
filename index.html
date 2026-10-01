@@ -2404,17 +2404,17 @@ function checkAch() {
   let found = true;
   while (found) { // kolejne przejście – osiągnięcia za liczbę osiągnięć
     found = false;
-    for (const a of ACH) if (!ach.got[a.id] && a.test(ach.s)) { ach.got[a.id] = Date.now(); newAch.push(a); achToast(a); found = true; }
+    for (const a of ACH) if (!ach.got[a.id] && a.test(ach.s)) { ach.got[a.id] = Date.now(); newAch.push(a); achToast(a, achCount()); found = true; }
   }
   if (newAch.length) saveAch();
 }
 let achQueue = [], achShowing = false;
-function achToast(a) { achQueue.push(a); if (!achShowing) nextAchToast(); }
+function achToast(a, n) { achQueue.push({ a, n }); if (!achShowing) nextAchToast(); } // n – które to osiągnięcie z kolei
 function nextAchToast() {
-  const a = achQueue.shift(), el = $('achToast');
-  if (!a) { achShowing = false; return; }
+  const q = achQueue.shift(), el = $('achToast');
+  if (!q) { achShowing = false; return; }
   achShowing = true;
-  el.innerHTML = medalSVG('gold') + `<div><b>Osiągnięcie</b><span>${esc(a.name)}</span></div>`;
+  el.innerHTML = medalSVG('gold') + `<div><b>Osiągnięcie · ${q.n} / ${ACH.length}</b><span>${esc(q.a.name)}</span></div>`;
   el.classList.add('show'); sfx.ach();
   setTimeout(() => { el.classList.remove('show'); setTimeout(nextAchToast, 300); }, 2600);
 }
