@@ -19,264 +19,326 @@
 <link rel="icon" type="image/svg+xml" href="favicon.svg">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <style>
-/* Czcionki w folderze fonts/ (offline z pamięci service workera): Black Ops One i Rubik, licencja SIL Open Font License 1.1 */
-@font-face { font-family: 'Black Ops One'; font-style: normal; font-weight: 400; font-display: swap; src: url(fonts/black-ops-one-latin.woff2) format('woff2'); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
-@font-face { font-family: 'Black Ops One'; font-style: normal; font-weight: 400; font-display: swap; src: url(fonts/black-ops-one-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
-@font-face { font-family: 'Rubik'; font-style: normal; font-weight: 300 900; font-display: swap; src: url(fonts/rubik-latin.woff2) format('woff2'); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
-@font-face { font-family: 'Rubik'; font-style: normal; font-weight: 300 900; font-display: swap; src: url(fonts/rubik-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+/* Czcionki w folderze fonts/ (offline z pamięci service workera): Big Shoulders Stencil Display i Barlow Semi Condensed, licencja SIL Open Font License 1.1 */
+@font-face { font-family: 'Big Shoulders Stencil Display'; font-style: normal; font-weight: 900; font-display: swap; src: url(fonts/stencil-900-latin.woff2) format('woff2'); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: 'Big Shoulders Stencil Display'; font-style: normal; font-weight: 900; font-display: swap; src: url(fonts/stencil-900-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family: 'Barlow Semi Condensed'; font-style: normal; font-weight: 500; font-display: swap; src: url(fonts/barlow-500-latin.woff2) format('woff2'); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: 'Barlow Semi Condensed'; font-style: normal; font-weight: 500; font-display: swap; src: url(fonts/barlow-500-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family: 'Barlow Semi Condensed'; font-style: normal; font-weight: 600; font-display: swap; src: url(fonts/barlow-600-latin.woff2) format('woff2'); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: 'Barlow Semi Condensed'; font-style: normal; font-weight: 600; font-display: swap; src: url(fonts/barlow-600-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family: 'Barlow Semi Condensed'; font-style: normal; font-weight: 700; font-display: swap; src: url(fonts/barlow-700-latin.woff2) format('woff2'); unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: 'Barlow Semi Condensed'; font-style: normal; font-weight: 700; font-display: swap; src: url(fonts/barlow-700-latin-ext.woff2) format('woff2'); unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
   * { box-sizing: border-box; }
   :root {
-    --bg: #161b14; --panel: #232b1f; --panel2: #2e3828; --khaki: #c8b77a; --olive: #6f8a3e;
-    --olive-hi: #8fae52; --text: #ece6d2; --muted: #9ea38c; --orange: #e0922a;
+    --bg: #161b14; --panel: #232a1c; --panel2: #2c3524; --line: #46533a; --line-hi: #6a7a52;
+    --khaki: #d9cc95; --olive: #6f8a3e; --olive-hi: #8fae52; --text: #ece5cc; --muted: #9aa186; --orange: #e8892a;
+    --f-head: "Big Shoulders Stencil Display", Impact, "Arial Narrow", sans-serif;
+    --f-ui: "Barlow Semi Condensed", "Arial Narrow", Arial, sans-serif;
+    /* ścięte narożniki jak na płytach pancerza */
+    --cut: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
+    --cut-lg: polygon(14px 0, 100% 0, 100% calc(100% - 14px), calc(100% - 14px) 100%, 0 100%, 0 14px);
   }
   body {
-    margin: 0; color: var(--text); min-height: 100vh;
-    background: radial-gradient(ellipse at top, #243020 0%, var(--bg) 60%);
-    font-family: Rubik, -apple-system, "Helvetica Neue", Arial, sans-serif;
+    margin: 0; color: var(--text); min-height: 100vh; font-family: var(--f-ui); font-weight: 500;
+    background-color: var(--bg); /* tło: siatka labiryntu */
+    background-image: linear-gradient(#20271b 2px, transparent 2px), linear-gradient(90deg, #20271b 2px, transparent 2px);
+    background-size: 64px 64px;
     display: flex; flex-direction: column; align-items: center;
   }
-  #hud { display: flex; gap: 8px; padding: 10px; flex-wrap: wrap; justify-content: center; min-height: 58px; }
-  .card {
-    background: var(--panel); border: 1px solid #3a4631; border-radius: 8px; padding: 5px 12px 5px 8px;
-    display: flex; align-items: center; gap: 8px; font-size: 14px; box-shadow: 0 2px 6px rgba(0,0,0,.3);
-  }
-  .card .sw { width: 10px; height: 28px; border-radius: 3px; }
-  .card .nm { font-weight: 700; line-height: 1.1; }
-  .card .tp { font-size: 11px; color: var(--muted); }
-  .card .pts { font-family: "Black Ops One", Rubik, sans-serif; font-size: 22px; margin-left: 6px; color: var(--khaki); }
+  #hud { display: flex; gap: 6px; padding: 10px; flex-wrap: wrap; justify-content: center; min-height: 58px; }
+  .card { background: var(--panel); border: 2px solid var(--line); clip-path: var(--cut); padding: 4px 12px 4px 8px; display: flex; align-items: center; gap: 8px; font-size: 15px; }
+  .card .sw { width: 8px; height: 26px; }
+  .card .nm { font-weight: 700; line-height: 1.05; }
+  .card .tp { font-size: 13px; color: var(--muted); font-weight: 600; }
+  .card .pts { font-family: var(--f-head); font-weight: 900; font-size: 26px; margin-left: 6px; color: var(--khaki); }
+  .card .pts small { font-size: 15px; color: var(--muted); }
   .card.dead { opacity: .45; }
-  #wrap {
-    position: relative; width: min(96vw, calc((100vh - 120px) * 1.5));
-    border-radius: 10px; padding: 6px; background: #3a2e1e;
-    box-shadow: 0 10px 30px rgba(0,0,0,.5), inset 0 0 0 2px #5a4830;
-  }
-  canvas { display: block; width: 100%; height: auto; border-radius: 6px; }
-  /* ===================== EKRANY (menu, ustawienia, pauza, zwycięstwo) ===================== */
+  #wrap { position: relative; width: min(96vw, calc((100vh - 120px) * 1.5)); padding: 6px; background: #3a2e1e; border: 2px solid #5a4830; clip-path: var(--cut-lg); }
+  canvas { display: block; width: 100%; height: auto; }
+  /* ===================== EKRANY ===================== */
   .screen {
     position: fixed; inset: 0; z-index: 20; display: none; flex-direction: column; overflow-y: auto; -webkit-overflow-scrolling: touch;
     padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right)) max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
-    background: radial-gradient(ellipse at 50% 30%, rgba(22,30,18,.80), rgba(9,12,7,.95));
+    background: rgba(14,18,11,.9);
   }
-  /* rozmycie tylko tam, gdzie obraz gry pod spodem stoi – nad animowanym demem kosztowałoby co klatkę */
-  #pause, #victory { -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); }
+  /* rozmycie tylko tam, gdzie obraz gry pod spodem stoi – nad animowanym pokazem kosztowałoby co klatkę */
+  #pause, #victory { -webkit-backdrop-filter: blur(3px); backdrop-filter: blur(3px); background: rgba(14,18,11,.78); }
   .screen.show { display: flex; animation: fadein .2s ease-out; }
   @keyframes fadein { from { opacity: 0; } to { opacity: 1; } }
   .screen > .inner { margin: auto; width: 100%; }
-  #splash { background: radial-gradient(ellipse at 50% 35%, rgba(16,22,13,.45), rgba(8,11,7,.92) 75%); }
   #pause { z-index: 40; }
   #victory { z-index: 30; }
-  .hint { color: var(--muted); font-size: 13px; text-align: center; margin-top: 10px; }
-  kbd { background: var(--panel2); border: 1px solid #4a573f; border-bottom-width: 2px; border-radius: 4px; padding: 0 6px; font-family: inherit; font-size: 12px; color: var(--text); margin: 0 1px; }
 
   button {
-    font: inherit; font-weight: 600; font-size: 15px; border: 1px solid #3f4c35; border-radius: 8px; padding: 9px 14px;
-    cursor: pointer; background: var(--panel2); color: var(--text); transition: background .15s, transform .1s, border-color .15s, box-shadow .15s;
-    -webkit-tap-highlight-color: transparent;
+    font: inherit; font-weight: 700; font-size: 16px; color: var(--text); background: var(--panel2); border: 2px solid var(--line); border-radius: 0;
+    padding: 9px 14px; cursor: pointer; -webkit-tap-highlight-color: transparent; transition: background .12s, border-color .12s, transform .08s;
   }
-  button:hover:not(:disabled) { background: #3a4631; }
+  button:hover:not(:disabled) { background: #36412c; border-color: var(--line-hi); }
+  button:active:not(:disabled) { transform: translateY(1px); }
   button:disabled { opacity: .3; cursor: default; }
-  button:focus-visible { outline: 2px solid var(--khaki); outline-offset: 2px; }
+  button:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--khaki); }
   .cta {
-    font-family: "Black Ops One", Rubik, sans-serif; font-weight: 400; letter-spacing: .12em; font-size: 24px; padding: 13px 48px;
-    border-radius: 12px; background: linear-gradient(#f2a841, #d97f1c); color: #241708; border: 1px solid #f7c57a;
-    box-shadow: 0 5px 0 #8a5412, 0 12px 26px rgba(0,0,0,.45);
+    position: relative; font-family: var(--f-head); font-weight: 900; text-transform: uppercase; font-size: 36px; line-height: 1; letter-spacing: .02em;
+    padding: 12px 54px 10px 20px; color: #2a1704; background: var(--orange); border-color: #f3b062; clip-path: var(--cut); text-align: left;
   }
-  .cta:hover:not(:disabled) { background: linear-gradient(#f6b456, #e08a26); }
-  .cta:active { transform: translateY(3px); box-shadow: 0 2px 0 #8a5412, 0 6px 14px rgba(0,0,0,.4); }
-  .menu-btn { width: 100%; padding: 13px; font-size: 16px; border-radius: 10px; background: rgba(46,56,40,.9); }
-
-  /* ---------- ekran powitalny ---------- */
-  .splash { max-width: 980px; display: flex; flex-direction: column; align-items: center; gap: 22px; text-align: center; }
-  .logo h1 {
-    margin: 0; font-family: "Black Ops One", Rubik, sans-serif; font-weight: 400; line-height: .95;
-    font-size: clamp(52px, 10vw, 112px); letter-spacing: .05em; color: #eadb98;
-    text-shadow: 0 4px 0 #5a4524, 0 12px 34px rgba(0,0,0,.7);
+  .cta::after { content: ''; position: absolute; right: 0; top: 0; bottom: 0; width: 34px; background: repeating-linear-gradient(-45deg, rgba(42,23,4,.38) 0 6px, transparent 6px 12px); }
+  .cta:hover:not(:disabled) { background: #f39a3c; border-color: #f7c27a; }
+  .mbtn {
+    display: flex; align-items: center; justify-content: space-between; gap: 14px; text-align: left; text-transform: uppercase; letter-spacing: .02em;
+    font-size: 18px; padding: 10px 14px; background: rgba(35,42,28,.94); clip-path: var(--cut);
   }
-  .logo h1 span { color: var(--orange); }
-  .logo .tag { margin-top: 10px; color: #b9bda6; letter-spacing: .35em; text-transform: uppercase; font-size: 13px; }
-  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; width: 100%; }
-  .step {
-    display: flex; gap: 14px; align-items: flex-start; text-align: left; padding: 16px;
-    background: rgba(30,38,26,.88); border: 1px solid #3a4631; border-radius: 14px; box-shadow: 0 8px 20px rgba(0,0,0,.3);
-  }
-  .step .ico { flex: 0 0 54px; height: 54px; border-radius: 12px; background: #1b2317; border: 1px solid #435136; display: flex; align-items: center; justify-content: center; }
-  .step .ico svg { width: 36px; height: 36px; }
-  .step .st { font-weight: 700; font-size: 16px; margin-bottom: 5px; color: var(--text); }
-  .step .tx { font-size: 13.5px; line-height: 1.55; color: #c3c7b1; }
-  .minis { display: flex; gap: 10px; justify-content: center; flex-wrap: wrap; }
-  .mini { display: flex; align-items: center; gap: 8px; padding: 6px 14px 6px 8px; background: rgba(30,38,26,.8); border: 1px solid #3a4631; border-radius: 40px; }
-  .mini img { width: 34px; height: 34px; }
-  .mini b { font-size: 14px; } .mini small { color: var(--muted); font-size: 12px; margin-left: 4px; }
-  #play { font-size: 30px; padding: 15px 70px; }
-  #cabinet { font-size: 13px; color: #cfd2bd; display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; align-items: center; }
-  #cabinet:empty { display: none; }
-  #cabinet .m { display: flex; align-items: center; gap: 4px; }
-  #cabinet svg { width: 16px; height: 21px; }
-
-  /* ---------- ekran ustawień ---------- */
-  .setup { max-width: 1120px; display: flex; flex-direction: column; gap: 14px; }
-  .topbar { display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 10px; }
-  .topbar h2 { margin: 0; font-family: "Black Ops One", Rubik, sans-serif; font-weight: 400; letter-spacing: .08em; color: var(--khaki); font-size: clamp(22px, 3.2vw, 30px); text-align: center; }
-  .ghost { justify-self: start; background: rgba(30,38,26,.7); }
-  .setup-grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: 14px; align-items: start; }
-  @media (max-width: 760px) { .setup-grid { grid-template-columns: 1fr; } }
-  .panel { background: rgba(28,36,24,.92); border: 1px solid #3a4631; border-radius: 16px; padding: 18px; box-shadow: 0 10px 26px rgba(0,0,0,.3); }
-  .panel h3 { margin: 0 0 14px; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--khaki); }
-  .panel h3.mt { margin-top: 22px; padding-top: 16px; border-top: 1px solid #34402c; }
-  .field { display: flex; flex-direction: column; gap: 7px; margin-bottom: 14px; }
+  .mbtn small { font-size: 18px; color: var(--khaki); }
+  .ghost { text-transform: uppercase; font-size: 15px; padding: 7px 12px; clip-path: var(--cut); background: rgba(35,42,28,.94); }
+  .topbar { display: flex; align-items: center; gap: 14px; }
+  .topbar h2 { margin: 0; font-family: var(--f-head); font-weight: 900; text-transform: uppercase; font-size: clamp(34px, 5vw, 46px); line-height: 1; color: var(--khaki); }
+  .topbar .sp { flex: 1; }
+  .panel { background: rgba(35,42,28,.94); border: 2px solid var(--line); clip-path: var(--cut-lg); padding: 14px 16px; }
+  .lab { display: block; font-size: 14px; font-weight: 700; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+  .field { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
   .field:last-child { margin-bottom: 0; }
-  .field .lab { font-size: 13px; color: #aeb39c; font-weight: 600; }
-  .field .note { font-size: 12px; color: var(--muted); }
-  .seg { display: flex; gap: 4px; padding: 4px; background: #161d13; border: 1px solid #34402c; border-radius: 11px; }
-  .seg button { flex: 1; border: 0; background: transparent; border-radius: 8px; padding: 9px 8px; min-height: 42px; color: #cfd2bd; font-size: 14px; white-space: nowrap; }
-  .seg button:hover:not(:disabled):not(.on) { background: #26301f; }
-  .seg button.on { background: var(--olive); color: #fff; box-shadow: inset 0 1px 0 rgba(255,255,255,.18), 0 2px 6px rgba(0,0,0,.3); }
-  .mapsw { display: inline-block; width: 13px; height: 13px; border-radius: 4px; margin-right: 7px; vertical-align: -1px; border: 1px solid rgba(255,255,255,.3); }
-  .mapsw.las { background: linear-gradient(135deg, #2f5a26, #557a3a); }
-  .mapsw.pole { background: linear-gradient(135deg, #c4b566, #9fa24f); }
-  .mapsw.rnd { background: conic-gradient(#2f5a26 0 25%, #c4b566 0 50%, #55585c 0 75%, #d8b775 0); }
-  .mapsw.miasto { background: linear-gradient(135deg, #55585c, #9c4a34); }
-  .mapsw.noc { background: radial-gradient(circle at 35% 35%, #ffd98a 0 18%, #1a2238 40%); }
-  .mapsw.pustynia { background: linear-gradient(135deg, #e3c489, #b98a55); }
-  .mapsw.zima { background: linear-gradient(135deg, #ffffff, #b3c4d4); }
-  .mapsw.baza { background: linear-gradient(135deg, #8c8a80, #b9a171); }
-  .mapsw.ksiezyc { background: radial-gradient(circle at 60% 40%, #6d6e72 0 20%, #a6a7ab 45%); }
-  .seg.mapgrid { display: grid; grid-template-columns: repeat(3, 1fr); }
-  .seg.mapgrid button { text-align: left; padding-left: 12px; }
+  .note { font-size: 15px; color: #bdc0a8; line-height: 1.35; margin: 0; }
+  .seg { display: flex; gap: 4px; }
+  .seg button { flex: 1; min-height: 42px; padding: 7px 8px; font-size: 16px; white-space: nowrap; }
+  .seg button.on { background: #3c4a2b; border-color: var(--khaki); color: #fff; }
+  .rk { font-style: normal; color: var(--orange); margin-right: 5px; letter-spacing: -.12em; }
+
+  /* ---------- menu główne ---------- */
+  #splash { background: linear-gradient(90deg, rgba(14,18,11,.96), rgba(14,18,11,.9) 380px, rgba(14,18,11,.3) 75%, rgba(14,18,11,.15)); }
+  #splash > .inner { margin: auto auto auto 0; } /* menu po lewej, walka botów widoczna po prawej */
+  .splash { max-width: 340px; display: flex; flex-direction: column; gap: 18px; padding-left: clamp(0px, 3vw, 44px); }
+  .logo h1 { margin: 0; font-family: var(--f-head); font-weight: 900; text-transform: uppercase; font-size: clamp(66px, 12vh, 108px); line-height: .84; color: var(--khaki); }
+  .logo h1 span { display: block; color: var(--orange); }
+  .logo .tag { margin-top: 6px; color: var(--muted); font-weight: 700; text-transform: uppercase; font-size: 16px; letter-spacing: .08em; }
+  .mlist { display: flex; flex-direction: column; gap: 8px; }
+  .installhint { font-size: 15px; color: #c9cbb6; line-height: 1.45; }
+  .installhint b { color: var(--text); }
+  .installhint a { color: var(--khaki); font-weight: 700; }
+
+  /* ---------- jak grać, gablota ---------- */
+  .how, .medals, .opts { max-width: 860px; display: flex; flex-direction: column; gap: 14px; }
+  .opts { max-width: 560px; }
+  .tips { list-style: none; margin: 0; padding: 0; counter-reset: tip; display: grid; gap: 8px; }
+  .tips li { counter-increment: tip; display: grid; grid-template-columns: 50px 1fr; column-gap: 12px; padding: 12px 14px; background: rgba(35,42,28,.94); border: 2px solid var(--line); clip-path: var(--cut); }
+  .tips li::before { content: counter(tip); grid-row: span 2; font-family: var(--f-head); font-weight: 900; font-size: 54px; line-height: .85; color: var(--orange); }
+  .tips b { font-family: var(--f-head); font-weight: 900; font-size: 26px; text-transform: uppercase; color: var(--khaki); line-height: 1; }
+  .tips p { margin: 4px 0 0; font-size: 17px; line-height: 1.4; }
+  .medlist { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 8px; }
+  .medal { display: flex; align-items: center; gap: 12px; padding: 10px 14px; background: rgba(35,42,28,.94); border: 2px solid var(--line); clip-path: var(--cut); }
+  .medal svg { width: 34px; height: 44px; }
+  .medal b { flex: 1; font-size: 19px; }
+  .medal span { font-family: var(--f-head); font-weight: 900; font-size: 32px; color: var(--khaki); }
+
+  /* ---------- garaż ---------- */
+  .setup { max-width: 1120px; display: flex; flex-direction: column; gap: 12px; }
+  .setup-grid { display: grid; grid-template-columns: 1.25fr 1fr; gap: 12px; align-items: start; }
+  @media (max-width: 760px) { .setup-grid { grid-template-columns: 1fr; } }
   input.name {
-    font: inherit; font-weight: 600; font-size: 16px; width: 100%; padding: 11px 13px; border-radius: 10px;
-    border: 1px solid #3f4c35; background: #161d13; color: var(--text); outline: none;
+    font: inherit; font-weight: 600; font-size: 18px; width: 100%; padding: 9px 12px; border: 2px solid var(--line); border-radius: 0;
+    background: #171c12; color: var(--text); outline: none;
   }
-  input.name:focus { border-color: var(--olive-hi); box-shadow: 0 0 0 3px rgba(143,174,82,.25); }
+  input.name:focus { border-color: var(--khaki); }
   input.name::placeholder { color: #6f7662; }
-  .ptabs { display: flex; gap: 8px; margin-bottom: 14px; }
-  .ptab { flex: 1; display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: 12px; background: #1b2317; border: 2px solid #34402c; text-align: left; }
-  .ptab.on { border-color: var(--pc); background: #232d1d; box-shadow: 0 0 0 3px color-mix(in srgb, var(--pc) 25%, transparent); }
-  .ptab img { width: 36px; height: 36px; }
-  .ptab b { display: block; font-size: 14px; } .ptab small { color: var(--muted); font-weight: 500; font-size: 12px; }
-  .tankcards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
-  @media (max-width: 560px) { .tankcards { grid-template-columns: 1fr; } }
-  .tcard {
-    position: relative; display: flex; flex-direction: column; gap: 5px; text-align: left; padding: 12px 12px 14px;
-    border-radius: 14px; background: #1b2317; border: 2px solid #34402c; font-weight: 400;
-  }
-  .tcard:hover:not(.on) { background: #212a1c; border-color: #46553a; }
-  .tcard.on { border-color: var(--olive-hi); background: linear-gradient(180deg, #2b3a21 0%, #1d2619 100%); box-shadow: 0 0 0 3px rgba(143,174,82,.22), 0 8px 18px rgba(0,0,0,.35); }
-  .tcard .ok { position: absolute; top: 9px; right: 9px; font-size: 10px; font-weight: 700; letter-spacing: .1em; padding: 3px 7px; border-radius: 5px; background: var(--olive); color: #fff; opacity: 0; }
-  .tcard.on .ok { opacity: 1; }
-  .tcard img { width: 84px; height: 84px; align-self: center; margin: 2px 0 2px; }
-  .tcard .tname { font-family: "Black Ops One", Rubik, sans-serif; font-size: 21px; letter-spacing: .03em; line-height: 1; }
-  .tcard .tclass { font-size: 11px; text-transform: uppercase; letter-spacing: .16em; color: var(--khaki); font-weight: 700; }
-  .tcard .tdesc { font-size: 12.5px; line-height: 1.45; color: #c3c7b1; min-height: 54px; margin: 2px 0 4px; }
-  .stat { display: grid; grid-template-columns: 1fr 70px; align-items: center; gap: 8px; font-size: 11.5px; color: #a3a891; }
-  .bar { display: flex; gap: 3px; }
-  .bar i { flex: 1; height: 7px; border-radius: 2px; background: #33402c; }
-  .bar i.f { background: #b9ab6c; }
-  .tcard.on .bar i.f { background: #a6d65f; }
+  .tankcards { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+  .tankcards.four { grid-template-columns: repeat(2, minmax(0, 1fr)); } /* z Tygrysem: 2 × 2, żeby nazwy i paski się mieściły */
+  @media (max-width: 560px) { .tankcards, .tankcards.four { grid-template-columns: 1fr; } }
+  .tcard { display: flex; flex-direction: column; gap: 3px; text-align: left; padding: 8px 10px 10px; background: #1b2116; clip-path: var(--cut); font-weight: 500; }
+  .tcard:hover:not(.on) { background: #232a1c; }
+  .tcard.on { border-color: var(--orange); background: #2e2a1b; }
+  .tcard img { width: 100%; height: 88px; object-fit: contain; }
+  .tcard .tclass { font-size: 14px; text-transform: uppercase; color: var(--khaki); font-weight: 700; }
+  .tcard .tname { font-family: var(--f-head); font-weight: 900; text-transform: uppercase; font-size: 32px; line-height: .9; }
+  .tcard .tdesc { font-size: 15px; line-height: 1.3; color: #c9cbb6; min-height: 40px; margin-bottom: 2px; }
+  .stat { display: grid; grid-template-columns: 1fr 60px; align-items: center; gap: 6px; font-size: 14px; color: var(--muted); font-weight: 600; }
+  .bar { display: flex; gap: 2px; }
+  .bar i { flex: 1; height: 7px; background: #38422e; }
+  .bar i.f { background: var(--khaki); }
+  .tcard.on .bar i.f { background: #f2a841; }
+  .mapgrid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 5px; }
+  .mapgrid button { position: relative; height: 62px; padding: 0; background-color: #1b2116; background-size: cover; background-position: center; overflow: hidden; }
+  .mapgrid button span { position: absolute; left: 0; right: 0; bottom: 0; padding: 2px 6px; background: rgba(14,18,11,.82); font-size: 15px; text-align: left; }
+  .mapgrid button.on { border-color: var(--khaki); box-shadow: inset 0 0 0 2px var(--khaki); }
   .bottombar {
-    position: sticky; bottom: 0; display: flex; align-items: center; gap: 16px; padding: 12px 14px 12px 18px;
-    background: rgba(20,26,17,.97); border: 1px solid #3a4631; border-radius: 16px; box-shadow: 0 -6px 20px rgba(0,0,0,.35);
+    position: sticky; bottom: 0; display: flex; align-items: center; gap: 14px; padding: 8px 10px 8px 16px;
+    background: rgba(20,25,16,.97); border: 2px solid var(--line); clip-path: var(--cut);
   }
-  .summary { flex: 1; font-size: 15px; line-height: 1.45; }
-  .summary span { color: var(--muted); font-size: 13px; }
+  .summary { flex: 1; font-size: 17px; line-height: 1.3; }
+  .summary b { font-weight: 700; }
+  .summary span { display: block; color: var(--muted); font-size: 15px; }
   @media (max-width: 560px) { .bottombar { flex-direction: column; align-items: stretch; text-align: center; } }
 
-  /* ---------- pauza ---------- */
-  .pbox { max-width: 380px; display: flex; flex-direction: column; gap: 10px; text-align: center; padding: 26px; background: rgba(28,36,24,.95); border: 1px solid #3a4631; border-radius: 18px; box-shadow: 0 20px 50px rgba(0,0,0,.5); }
-  .pbox h2 { margin: 0 0 8px; font-family: "Black Ops One", Rubik, sans-serif; font-weight: 400; font-size: 38px; letter-spacing: .1em; color: var(--khaki); }
-
-  /* ---------- zwycięstwo ---------- */
+  /* ---------- pauza i zwycięstwo ---------- */
+  .pbox { max-width: 380px; display: flex; flex-direction: column; gap: 8px; padding: 22px; background: rgba(28,34,22,.97); border: 2px solid var(--line); clip-path: var(--cut-lg); }
+  .pbox h2 { margin: 0 0 6px; font-family: var(--f-head); font-weight: 900; font-size: 56px; text-transform: uppercase; color: var(--khaki); line-height: 1; text-align: center; }
+  .pbox .cta, .vbtns .cta { padding: 12px 20px 10px; text-align: center; }
+  .pbox .mbtn, .vbtns .mbtn { justify-content: center; }
   .vbox { max-width: 520px; display: flex; flex-direction: column; align-items: center; gap: 10px; text-align: center; }
   #victory .big { width: 150px; height: 190px; filter: drop-shadow(0 8px 18px rgba(0,0,0,.6)); animation: drop .9s cubic-bezier(.2,1.4,.4,1) both, swing 3s ease-in-out .9s infinite; transform-origin: 50% 0; }
   @keyframes drop { from { transform: translateY(-120px) scale(.6); opacity: 0; } to { transform: none; opacity: 1; } }
   @keyframes swing { 0%,100% { transform: rotate(-3deg); } 50% { transform: rotate(3deg); } }
-  #victory h2 { margin: 0; font-family: "Black Ops One", Rubik, sans-serif; font-weight: 400; font-size: clamp(28px, 5vw, 42px); letter-spacing: 2px; color: #f3d77a; text-shadow: 0 3px 0 #3a2e1e; }
-  #victory .sub { color: var(--muted); margin-top: -4px; }
-  .rank { display: flex; flex-direction: column; gap: 6px; margin: 6px 0; width: 100%; max-width: 360px; }
-  .rank .r { display: flex; align-items: center; gap: 10px; background: rgba(35,43,31,.95); border: 1px solid #3a4631; border-radius: 10px; padding: 6px 12px; }
+  #victory h2 { margin: 0; font-family: var(--f-head); font-weight: 900; text-transform: uppercase; font-size: clamp(42px, 6vw, 62px); line-height: .92; color: #f3d77a; }
+  #victory .sub { color: var(--muted); font-size: 17px; }
+  .rank { display: flex; flex-direction: column; gap: 5px; margin: 4px 0; width: 100%; max-width: 380px; }
+  .rank .r { display: flex; align-items: center; gap: 10px; background: rgba(35,42,28,.95); border: 2px solid var(--line); clip-path: var(--cut); padding: 5px 12px; }
   .rank .r .pl { width: 26px; color: var(--muted); font-weight: 700; }
-  .rank .r .sw { width: 8px; height: 22px; border-radius: 3px; }
-  .rank .r .nm { flex: 1; text-align: left; font-weight: 600; }
-  .rank .r .pts { font-family: "Black Ops One", Rubik, sans-serif; color: var(--khaki); font-size: 18px; }
+  .rank .r .sw { width: 8px; height: 22px; }
+  .rank .r .nm { flex: 1; text-align: left; font-weight: 700; font-size: 17px; }
+  .rank .r .pts { font-family: var(--f-head); font-weight: 900; color: var(--khaki); font-size: 26px; }
   .rank .r svg { width: 22px; height: 28px; }
-  .vbtns { display: flex; flex-direction: column; gap: 10px; width: 100%; max-width: 360px; margin-top: 6px; }
-  .card .pts small { font-size: 12px; color: var(--muted); }
+  .vbtns { display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 380px; margin-top: 6px; }
   body.demo #hud { visibility: hidden; }
-  .install { background: rgba(46,56,40,.9); border-color: #56673f; padding: 9px 18px; font-size: 14px; border-radius: 30px; }
-  .installhint { font-size: 13px; color: #c3c7b1; background: rgba(30,38,26,.85); border: 1px solid #3a4631; border-radius: 12px; padding: 8px 14px; max-width: 520px; line-height: 1.5; }
-  .installhint b { color: var(--text); }
-  .installhint a { color: var(--khaki); font-weight: 700; }
+  .hint { color: var(--muted); font-size: 15px; }
+  kbd {
+    display: inline-block; min-width: 24px; padding: 0 6px; margin: 0 2px; background: var(--panel2); border: 2px solid var(--line); border-bottom-width: 3px;
+    font-family: inherit; font-weight: 700; font-size: 14px; color: var(--text); text-align: center;
+  }
+  .ptabs { display: flex; gap: 6px; margin-bottom: 12px; }
+  .ptab { flex: 1; display: flex; align-items: center; gap: 10px; padding: 6px 10px; background: #1b2116; text-align: left; clip-path: var(--cut); }
+  .ptab.on { border-color: var(--pc); background: #262d1e; }
+  .ptab img { width: 40px; height: 40px; }
+  .ptab b { display: block; font-size: 17px; }
+  .ptab small { color: var(--muted); font-size: 14px; }
+  @media (max-height: 560px) { .hint { display: none; } .ptabs { margin-bottom: 8px; } }
   /* niskie ekrany (telefon poziomo) – wszystko ciaśniej, żeby najważniejsze przyciski były widoczne */
   @media (max-height: 560px) {
     .screen { padding: max(10px, env(safe-area-inset-top)) max(12px, env(safe-area-inset-right)) max(10px, env(safe-area-inset-bottom)) max(12px, env(safe-area-inset-left)); }
     .splash { gap: 12px; }
-    .logo h1 { font-size: 46px; }
-    .logo .tag { margin-top: 4px; font-size: 11px; }
-    .steps { gap: 8px; }
-    .step { padding: 10px; gap: 10px; }
-    .step .ico { flex-basis: 40px; height: 40px; border-radius: 10px; }
-    .step .ico svg { width: 26px; height: 26px; }
-    .step .st { font-size: 14px; margin-bottom: 3px; }
-    .step .tx { font-size: 12px; line-height: 1.4; }
-    .minis { display: none; }
-    #play { font-size: 24px; padding: 10px 56px; }
-    .setup { gap: 10px; }
-    .topbar h2 { font-size: 20px; }
-    .ghost { padding: 6px 10px; font-size: 13px; }
-    .panel { padding: 12px; border-radius: 12px; }
-    .panel h3 { margin-bottom: 10px; }
-    .panel h3.mt { margin-top: 12px; padding-top: 10px; }
-    .field { margin-bottom: 10px; gap: 5px; }
-    .seg button { min-height: 36px; padding: 6px; font-size: 13px; }
-    input.name { padding: 8px 11px; font-size: 15px; }
-    .ptabs { margin-bottom: 10px; }
-    .tcard { padding: 9px; gap: 3px; }
-    .tcard img { width: 60px; height: 60px; }
-    .tcard .tname { font-size: 17px; }
-    .tcard .tdesc { min-height: 0; font-size: 11.5px; }
-    .stat { font-size: 10.5px; grid-template-columns: 1fr 52px; }
-    .bottombar { padding: 7px 8px 7px 12px; border-radius: 12px; gap: 10px; flex-direction: row; text-align: left; }
-    .summary { font-size: 13px; }
+    .logo h1 { font-size: 50px; }
+    .logo h1 span { display: inline; } /* jedna linia – więcej miejsca na przyciski */
+    .logo .tag { font-size: 13px; margin-top: 2px; }
+    .mlist { gap: 6px; }
+    .mbtn { padding: 7px 12px; font-size: 16px; }
+    .mbtn small { font-size: 16px; }
+    .cta { font-size: 28px; padding: 9px 46px 7px 16px; }
+    .topbar h2 { font-size: 32px; }
+    .ghost { padding: 5px 10px; font-size: 14px; }
+    .panel { padding: 10px 12px; }
+    .field { margin-bottom: 8px; gap: 4px; }
+    .seg button { min-height: 36px; padding: 5px 6px; font-size: 15px; }
+    input.name { padding: 6px 10px; font-size: 16px; }
+    .tcard { padding: 6px 8px 8px; gap: 2px; }
+    .tcard img { height: 58px; }
+    .tcard .tname { font-size: 25px; }
+    .tcard .tdesc { min-height: 0; font-size: 13px; }
+    .stat { font-size: 12px; grid-template-columns: 1fr 46px; }
+    .mapgrid button { height: 46px; }
+    .mapgrid button span { font-size: 13px; }
+    .bottombar { padding: 6px 8px 6px 12px; gap: 10px; flex-direction: row; text-align: left; }
+    .summary { font-size: 15px; }
     .summary span { display: none; }
-    .bottombar .cta { font-size: 19px; padding: 8px 28px; }
-    .hint { display: none; }
-    .pbox { padding: 16px; gap: 8px; }
-    .pbox h2 { font-size: 28px; margin-bottom: 2px; }
-    .menu-btn { padding: 9px; font-size: 14px; }
+    .bottombar .cta { font-size: 26px; padding: 7px 40px 6px 14px; }
+    .pbox { padding: 14px; gap: 6px; }
+    .pbox h2 { font-size: 42px; }
     #victory .big { width: 90px; height: 114px; }
+    #victory h2 { font-size: 36px; }
     .rank .r { padding: 3px 10px; }
+    .tips li { padding: 8px 10px; }
+    .tips li::before { font-size: 42px; }
+    .tips b { font-size: 22px; }
+    .tips p { font-size: 15px; }
   }
   html { touch-action: manipulation; background: #161b14; }
   body.playing { position: fixed; inset: 0; overflow: hidden; }
-  @media (pointer: coarse) { button { padding: 10px 14px; } }
+  /* ---------- kampania ---------- */
+  .camp { max-width: 1120px; display: flex; flex-direction: column; gap: 12px; }
+  .campstars { display: flex; align-items: center; gap: 6px; font-family: var(--f-head); font-weight: 900; font-size: 28px; color: var(--khaki); }
+  .campstars .star { width: 24px; height: 24px; }
+  .campgrid { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 12px; align-items: start; }
+  @media (max-width: 760px) { .campgrid { grid-template-columns: 1fr; } }
+  .chapters { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 6px; }
+  .chap { position: relative; height: 96px; padding: 0; background-color: #1b2116; background-size: cover; background-position: center; text-align: left; overflow: hidden; clip-path: var(--cut); }
+  .chap .num { position: absolute; left: 7px; top: 2px; font-family: var(--f-head); font-weight: 900; font-size: 30px; color: #fff; text-shadow: 0 2px 0 rgba(0,0,0,.65); }
+  .chap .lock { position: absolute; right: 6px; top: 6px; padding: 1px 6px; background: rgba(14,18,11,.88); font-size: 12px; font-weight: 700; text-transform: uppercase; color: var(--muted); }
+  .chap .cn { position: absolute; left: 0; right: 0; bottom: 0; display: flex; justify-content: space-between; align-items: baseline; gap: 6px; padding: 3px 8px; background: rgba(14,18,11,.86); }
+  .chap .cn b { font-family: var(--f-head); font-weight: 900; font-size: 20px; text-transform: uppercase; line-height: 1.05; }
+  .chap .cn small { font-size: 13px; color: var(--khaki); }
+  .chap.on { border-color: var(--orange); box-shadow: inset 0 0 0 2px var(--orange); }
+  .chap.locked { filter: grayscale(1) brightness(.55); }
+  .chapter h3 { margin: 0 0 4px; font-family: var(--f-head); font-weight: 900; font-size: 32px; text-transform: uppercase; line-height: 1; color: var(--khaki); }
+  .missions { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+  .mis { display: grid; grid-template-columns: 92px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 6px 12px 6px 6px; background: #1b2116; text-align: left; clip-path: var(--cut); }
+  .mis img { width: 92px; height: 56px; object-fit: contain; }
+  .mis small { display: block; font-size: 13px; font-weight: 700; text-transform: uppercase; color: var(--muted); }
+  .mis b { display: block; font-family: var(--f-head); font-weight: 900; font-size: 24px; text-transform: uppercase; line-height: 1; }
+  .mis.locked { opacity: .45; }
+  .stars { display: flex; gap: 2px; }
+  .star { width: 20px; height: 20px; flex: none; fill: #3a4430; }
+  .star.on { fill: #f2c230; }
+  .briefbox, .resbox { max-width: 660px; display: flex; flex-direction: column; gap: 12px; }
+  .kick { font-size: 15px; font-weight: 700; text-transform: uppercase; color: var(--muted); }
+  .briefbox h2, .resbox h2 { margin: 0; font-family: var(--f-head); font-weight: 900; font-size: clamp(40px, 6vw, 58px); text-transform: uppercase; line-height: .92; color: var(--khaki); }
+  .briefbox > p { margin: 0; font-size: 17px; line-height: 1.4; }
+  .brow { display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); gap: 6px; margin-top: 5px; }
+  .unit { display: flex; align-items: center; gap: 8px; padding: 5px 10px 5px 4px; background: #1b2116; border: 2px solid var(--line); clip-path: var(--cut); }
+  .unit img { width: 84px; height: 54px; object-fit: contain; }
+  .unit b { display: block; font-size: 16px; }
+  .unit small { display: block; font-size: 13px; color: var(--muted); }
+  .unit.me { border-color: var(--orange); }
+  button.unit { font-weight: 500; text-transform: none; }
+  .unit.pick { border-color: var(--line); }
+  .unit.pick.on { border-color: var(--orange); background: #2e2a1b; }
+  .unlock { display: flex; align-items: center; gap: 12px; padding: 10px 14px; text-align: left; background: #3a2f1a; border: 2px solid #e8b93a; clip-path: var(--cut); }
+  .unlock img { width: 110px; height: 70px; object-fit: contain; }
+  .unlock b { display: block; font-family: var(--f-head); font-weight: 900; font-size: 28px; text-transform: uppercase; color: #f2c230; line-height: 1; }
+  .unlock span { font-size: 15px; line-height: 1.35; }
+  .bteams { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 2fr); gap: 10px; }
+  @media (max-width: 560px) { .bteams { grid-template-columns: 1fr; } }
+  .unit.boss b { color: #f2a841; }
+  .conds { list-style: none; margin: 5px 0 0; padding: 0; display: flex; flex-direction: column; gap: 5px; text-align: left; }
+  .conds li { display: flex; align-items: center; gap: 8px; font-size: 16px; }
+  .bbtns { display: flex; gap: 8px; align-items: stretch; }
+  .bbtns .cta { flex: 1; text-align: center; padding: 12px 20px 10px; }
+  .assist { font-size: 15px; text-transform: none; }
+  .assist.on { border-color: var(--orange); background: #3a2f1a; color: #fff; }
+  .bigstars { display: flex; gap: 10px; justify-content: center; }
+  .bigstars .star { width: 64px; height: 64px; }
+  .bigstars .star.on { animation: starpop .45s cubic-bezier(.2,1.6,.4,1) both; }
+  @keyframes starpop { from { transform: scale(.2); opacity: 0; } to { transform: none; opacity: 1; } }
+  .resbox { text-align: center; }
+  .resbox .vbtns { max-width: none; }
+  @media (max-height: 560px) {
+    .chap { height: 62px; }
+    .chap .num { font-size: 22px; }
+    .chap .cn b { font-size: 16px; }
+    .mis { grid-template-columns: 70px minmax(0, 1fr) auto; }
+    .mis img { width: 70px; height: 40px; }
+    .mis b { font-size: 20px; }
+    .briefbox, .resbox { gap: 8px; }
+    .briefbox h2, .resbox h2 { font-size: 36px; }
+    .briefbox > p { font-size: 15px; }
+    .bigstars .star { width: 44px; height: 44px; }
+    /* przyciski zawsze widoczne na dole ekranu */
+    .briefbox .bbtns, .resbox .vbtns { position: sticky; bottom: -12px; margin: 0 -12px -12px; padding: 8px 12px; background: rgba(30,36,24,.98); }
+    .resbox .vbtns { flex-direction: row; }
+    .resbox .vbtns button { flex: 1; }
+  }
   /* ---------- osiągnięcia ---------- */
   #achToast {
     position: fixed; left: 50%; top: max(52px, calc(env(safe-area-inset-top) + 44px)); z-index: 45; display: flex; align-items: center; gap: 10px;
-    padding: 8px 18px 8px 10px; background: rgba(20,26,17,.95); border: 1px solid #c8b77a; border-radius: 14px; box-shadow: 0 10px 26px rgba(0,0,0,.5);
+    padding: 8px 18px 8px 10px; background: rgba(23,28,18,.97); border: 2px solid var(--khaki); clip-path: var(--cut);
     opacity: 0; transform: translate(-50%, -16px); transition: opacity .25s, transform .25s; pointer-events: none;
   }
   #achToast.show { opacity: 1; transform: translate(-50%, 0); }
   #achToast svg { width: 26px; height: 34px; }
-  #achToast b { display: block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--khaki); }
-  #achToast span { font-size: 16px; font-weight: 700; }
+  #achToast b { display: block; font-size: 13px; font-weight: 700; text-transform: uppercase; color: var(--khaki); }
+  #achToast span { font-family: var(--f-head); font-weight: 900; font-size: 24px; text-transform: uppercase; line-height: 1; }
   .achs { max-width: 1120px; display: flex; flex-direction: column; gap: 12px; }
-  .achsum { text-align: center; color: var(--muted); font-size: 14px; }
-  .achpct { display: block; font-family: "Black Ops One", Rubik, sans-serif; font-size: 40px; line-height: 1.1; color: var(--khaki); }
-  .achbar { height: 8px; max-width: 420px; margin: 8px auto 0; border-radius: 4px; background: #33402c; overflow: hidden; }
-  .achbar i { display: block; height: 100%; background: linear-gradient(90deg, #b9ab6c, #f2c230); }
-  .achs h3 { margin: 10px 0 8px; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--khaki); }
-  .achs h3 span { color: var(--muted); letter-spacing: .05em; margin-left: 6px; }
-  .achgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 8px; }
-  .ach { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; background: rgba(28,36,24,.92); border: 1px solid #3a4631; border-radius: 12px; }
-  .ach.got { border-color: #8a7a3e; background: rgba(52,48,26,.92); }
+  .achsum { text-align: center; color: var(--muted); font-size: 16px; font-weight: 600; }
+  .achpct { display: block; font-family: var(--f-head); font-weight: 900; font-size: 60px; line-height: 1; color: var(--khaki); }
+  .achbar { height: 12px; max-width: 420px; margin: 8px auto 0; background: #33402c; border: 2px solid var(--line); }
+  .achbar i { display: block; height: 100%; background: var(--orange); }
+  .achs h3 { margin: 10px 0 6px; font-family: var(--f-head); font-weight: 900; font-size: 28px; text-transform: uppercase; color: var(--khaki); }
+  .achs h3 span { font-family: var(--f-ui); font-weight: 600; font-size: 16px; color: var(--muted); margin-left: 8px; }
+  .achgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 6px; }
+  .ach { display: flex; gap: 10px; align-items: flex-start; padding: 9px 12px; background: rgba(35,42,28,.94); border: 2px solid var(--line); clip-path: var(--cut); }
+  .ach.got { border-color: #9a8642; background: rgba(56,50,26,.94); }
   .ach .ico svg { width: 22px; height: 29px; }
   .ach:not(.got) .ico { opacity: .35; }
-  .ach b { display: block; font-size: 14px; line-height: 1.2; }
-  .ach small { display: block; color: var(--muted); font-size: 12px; line-height: 1.35; margin-top: 2px; }
-  .ach .pb { height: 5px; border-radius: 3px; background: #33402c; margin-top: 6px; overflow: hidden; }
-  .ach .pb i { display: block; height: 100%; background: #b9ab6c; }
-  .ach .pn { font-size: 11px; color: var(--muted); margin-top: 3px; }
-  .vach { font-size: 13px; color: #cfd2bd; max-width: 360px; line-height: 1.5; }
+  .ach b { display: block; font-size: 17px; font-weight: 700; line-height: 1.15; }
+  .ach small { display: block; color: var(--muted); font-size: 14px; line-height: 1.3; margin-top: 2px; }
+  .ach .pb { height: 6px; background: #33402c; margin-top: 6px; }
+  .ach .pb i { display: block; height: 100%; background: var(--khaki); }
+  .ach .pn { font-size: 13px; color: var(--muted); margin-top: 3px; font-weight: 600; }
+  .vach { font-size: 15px; color: #cfd2bd; max-width: 380px; line-height: 1.45; }
   .vach:empty { display: none; }
   .vach b { color: var(--khaki); }
 </style>
@@ -288,106 +350,142 @@
   <canvas id="c"></canvas>
 </div>
 
-<!-- ===================== EKRAN POWITALNY ===================== -->
+<!-- ===================== MENU GŁÓWNE ===================== -->
 <div class="screen" id="splash">
   <div class="inner splash">
-    <div class="logo"><h1>MAZE <span>TANKS</span></h1></div>
-    <div class="steps">
-      <div class="step">
-        <div class="ico"><svg viewBox="0 0 48 48" fill="none" stroke="#c8b77a" stroke-width="2.5" stroke-linejoin="round"><rect x="17" y="5" width="14" height="14" rx="3"/><rect x="3" y="23" width="14" height="14" rx="3"/><rect x="17" y="23" width="14" height="14" rx="3"/><rect x="31" y="23" width="14" height="14" rx="3"/><path d="M24 9v6M21 12l3-3 3 3" /></svg></div>
-        <div><div class="st">1. Jedź i celuj</div>
-          <div class="tx keys">Gracz 1: <kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd> i <kbd>Spacja</kbd><br>Gracz 2: <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> i <kbd>Q</kbd><br>Lufa strzela tam, gdzie patrzy czołg.</div>
-        </div>
-      </div>
-      <div class="step">
-        <div class="ico"><svg viewBox="0 0 48 48" fill="none" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8v32M44 8v32" stroke="#6d6a60" stroke-width="4"/><path d="M8 38 L20 12 L32 34 L40 18" stroke="#c8b77a" stroke-dasharray="3 3"/><circle cx="40" cy="18" r="4" fill="#e0922a" stroke="none"/></svg></div>
-        <div><div class="st">2. Strzelaj z rykoszetu</div>
-          <div class="tx">Pociski odbijają się od ścian i drzew. Uważaj: własny rykoszet też rani!</div></div>
-      </div>
-      <div class="step">
-        <div class="ico" id="stepMedal"></div>
-        <div><div class="st">3. Zdobądź medal</div>
-          <div class="tx">Kto pierwszy wygra <b id="winTxt">5 rund</b>, dostaje złoty medal do gablotki.</div></div>
-      </div>
-    </div>
-    <div class="minis" id="splashTanks"></div>
-    <button class="cta" id="play">GRAJ</button>
-    <button class="install" id="installBtn" hidden>⬇ Zainstaluj jako aplikację</button>
+    <div class="logo"><h1>Maze <span>Tanks</span></h1></div>
+    <nav class="mlist">
+      <button class="cta" id="campBtn">Kampania</button>
+      <button class="mbtn" id="play">Szybka bitwa</button>
+      <button class="mbtn" id="achBtn">Osiągnięcia <small id="achPct">0%</small></button>
+      <button class="mbtn" id="medBtn">Gablota medali <small id="medCnt">0</small></button>
+      <button class="mbtn" id="howBtn">Jak grać</button>
+      <button class="mbtn" id="installBtn" hidden>Zainstaluj aplikację</button>
+    </nav>
     <div class="installhint" id="installHint" hidden></div>
     <div class="installhint" id="otherEdition" hidden></div>
-    <div id="cabinet"></div>
-    <button class="install" id="achBtn">Osiągnięcia</button>
-    <div class="hint keys">Enter – graj &nbsp;·&nbsp; M – dźwięk wł./wył.</div>
+    <div class="hint keys"><kbd>Enter</kbd> szybka bitwa <kbd>M</kbd> dźwięk</div>
   </div>
 </div>
 
-<!-- ===================== USTAWIENIA BITWY ===================== -->
+<!-- ===================== JAK GRAĆ ===================== -->
+<div class="screen" id="how">
+  <div class="inner how">
+    <div class="topbar"><button class="ghost" id="howBack">‹ Menu</button><h2>Jak grać</h2></div>
+    <ol class="tips">
+      <li><b>Jedź</b><p>Gracz 1: <kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd>, strzał <kbd>Spacja</kbd>. Gracz 2: <kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd>, strzał <kbd>Q</kbd>. Lufa strzela tam, gdzie patrzy czołg.</p></li>
+      <li><b>Strzelaj</b><p>Każde naciśnięcie to jeden strzał. Kropki przed czołgiem pokazują, dokąd poleci pocisk.</p></li>
+      <li><b>Odbijaj</b><p>Pociski odbijają się od ścian i drzew. Uważaj, Twój rykoszet też boli.</p></li>
+      <li><b>Wygrywaj</b><p>Rundę wygrywa ostatni czołg na placu. Kto pierwszy zdobędzie <span id="howWin">5</span> rund, dostaje złoty medal do gabloty.</p></li>
+      <li><b>Poznaj mapy</b><p>Każda mapa ma swoją zasadę: kryjówki w krzakach, wiatr, grząski piasek, lód, płonące wraki, skrzynie z amunicją, ciemność i nieważkość.</p></li>
+      <li><b>Skróty</b><p><kbd>Esc</kbd> albo <kbd>P</kbd> pauza, <kbd>M</kbd> dźwięk, <kbd>Enter</kbd> start i rewanż.</p></li>
+    </ol>
+  </div>
+</div>
+
+<!-- ===================== GABLOTA MEDALI ===================== -->
+<div class="screen" id="medals">
+  <div class="inner medals">
+    <div class="topbar"><button class="ghost" id="medBack">‹ Menu</button><h2>Gablota medali</h2></div>
+    <div class="medlist" id="medList"></div>
+  </div>
+</div>
+
+<!-- ===================== GARAŻ (ustawienia bitwy) ===================== -->
 <div class="screen" id="setup">
   <div class="inner setup">
-    <div class="topbar"><button class="ghost" id="back">← Menu</button><h2>Przygotuj bitwę</h2><span></span></div>
+    <div class="topbar"><button class="ghost" id="back">‹ Menu</button><h2>Garaż</h2><span class="sp"></span><button class="ghost" id="optBtn">Ustawienia</button></div>
     <div class="setup-grid">
       <section class="panel">
-        <h3 id="tanktitle">Twój czołg</h3>
+        <span class="lab" id="tanktitle" style="margin-bottom:6px">Twój czołg</span>
         <div class="ptabs" id="ptabs"></div>
         <label class="field"><span class="lab" id="namelab">Twoje imię</span>
           <input class="name" id="nameInput" maxlength="12" autocomplete="off" spellcheck="false"></label>
-        <div class="field"><span class="lab">Wybierz czołg</span><div class="tankcards" id="tankcards"></div></div>
+        <div class="field"><span class="lab">Czołg</span><div class="tankcards" id="tankcards"></div></div>
       </section>
       <section class="panel">
-        <h3>Bitwa</h3>
-        <div class="field"><span class="lab">Tryb gry</span>
-          <div class="seg"><button data-mode="1">1 gracz</button><button data-mode="2">2 graczy (1 klawiatura)</button></div></div>
-        <div class="field"><span class="lab">Liczba botów</span>
-          <div class="seg"><button data-bots="0">0</button><button data-bots="1">1</button><button data-bots="2">2</button><button data-bots="3">3</button></div></div>
+        <div class="field"><span class="lab">Gracze</span>
+          <div class="seg"><button data-mode="1">1 gracz</button><button data-mode="2">2 graczy</button></div></div>
+        <div class="field"><span class="lab">Przeciwnicy</span>
+          <div class="seg"><button data-bots="0">Bez botów</button><button data-bots="1">1</button><button data-bots="2">2</button><button data-bots="3">3</button></div></div>
         <div class="field"><span class="lab">Poziom botów</span>
-          <div class="seg"><button data-diff="easy">Łatwy</button><button data-diff="normal">Normalny</button><button data-diff="hard">Trudny</button></div></div>
+          <div class="seg"><button data-diff="easy"><i class="rk">›</i>Rekrut</button><button data-diff="normal"><i class="rk">››</i>Żołnierz</button><button data-diff="hard"><i class="rk">›››</i>Komandos</button></div></div>
         <div class="field"><span class="lab">Mapa</span>
-          <div class="seg mapgrid">
-            <button data-map="random"><i class="mapsw rnd"></i>Losowa</button>
-            <button data-map="las"><i class="mapsw las"></i>Las</button>
-            <button data-map="pole"><i class="mapsw pole"></i>Pole</button>
-            <button data-map="miasto"><i class="mapsw miasto"></i>Miasto</button>
-            <button data-map="noc"><i class="mapsw noc"></i>Noc</button>
-            <button data-map="pustynia"><i class="mapsw pustynia"></i>Pustynia</button>
-            <button data-map="zima"><i class="mapsw zima"></i>Zima</button>
-            <button data-map="baza"><i class="mapsw baza"></i>Baza</button>
-            <button data-map="ksiezyc"><i class="mapsw ksiezyc"></i>Księżyc</button>
+          <div class="mapgrid">
+            <button data-map="random"><span>Losowa</span></button>
+            <button data-map="las"><span>Las</span></button>
+            <button data-map="pole"><span>Pole</span></button>
+            <button data-map="pustynia"><span>Pustynia</span></button>
+            <button data-map="zima"><span>Zima</span></button>
+            <button data-map="miasto"><span>Miasto</span></button>
+            <button data-map="noc"><span>Noc</span></button>
+            <button data-map="baza"><span>Baza</span></button>
+            <button data-map="ksiezyc"><span>Księżyc</span></button>
           </div>
-          <span class="note" id="rulenote"></span></div>
-        <div class="field"><span class="lab">Mecz do</span>
-          <div class="seg"><button data-win="3">3 wygranych</button><button data-win="5">5</button><button data-win="7">7</button></div></div>
-        <h3 class="mt">Ustawienia</h3>
+          <p class="note" id="rulenote"></p></div>
+        <div class="field"><span class="lab">Mecz do wygranych</span>
+          <div class="seg"><button data-win="3">3</button><button data-win="5">5</button><button data-win="7">7</button></div></div>
+      </section>
+    </div>
+    <div class="bottombar"><div class="summary" id="summary"></div><button class="cta" id="start">Do boju</button></div>
+    <div class="hint keys"><kbd>Enter</kbd> do boju <kbd>Esc</kbd> menu</div>
+  </div>
+</div>
+
+<!-- ===================== USTAWIENIA ===================== -->
+<div class="screen" id="options">
+  <div class="inner opts">
+    <div class="topbar"><button class="ghost" id="optBack">‹ Garaż</button><h2>Ustawienia</h2></div>
+    <section class="panel">
         <div class="field"><span class="lab">Dźwięk</span>
           <div class="seg"><button data-snd="1">Włączony</button><button data-snd="0">Wyłączony</button></div></div>
         <div class="field"><span class="lab">Podgląd toru pocisku</span>
           <div class="seg"><button data-aim="1">Włączony</button><button data-aim="0">Wyłączony</button></div>
-          <span class="note">Kropki przed czołgiem pokazują, dokąd poleci pocisk – do pierwszego odbicia.</span></div>
-      </section>
-    </div>
-    <div class="bottombar"><div class="summary" id="summary"></div><button class="cta" id="start">START</button></div>
-    <div class="hint keys">Enter – start &nbsp;·&nbsp; Esc – wróć do menu</div>
+          <p class="note">Kropki pokazują, dokąd poleci pocisk, aż do pierwszego odbicia.</p></div>
+    </section>
   </div>
 </div>
 
 <!-- ===================== PAUZA ===================== -->
 <div class="screen" id="pause">
   <div class="inner pbox">
-    <h2>PAUZA</h2>
-    <button class="cta" id="p-resume">WZNÓW</button>
-    <button class="menu-btn" id="p-restart">Zacznij mecz od nowa</button>
-    <button class="menu-btn" id="p-setup">Zmień ustawienia</button>
-    <button class="menu-btn" id="p-menu">Menu główne</button>
-    <div class="hint keys">Esc lub P – wznów &nbsp;·&nbsp; M – dźwięk</div>
+    <h2>Pauza</h2>
+    <button class="cta" id="p-resume">Wznów</button>
+    <button class="mbtn" id="p-restart">Od nowa</button>
+    <button class="mbtn" id="p-setup">Garaż</button>
+    <button class="mbtn" id="p-menu">Menu główne</button>
+    <div class="hint keys"><kbd>Esc</kbd> wznów <kbd>M</kbd> dźwięk</div>
   </div>
 </div>
 
 <!-- ===================== OSIĄGNIĘCIA ===================== -->
 <div class="screen" id="achievements">
   <div class="inner achs">
-    <div class="topbar"><button class="ghost" id="achBack">← Menu</button><h2>Osiągnięcia</h2><span></span></div>
+    <div class="topbar"><button class="ghost" id="achBack">‹ Menu</button><h2>Osiągnięcia</h2></div>
     <div class="achsum" id="achSum"></div>
     <div id="achList"></div>
   </div>
+</div>
+
+<!-- ===================== KAMPANIA ===================== -->
+<div class="screen" id="campaign">
+  <div class="inner camp">
+    <div class="topbar"><button class="ghost" id="campBack">‹ Menu</button><h2>Kampania</h2><span class="sp"></span><span class="campstars" id="campStars"></span></div>
+    <div class="campgrid">
+      <div class="chapters" id="chapters"></div>
+      <section class="panel chapter" id="chapter"></section>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== ODPRAWA PRZED MISJĄ ===================== -->
+<div class="screen" id="brief">
+  <div class="inner briefbox panel" id="briefBox"></div>
+</div>
+
+<!-- ===================== WYNIK MISJI ===================== -->
+<div class="screen" id="result">
+  <div class="inner resbox panel" id="resBox"></div>
 </div>
 
 <!-- ===================== ZWYCIĘSTWO ===================== -->
@@ -399,11 +497,11 @@
     <div class="rank" id="vrank"></div>
     <div class="vach" id="vach"></div>
     <div class="vbtns">
-      <button class="cta" id="again">REWANŻ</button>
-      <button class="menu-btn" id="v-setup">Zmień ustawienia</button>
-      <button class="menu-btn" id="tomenu">Menu główne</button>
+      <button class="cta" id="again">Rewanż</button>
+      <button class="mbtn" id="v-setup">Garaż</button>
+      <button class="mbtn" id="tomenu">Menu główne</button>
     </div>
-    <div class="hint keys">Enter – rewanż &nbsp;·&nbsp; Esc – menu</div>
+    <div class="hint keys"><kbd>Enter</kbd> rewanż <kbd>Esc</kbd> menu</div>
   </div>
 </div>
 
@@ -422,8 +520,10 @@ const TYPES = {
   lis:  { name: 'Lis',        label: 'lekki',  speed: 155, turn: 4.2, hp: 4, dmg: 1, cool: 0.2, maxB: 6, bspeed: 300, bounce: 3, r: 11 },
   wilk: { name: 'Wilk',       label: 'średni', speed: 115, turn: 3.3, hp: 4, dmg: 2, cool: 0.4, maxB: 4, bspeed: 240, bounce: 3, r: 14 },
   mis:  { name: 'Niedźwiedź', label: 'ciężki', speed: 80,  turn: 2.4, hp: 7, dmg: 2, cool: 0.6, maxB: 2, bspeed: 190, bounce: 2, r: 17 },
+  tygrys: { name: 'Tygrys', label: 'ultra', speed: 155, turn: 4.2, hp: 8, dmg: 3, cool: 0.2, maxB: 6, bspeed: 300, bounce: 3, r: 14 }, // nagroda za kampanię
 };
 const TYPE_KEYS = Object.keys(TYPES);
+const PLAY_KEYS = ['lis', 'wilk', 'mis']; // zwykłe czołgi; Tygrys to nagroda za kampanię i boty go nie dostają
 // Wygląd czołgów w jednostkach rysunku (czołg o r = 14; rysunek skalowany przez r / 14).
 // tr: gąsienice [x, y, szer., wys.], skirts: osłony gąsienic (y rzędów), hull: kadłub, tx + tur: wieża przesunięta w przód / w tył,
 // b0–b1: lufa (b1 = wylot pocisku), bw: grubość lufy, brake: hamulec wylotowy, grille: x kratki silnika, lights: [x, y] świateł
@@ -440,11 +540,15 @@ const TANK_LOOK = {
     tr: [[-17, -17, 34, 8], [-17, 9, 34, 8]], skirts: [-17.5, 13], hull: [[-16, -11], [12, -11], [16, -7], [16, 7], [12, 11], [-16, 11]],
     tx: -1, tur: [[-11, -9], [3, -10], [10, -6], [10, 6], [3, 10], [-11, 9]], b0: -1, b1: 19, bw: 6.4, brake: 5,
     grille: -14, lights: [14, 5.5], hatch: 2.8, mark: 5 },
+  tygrys: { // ultra: ostry klin, podwójna lufa, tygrysie pasy, złoty brzeg wieży
+    tr: [[-17, -16, 34, 8], [-17, 8, 34, 8]], hull: [[-16, -10], [8, -10], [17, -4], [17, 4], [8, 10], [-16, 10]],
+    tx: -2, tur: [[-9, -7], [1, -8], [8, -4], [8, 4], [1, 8], [-9, 7]], b0: -2, b1: 27, bw: 2.8, brake: 3, twin: 2.6,
+    grille: -14, lights: [14, 4], hatch: 2.4, mark: 4, tiger: true },
 };
 for (const k of TYPE_KEYS) TYPES[k].muzzle = TANK_LOOK[k].b1 * TYPES[k].r / 14;
 const barrelLen = t => (t.type || t).muzzle;  // odległość wylotu lufy od środka (t: czołg albo rodzaj)
 // pociski: wielkość i długość smugi (px) – im lżejszy czołg, tym mniejszy pocisk i dłuższa smuga
-const BULLET_LOOK = { lis: { size: 2.4, trail: 26 }, wilk: { size: 3.2, trail: 20 }, mis: { size: 4.4, trail: 16 } };
+const BULLET_LOOK = { lis: { size: 2.4, trail: 26 }, wilk: { size: 3.2, trail: 20 }, mis: { size: 4.4, trail: 16 }, tygrys: { size: 3.6, trail: 26 } };
 
 // ===================== SCENERIE =====================
 // ground: sposób malowania ziemi, wall: wygląd ścian, kinds: okrągłe przeszkody,
@@ -496,14 +600,14 @@ const THEMES = {
 
 // zasady specjalne (włączane w ustawieniach) – każda plansza ma swoją
 const RULES = {
-  bushes:  { name: 'Kryjówki w krzakach!', desc: 'Przez krzaki można przejechać i się w nich schować. Pociski przez nie przelatują.' },
-  wind:    { name: 'Wiatr!',               desc: 'Wiatr znosi pociski. Kierunek i siłę pokazuje strzałka u góry.' },
-  fire:    { name: 'Płonące samochody!',   desc: 'Nie podjeżdżaj za blisko płonących wraków – żar parzy od razu i zabiera punkt pancerza co chwilę.' },
-  sand:    { name: 'Grząski piasek!',      desc: 'Po długiej jeździe czołg grzęźnie. Zatrzymaj się albo cofnij, żeby się uwolnić.' },
-  slide:   { name: 'Ślisko!',              desc: 'Czołgi ślizgają się, a na zamarzniętych kałużach jeszcze bardziej.' },
-  ammo:    { name: 'Skrzynie z amunicją!', desc: 'Skrzynie wybuchają, gdy na nie najedziesz albo je trafisz, i ranią czołgi w pobliżu. Worki z piaskiem pochłaniają pociski.' },
-  lowg:    { name: 'Nieważkość!',          desc: 'Czołgi dryfują jak w kosmosie. Pociski lecą wolniej, ale odbijają się 2 razy więcej.' },
-  dark:    { name: 'Ciemno!',              desc: 'Widać tylko to, co jest w świetle. Strzał zdradza pozycję.' },
+  bushes:  { name: 'Kryjówki w krzakach', desc: 'Przez krzaki można przejechać i się w nich schować. Pociski przez nie przelatują.' },
+  wind:    { name: 'Wiatr',                desc: 'Wiatr znosi pociski. Kierunek i siłę pokazuje strzałka u góry.' },
+  fire:    { name: 'Płonące samochody',   desc: 'Nie podjeżdżaj do płonących wraków. Żar parzy od razu i co chwilę zabiera pancerz.' },
+  sand:    { name: 'Grząski piasek',      desc: 'Po długiej jeździe czołg grzęźnie. Zatrzymaj się albo cofnij, żeby się uwolnić.' },
+  slide:   { name: 'Ślisko',               desc: 'Czołgi ślizgają się, a na zamarzniętych kałużach jeszcze bardziej.' },
+  ammo:    { name: 'Skrzynie z amunicją', desc: 'Skrzynie wybuchają, gdy na nie najedziesz albo je trafisz, i ranią czołgi w pobliżu. Worki z piaskiem pochłaniają pociski.' },
+  lowg:    { name: 'Nieważkość',          desc: 'Czołgi dryfują jak w kosmosie. Pociski lecą wolniej, ale odbijają się 2 razy więcej.' },
+  dark:    { name: 'Ciemno',               desc: 'Widać tylko to, co jest w świetle. Strzał zdradza pozycję.' },
 };
 
 const COLORS = ['#4f9a3a', '#2f6fd1', '#d13f2f', '#e8a02a', '#8a4fc9'];
@@ -570,7 +674,11 @@ addEventListener('keydown', e => {
     else if (e.code === 'Enter') { e.preventDefault(); startGame(); }
     return;
   }
-  if (screen === 'achievements') { if (e.code === 'Escape') goSplash(); return; }
+  if (screen === 'campaign') { if (e.code === 'Escape') goSplash(); return; }
+  if (screen === 'brief') { if (e.code === 'Escape') goCampaign(); else if (e.code === 'Enter') { e.preventDefault(); startMission(briefId, briefAssist, briefTank); } return; }
+  if (screen === 'result') { if (e.code === 'Escape') goCampaign(); else if (e.code === 'Enter') { e.preventDefault(); const b = document.querySelector('#resBox .cta'); if (b) b.click(); } return; }
+  if (['achievements', 'how', 'medals'].includes(screen)) { if (e.code === 'Escape') goSplash(); return; }
+  if (screen === 'options') { if (e.code === 'Escape') goSetup(); return; }
   if (screen === 'victory') {
     if (e.code === 'Enter') { e.preventDefault(); startGame(); }
     else if (e.code === 'Escape') goSplash();
@@ -902,7 +1010,7 @@ const GROUND = {
     // lądowisko
     const c = 1 + (Math.random() * (COLS - 2) | 0), r = 1 + (Math.random() * (ROWS - 2) | 0), hx = c * CELL + CELL / 2, hy = r * CELL + CELL / 2;
     g.strokeStyle = 'rgba(240,200,60,0.75)'; g.lineWidth = 3; g.beginPath(); g.arc(hx, hy, 30, 0, Math.PI * 2); g.stroke();
-    g.fillStyle = 'rgba(240,200,60,0.75)'; g.font = 'bold 34px Rubik, Arial'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('H', hx, hy + 2);
+    g.fillStyle = 'rgba(240,200,60,0.75)'; g.font = '900 42px "Big Shoulders Stencil Display", Impact, sans-serif'; g.textAlign = 'center'; g.textBaseline = 'middle'; g.fillText('H', hx, hy + 2);
     g.textBaseline = 'alphabetic';
     // żółto-czarne pasy ostrzegawcze
     for (let i = 0; i < 5; i++) {
@@ -1222,6 +1330,9 @@ function obstacleSprite(t) {
   return { cv, half };
 }
 
+function cutRect(s, x, y, w, h, k) { // prostokąt ze ściętymi narożnikami (lewy górny, prawy dolny)
+  s.beginPath(); s.moveTo(x + k, y); s.lineTo(x + w, y); s.lineTo(x + w, y + h - k); s.lineTo(x + w - k, y + h); s.lineTo(x, y + h); s.lineTo(x, y + k); s.closePath();
+}
 function roundRect(s, x, y, w, h, r) {
   s.beginPath();
   s.moveTo(x + r, y); s.lineTo(x + w - r, y); s.quadraticCurveTo(x + w, y, x + w, y + r);
@@ -1348,7 +1459,7 @@ const sfx = {
     if (kind === 'lis') {
       noise({ dur: 0.09, vol: 0.35, filter: 'highpass', f0: 2500, f1: 800, x });
       tone({ type: 'square', f0: 900, f1: 260, dur: 0.07, vol: 0.08, x });
-    } else if (kind === 'wilk') {
+    } else if (kind === 'wilk' || kind === 'tygrys') {
       noise({ dur: 0.18, vol: 0.5, filter: 'lowpass', f0: 2200, f1: 300, x });
       tone({ f0: 220, f1: 60, dur: 0.16, vol: 0.35, x });
     } else {
@@ -1417,7 +1528,7 @@ let engines = [];
 function startEngines() {
   stopEngines();
   if (!actx) return;
-  const base = { lis: 58, wilk: 44, mis: 32 };
+  const base = { lis: 58, wilk: 44, mis: 32, tygrys: 50 };
   for (const t of tanks) {
     if (t.isBot) continue;
     const o = actx.createOscillator(), f = actx.createBiquadFilter(), g = actx.createGain();
@@ -1508,15 +1619,18 @@ function medalSVG(kind, cls = '') {
     <path d="M50 70 L55.3 81.5 L67.8 82.6 L58.3 90.9 L61.1 103.2 L50 96.7 L38.9 103.2 L41.7 90.9 L32.2 82.6 L44.7 81.5 Z" fill="${c[2]}" opacity=".85"/>
   </svg>`;
 }
-function renderCabinet() {
+function renderCabinet() { // gablota: medale wg imion, w menu – ich liczba
   const list = Object.entries(medals).filter(([, n]) => n > 0).sort((a, b) => b[1] - a[1]);
-  document.getElementById('cabinet').innerHTML = list.length
-    ? '<span style="color:var(--muted)">Gablota medali:</span>' + list.map(([n, k]) => `<span class="m">${medalSVG('gold')}${esc(n)} ×${k}</span>`).join('')
-    : '';
+  $('medCnt').textContent = list.reduce((s, [, n]) => s + n, 0) + (camp.tygrys ? 1 : 0);
+  const vet = camp.tygrys ? `<div class="medal">${medalSVG('gold')}<b>Weteran kampanii</b><span>★</span></div>` : '';
+  $('medList').innerHTML = list.length || vet
+    ? vet + list.map(([n, k]) => `<div class="medal">${medalSVG('gold')}<b>${esc(n)}</b><span>×${k}</span></div>`).join('')
+    : '<p class="note">Gablota czeka na pierwszy złoty medal. Wygraj mecz, a pojawi się tutaj.</p>';
 }
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
 function newGame() {
+  mission = null;
   roster = [];
   for (let i = 0; i < settings.mode; i++) roster.push({ name: settings.names[i] || DEFAULT_NAMES[i], isBot: false, ctrl: CONTROLS[i], type: settings.types[i] });
   for (let i = 0; i < settings.bots; i++) roster.push({ name: 'Bot ' + (i + 1), isBot: true, type: null });
@@ -1529,8 +1643,17 @@ function newGame() {
   running = true; paused = false;
 }
 
+// w misji kampanii labirynt, wiatr i miejsca startu są zawsze takie same (stałe ziarno losowania)
 function newRound() {
-  const mapSel = demo ? 'random' : settings.map;
+  if (!mission) return newRoundInner();
+  const orig = Math.random;
+  let s = mission.def.seed >>> 0;
+  Math.random = () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
+  try { newRoundInner(); } finally { Math.random = orig; }
+  missionRoundStart();
+}
+function newRoundInner() {
+  const mapSel = demo ? 'random' : mission ? mission.def.map : settings.map;
   themeKey = mapSel === 'random' ? pick(Object.keys(THEMES)) : mapSel;
   theme = THEMES[themeKey];
   rule = demo ? null : theme.rule; // zasada specjalna mapy obowiązuje zawsze (poza pokazem w tle menu)
@@ -1551,27 +1674,33 @@ function newRound() {
     if (cells.length === roster.length) break;
   }
   // boty losują rodzaj czołgu w każdej rundzie
-  roster.forEach(p => { if (p.isBot) p.curType = TYPE_KEYS[Math.random() * 3 | 0]; else p.curType = p.type; });
-  tanks = roster.map((p, i) => ({
-    id: i, name: p.name, isBot: p.isBot, ctrl: p.ctrl, color: p.color,
-    typeKey: p.curType, type: TYPES[p.curType], r: TYPES[p.curType].r,
-    hp: TYPES[p.curType].hp, flash: 0, trackD: 0, tread: 0, recoil: 0, vx: 0, vy: 0, sand: 0, vis: 1, fireT: 0, burnT: 0, rs: { kills: 0, shots: 0, hits: 0, dmg: 0, fireDmg: 0, stuck: false, lastKillT: -9 }, // rs: statystyki rundy do osiągnięć
-    x: cells[i].c * CELL + CELL / 2, y: cells[i].r * CELL + CELL / 2,
-    a: (Math.random() * 4 | 0) * Math.PI / 2,
-    alive: true, cool: 0.5, fireHeld: true, shots: 0,
-    ai: { think: 0.4 + Math.random() * 0.3, aim: null, aimT: 0, wantFire: false, stuckT: 0, lastX: 0, lastY: 0, reverse: 0, revTurn: 1, goal: -1, field: null, moveT: 0, burstT: 0, aimHold: 0 },
-  }));
+  roster.forEach(p => { p.curType = p.isBot && !p.type ? PLAY_KEYS[Math.random() * 3 | 0] : p.type; }); // w kampanii boty mają ustalony rodzaj
+  tanks = roster.map((p, i) => makeTank(p, i, cells[i]));
   for (const t of tanks) pushOut(t);
   lastHumanDown = null;
   roundOver = false;
   const top = Math.max(0, ...scores);
-  banner = top >= settings.winRounds ? 'Dogrywka! · ' + theme.name : 'Runda ' + roundNo + ' · ' + theme.name;
-  bannerSub = rule ? RULES[rule].name : '';
+  banner = top >= settings.winRounds ? 'Dogrywka' : 'Runda ' + roundNo;
+  bannerSub = theme.name + (rule ? ': ' + RULES[rule].name : '');
   countT = demo ? 0 : 3 * COUNT_STEP; goT = 0; roundT = 0;
-  bannerT = countT + (rule ? 1.2 : 0.4); // nazwa zasady specjalnej zostaje chwilę po starcie
+  bannerT = countT + 1.2; // nazwa zasady specjalnej zostaje chwilę po starcie
   updateHud();
   sfx.roundStart();
   startEngines();
+}
+
+// czołg na starcie rundy (albo wjeżdżający z kolejną falą); p.mods – zmienione cechy, np. pancerz szefa
+function makeTank(p, i, cell) {
+  const T = p.mods ? Object.assign({}, TYPES[p.curType], p.mods) : TYPES[p.curType];
+  return {
+    id: i, name: p.name, isBot: p.isBot, diff: p.diff, turret: p.turret, boss: p.boss, ctrl: p.ctrl, color: p.color,
+    typeKey: p.curType, type: T, r: T.r,
+    hp: T.hp, flash: 0, trackD: 0, tread: 0, recoil: 0, vx: 0, vy: 0, sand: 0, vis: 1, fireT: 0, burnT: 0, rs: { kills: 0, shots: 0, hits: 0, dmg: 0, fireDmg: 0, stuck: false, lastKillT: -9 }, // rs: statystyki rundy do osiągnięć
+    x: cell.c * CELL + CELL / 2, y: cell.r * CELL + CELL / 2,
+    a: (Math.random() * 4 | 0) * Math.PI / 2,
+    alive: true, cool: 0.5, fireHeld: true, shots: 0,
+    ai: { think: 0.4 + Math.random() * 0.3, aim: null, aimT: 0, wantFire: false, stuckT: 0, lastX: 0, lastY: 0, reverse: 0, revTurn: 1, goal: -1, field: null, moveT: 0, burstT: 0, aimHold: 0 },
+  };
 }
 
 // ===================== STRZELANIE =====================
@@ -1584,12 +1713,14 @@ function fire(t) {
   if (t.cool > 0 || !t.alive) return;
   const T = t.type;
   if (t.shots >= T.maxB) return;
+  if (t.ammo !== undefined && t.ammo <= 0) return; // limit pocisków w misji
   const L = barrelLen(t);
   const bx = t.x + Math.cos(t.a) * L, by = t.y + Math.sin(t.a) * L;
   if (hitsObstacle(bx, by, BULLET_R)) return; // lufa w przeszkodzie – nie strzelaj
   const B = bulletSpec(t);
   bullets.push({ x: bx, y: by, vx: Math.cos(t.a) * B.speed, vy: Math.sin(t.a) * B.speed, b: 0, maxB: B.bounce, dmg: T.dmg, age: 0, owner: t, real: true });
-  t.shots++; t.cool = T.cool; t.fireT = 0.6; t.recoil = 1;
+  t.shots++; t.cool = T.cool; t.fireT = T.silent ? 0 : 0.6; t.recoil = 1;
+  if (t.ammo !== undefined) t.ammo--;
   if (!t.isBot && !demo) { stat('shots'); t.rs.shots++; } // w ciemności strzał na chwilę zdradza pozycję
   sfx.shoot(t.typeKey, bx);
   // błysk z lufy
@@ -1722,12 +1853,14 @@ function windAim(t, target) {
   }
   return null;
 }
+// przeciwnik bota: w szybkiej bitwie każdy czołg, w kampanii boty grają razem przeciw graczowi
+const isFoe = (a, b) => b !== a && (!mission || a.isBot !== b.isBot);
 function botUpdate(t, dt) {
-  const P = DIFF[demo ? 'normal' : settings.diff], ai = t.ai;
+  const P = DIFF[demo ? 'normal' : t.diff || settings.diff], ai = t.ai;
   // cel: najbliższy widoczny przeciwnik; jeśli nikogo nie widać (noc, krzaki) – jedzie w stronę najbliższego, ale nie strzela
   let target = null, best = Infinity, seen = null, bestSeen = Infinity;
   for (const o of tanks) {
-    if (!o.alive || o === t) continue;
+    if (!o.alive || !isFoe(t, o)) continue;
     const d = dist(t, o);
     if (d < best) { best = d; target = o; }
     if (d < bestSeen && canSee(t, o)) { bestSeen = d; seen = o; }
@@ -1746,7 +1879,7 @@ function botUpdate(t, dt) {
   if (ai.think <= 0) {
     ai.think = P.react * (0.7 + Math.random() * 0.6);
     const res = simShot(t, t.a, 2.5);
-    ai.wantFire = !!res && res !== t && canSee(t, res) && Math.random() < P.fireChance;
+    ai.wantFire = !!res && isFoe(t, res) && canSee(t, res) && Math.random() < P.fireChance;
     if (!seen || ai.moveT > 0) ai.aim = null;
     else if (lineOfSight(t, target)) {
       // prosto w cel; przy wietrze z poprawką na znoszenie (gdy żaden kąt nie trafia – bot podjeżdża bliżej)
@@ -1760,7 +1893,7 @@ function botUpdate(t, dt) {
       for (let k = 0; k < 32; k++) {
         const a = start + k / 32 * Math.PI * 2;
         const r = simShot(t, a, 2.5);
-        if (r && r !== t) { ai.aim = a + (Math.random() - 0.5) * P.err * 0.3; ai.aimT = 1.2; break; }
+        if (r && isFoe(t, r)) { ai.aim = a + (Math.random() - 0.5) * P.err * 0.3; ai.aimT = 1.2; break; }
       }
     } else if (ai.aimT <= 0) ai.aim = null;
   }
@@ -1770,7 +1903,7 @@ function botUpdate(t, dt) {
   if (t.cool <= 0 && t.shots < t.type.maxB && ai.burstT <= 0) {
     ai.burstT = P.react * 0.5;
     const r = simShot(t, t.a, 1.5);
-    if (r && r !== t && canSee(t, r) && Math.random() < P.fireChance) fire(t);
+    if (r && isFoe(t, r) && canSee(t, r) && Math.random() < P.fireChance) fire(t);
   }
 
   let turn = 0, move = 0;
@@ -1800,7 +1933,7 @@ function botUpdate(t, dt) {
     }
   }
   if (rule === 'sand' && t.sand > 1.0 && ai.reverse <= 0 && ai.aim === null) { ai.reverse = 0.35; ai.revTurn = 0; } // bot wie, że trzeba się odkopać
-  driveTank(t, turn, move, dt, P.turn);
+  driveTank(t, turn, t.turret ? 0 : move, dt, P.turn); // stanowisko (kampania) tylko się obraca
 }
 
 // ===================== WIDOCZNOŚĆ (noc, krzaki) =====================
@@ -1839,6 +1972,10 @@ const FIRE_TICK = 0.6; // co ile sekund żar zabiera 1 punkt pancerza
 let lastHumanDown = null; // ostatni zniszczony gracz w tej rundzie (kto go pokonał – zapisane w killer)
 // by: kto trafił (pocisk albo wybuch, który wywołał; null – żar), src: pocisk, skrzynia albo 'fire'
 function damageTank(t, dmg, hx, hy, by = null, src = null) {
+  if (mission && by && by !== t && by.isBot && t.isBot) return; // w kampanii boty nie ranią się nawzajem
+  if (mission && mission.def.ricochetOnly && t.isBot && by && !by.isBot && src && src.vx !== undefined && src.b === 0) { // misja „tylko rykoszety”
+    explode(hx, hy, '#cfd2bd', 4); sfx.thud(hx); return;
+  }
   t.hp -= dmg; t.flash = 0.15;
   achHit(t, dmg, by, src);
   if (t.hp <= 0) { t.hp = 0; t.alive = false; t.killer = by; achDeath(t, by, src); if (!t.isBot) lastHumanDown = t; explode(t.x, t.y, t.color, 45); scorch(t.x, t.y, t.r * 2.6, 0.75); updateHud(); sfx.explode(t.x); }
@@ -1897,7 +2034,7 @@ function update(dt) {
     }
     t.cool -= dt; t.flash -= dt; t.recoil = Math.max(0, t.recoil - dt * 8);
     if (t.isBot) botUpdate(t, dt); else humanUpdate(t, dt);
-    if (rule === 'fire') { // żar płonącego wraku: 1 punkt pancerza od razu po wjechaniu, potem co FIRE_TICK s
+    if (rule === 'fire' && !t.type.fireImmune) { // żar płonącego wraku: 1 punkt pancerza od razu po wjechaniu, potem co FIRE_TICK s
       if (cars.some(c => circleRect(t.x, t.y, t.r + FIRE_ZONE, c))) {
         t.burnT += dt;
         if (t.burnT >= FIRE_TICK) { t.burnT -= FIRE_TICK; damageTank(t, 1, t.x, t.y, null, 'fire'); if (!t.alive) continue; }
@@ -1943,8 +2080,9 @@ function update(dt) {
   removeWhere(particles, p => p.life <= 0);
   if (particles.length > 900) particles.splice(0, particles.length - 900);
 
-  // koniec rundy
-  if (!roundOver) {
+  // koniec rundy (w misji kampanii – według celu misji)
+  if (mission) missionUpdate(dt);
+  else if (!roundOver) {
     const alive = tanks.filter(t => t.alive), humans = tanks.filter(t => !t.isBot);
     if (alive.length <= 1) {
       roundOver = true; endTimer = 2.5;
@@ -2049,6 +2187,10 @@ function paintTankBase(c, k, color, state, frame) {
   c.fillStyle = col.hi; c.fillRect(-20, -14, 40, 5.5); // jaśniejsza górna krawędź
   c.fillStyle = 'rgba(0,0,0,.3)'; for (let i = 0; i < 3; i++) c.fillRect(d.grille + i * 2.3, -5, 1.2, 10); // kratka silnika
   if (d.stripe) { c.fillStyle = 'rgba(255,255,255,.5)'; c.fillRect(-15, -1, 11, 2); }
+  if (d.tiger) { // tygrysie pasy w poprzek kadłuba
+    c.fillStyle = 'rgba(12,10,6,.55)';
+    for (let x = -13; x < 16; x += 6) { c.beginPath(); c.moveTo(x, -11); c.lineTo(x + 3, -11); c.lineTo(x + 1, 0); c.lineTo(x + 3, 11); c.lineTo(x, 11); c.lineTo(x - 2, 0); c.closePath(); c.fill(); }
+  }
   if (alive) { // światła
     const [lx, ly] = d.lights;
     c.fillStyle = 'rgba(255,240,190,.75)'; c.fillRect(lx, -ly - 1.1, 1.6, 2.2); c.fillRect(lx, ly - 1.1, 1.6, 2.2);
@@ -2059,6 +2201,7 @@ function paintTankTurret(c, k, color, state) {
   const d = TANK_LOOK[k], col = tankColors(color, state);
   polyPath(c, d.tur, d.tx); c.fillStyle = col.tur; c.fill(); c.lineWidth = 1.5; c.strokeStyle = OUTLINE; c.stroke();
   c.save(); polyPath(c, d.tur, d.tx); c.clip(); c.fillStyle = col.turHi; c.fillRect(d.tx - 14, -12, 28, 4.5); c.restore();
+  if (d.tiger && state !== 'dead') { polyPath(c, d.tur, d.tx); c.strokeStyle = '#e8b93a'; c.lineWidth = 1.3; c.stroke(); } // złoty brzeg wieży
   c.fillStyle = 'rgba(0,0,0,.4)'; c.beginPath(); c.arc(d.tx - 2.5, -2, d.hatch, 0, Math.PI * 2); c.fill(); // właz
   if (state !== 'dead') { // znak na wieży
     const m = d.tx - d.mark;
@@ -2068,10 +2211,13 @@ function paintTankTurret(c, k, color, state) {
 }
 // lufa rysowana co klatkę (rec 0–1: odrzut po strzale)
 function paintTankBarrel(c, k, state, rec) {
-  const d = TANK_LOOK[k], b1 = d.b1 - rec * 3, y0 = -d.bw / 2;
+  const d = TANK_LOOK[k], b1 = d.b1 - rec * 3;
   c.fillStyle = state === 'dead' ? '#333' : '#202020'; c.strokeStyle = OUTLINE; c.lineWidth = 1;
-  c.fillRect(d.b0, y0, b1 - d.b0, d.bw); c.strokeRect(d.b0, y0, b1 - d.b0, d.bw);
-  if (d.brake) { c.fillRect(b1 - d.brake, y0 - 1.6, d.brake, d.bw + 3.2); c.strokeRect(b1 - d.brake, y0 - 1.6, d.brake, d.bw + 3.2); }
+  for (const oy of d.twin ? [-d.twin, d.twin] : [0]) { // Tygrys ma podwójną lufę
+    const y0 = oy - d.bw / 2;
+    c.fillRect(d.b0, y0, b1 - d.b0, d.bw); c.strokeRect(d.b0, y0, b1 - d.b0, d.bw);
+    if (d.brake) { c.fillRect(b1 - d.brake, y0 - 1.6, d.brake, d.bw + 3.2); c.strokeRect(b1 - d.brake, y0 - 1.6, d.brake, d.bw + 3.2); }
+  }
 }
 
 // gotowe obrazki części czołgu (part: 'base' – gąsienice i kadłub w 4 klatkach, 'tur' – wieża) dla rodzaju / koloru / stanu / skali
@@ -2120,10 +2266,10 @@ function drawTank(t) {
   if (t.alive && t.vis > 0.5) {
     let top = t.y - t.r - 10;
     if (top < 24) top = t.y + t.r + 24;
-    ctx.font = '600 11px Rubik, -apple-system, Arial'; ctx.textAlign = 'center';
-    if (!t.label) { t.label = t.name + ' · ' + t.type.name; t.labelW = ctx.measureText(t.label).width + 10; }
+    ctx.font = '600 12px "Barlow Semi Condensed", Arial, sans-serif'; ctx.textAlign = 'center';
+    if (!t.label) { t.label = t.name + ' (' + t.type.name + ')'; t.labelW = ctx.measureText(t.label).width + 10; }
     const tw = t.labelW;
-    ctx.fillStyle = 'rgba(15,20,12,.6)'; roundRect(ctx, t.x - tw / 2, top - 17, tw, 14, 4); ctx.fill();
+    ctx.fillStyle = 'rgba(15,20,12,.6)'; cutRect(ctx, t.x - tw / 2, top - 17, tw, 14, 4); ctx.fill();
     ctx.fillStyle = '#f2eedc'; ctx.fillText(t.label, t.x, top - 6.5);
     // pasek życia z podziałką
     const bwid = 36, frac = t.hp / t.type.hp;
@@ -2194,6 +2340,7 @@ function draw() {
     g.addColorStop(0, `rgba(255,120,30,${pulse * 1.6})`); g.addColorStop(0.7, `rgba(255,90,20,${pulse})`); g.addColorStop(1, 'rgba(255,90,20,0)');
     ctx.fillStyle = g; ctx.beginPath(); ctx.arc(cx, cy, R, 0, Math.PI * 2); ctx.fill();
   }
+  if (mission) drawZone();
   for (const t of trees) if (t.dynamic) { const sp = t.sprite; ctx.drawImage(sp.cv, t.x - sp.half, t.y - sp.half, sp.half * 2, sp.half * 2); }
   if (theme.night) drawNight();
 
@@ -2241,7 +2388,7 @@ function draw() {
   if (wind) { // strzałka wiatru
     const cx = W / 2, cy = 26;
     ctx.fillStyle = 'rgba(16,22,13,.7)'; roundRect(ctx, cx - 62, cy - 16, 124, 32, 8); ctx.fill();
-    ctx.font = '600 12px Rubik, Arial'; ctx.fillStyle = '#e8dcae'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
+    ctx.font = '700 14px "Barlow Semi Condensed", Arial, sans-serif'; ctx.fillStyle = '#e8dcae'; ctx.textAlign = 'left'; ctx.textBaseline = 'middle';
     ctx.fillText('WIATR', cx - 52, cy + 1);
     ctx.save(); ctx.translate(cx + 30, cy); ctx.rotate(wind.a);
     const L = 6 + wind.f / 26; // długość strzałki rośnie z siłą wiatru
@@ -2249,21 +2396,22 @@ function draw() {
     ctx.beginPath(); ctx.moveTo(-L, 0); ctx.lineTo(L, 0); ctx.moveTo(L - 6, -5); ctx.lineTo(L, 0); ctx.lineTo(L - 6, 5); ctx.stroke();
     ctx.restore(); ctx.textBaseline = 'alphabetic';
   }
+  if (mission) drawMissionHud();
   if (bannerT > 0 && !demo && !paused) {
-    const text = banner, h = bannerSub ? 100 : 76;
-    ctx.font = '400 34px "Black Ops One", Rubik, Arial';
+    const text = banner.toUpperCase(), h = bannerSub ? 100 : 76;
+    ctx.font = '900 50px "Big Shoulders Stencil Display", Impact, sans-serif';
     const tw = Math.max(380, ctx.measureText(text).width + 60);
     ctx.fillStyle = 'rgba(16,22,13,.82)';
-    roundRect(ctx, W / 2 - tw / 2, H / 2 - h / 2, tw, h, 10); ctx.fill();
+    cutRect(ctx, W / 2 - tw / 2, H / 2 - h / 2, tw, h, 14); ctx.fill();
     ctx.strokeStyle = 'rgba(200,183,122,.6)'; ctx.lineWidth = 2; ctx.stroke();
     ctx.fillStyle = '#e8dcae'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.fillText(text, W / 2, H / 2 + (bannerSub ? -12 : 2));
-    if (bannerSub) { ctx.font = '700 20px Rubik, Arial'; ctx.fillStyle = '#f0a53c'; ctx.fillText(bannerSub, W / 2, H / 2 + 26); }
+    if (bannerSub) { ctx.font = '700 22px "Barlow Semi Condensed", Arial, sans-serif'; ctx.fillStyle = '#f0a53c'; ctx.fillText(bannerSub, W / 2, H / 2 + 26); }
     ctx.textBaseline = 'alphabetic';
   }
   if (!demo && !paused && (countT > 0 || goT > 0)) { // odliczanie pod banerem
-    const txt = countT > 0 ? String(Math.ceil(countT / COUNT_STEP)) : 'START!';
-    ctx.font = '400 56px "Black Ops One", Rubik, Arial'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+    const txt = countT > 0 ? String(Math.ceil(countT / COUNT_STEP)) : 'START';
+    ctx.font = '900 84px "Big Shoulders Stencil Display", Impact, sans-serif'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
     ctx.lineWidth = 7; ctx.lineJoin = 'round'; ctx.strokeStyle = 'rgba(16,22,13,.85)'; ctx.strokeText(txt, W / 2, H / 2 + 100);
     ctx.fillStyle = countT > 0 ? '#e8dcae' : '#f0a53c'; ctx.fillText(txt, W / 2, H / 2 + 100);
     ctx.textBaseline = 'alphabetic';
@@ -2276,7 +2424,7 @@ function updateHud() {
     const dead = running && t && !t.alive ? ' dead' : '';
     return `<div class="card${dead}"><span class="sw" style="background:${p.color}"></span>
       <div><div class="nm">${esc(p.name)}</div><div class="tp">${TYPES[p.curType || p.type || 'wilk'].name}</div></div>
-      <span class="pts">${scores[i]}<small>/${settings.winRounds}</small></span></div>`;
+      ${mission ? '' : `<span class="pts">${scores[i]}<small>/${settings.winRounds}</small></span>`}</div>`;
   }).join('');
 }
 
@@ -2312,11 +2460,11 @@ achTiers('Strzelanie', 'ricochet', [
 achTiers('Strzelanie', 'bank2', [
   [1, 'Bilard', 'Zniszcz czołg pociskiem po co najmniej 2 odbiciach.'], [10, 'Bilardzista', 'Zniszcz 10 czołgów po co najmniej 2 odbiciach.']]);
 achFlag('Strzelanie', 'bank3', 'Trzy bandy', 'Zniszcz czołg pociskiem po 3 odbiciach.');
-achFlag('Strzelanie', 'lastBounce', 'Ostatnia szansa', 'Zniszcz czołg mrugającym pociskiem – na ostatnim odbiciu.');
+achFlag('Strzelanie', 'lastBounce', 'Ostatnia szansa', 'Zniszcz czołg mrugającym pociskiem, na ostatnim odbiciu.');
 achTiers('Strzelanie', 'longShots', [
   [1, 'Snajper', 'Zniszcz czołg pociskiem, który przeleciał ponad pół planszy.']]);
 achTiers('Strzelanie', 'hiddenKills', [
-  [1, 'Strzał na ślepo', 'Zniszcz czołg, którego nie widać – w ciemności albo w krzakach.'], [10, 'Nocny łowca', 'Zniszcz 10 niewidocznych czołgów.']]);
+  [1, 'Strzał na ślepo', 'Zniszcz czołg schowany w ciemności albo w krzakach.'], [10, 'Nocny łowca', 'Zniszcz 10 niewidocznych czołgów.']]);
 achFlag('Strzelanie', 'double', 'Podwójne trafienie', 'Zniszcz 2 czołgi w ciągu 1,5 sekundy.');
 achFlag('Strzelanie', 'hattrick', 'Hat-trick', 'Zniszcz 3 czołgi w jednej rundzie.');
 achFlag('Strzelanie', 'cleanField', 'Czyste pole', 'Sam zniszcz wszystkie boty w rundzie z 3 botami.');
@@ -2367,7 +2515,7 @@ for (const [k, [name, where]] of Object.entries(MAP_ACH)) achTiers('Mapy', 'mapW
 achTest('Mapy', 'allMaps', 'Zdobywca krain', 'Wygraj rundę na każdej z 8 map.',
   s => Object.keys(THEMES).every(k => s['mapWins_' + k]), s => [Object.keys(THEMES).filter(k => s['mapWins_' + k]).length, 8]);
 achFlag('Mapy', 'fromBush', 'Z ukrycia', 'W Lesie zniszcz czołg, stojąc w krzakach.');
-achFlag('Mapy', 'withWind', 'Z wiatrem', 'Na Polu zniszcz czołg z dużej odległości – mimo wiatru.');
+achFlag('Mapy', 'withWind', 'Z wiatrem', 'Na Polu zniszcz czołg z dużej odległości, pod wiatr.');
 achFlag('Mapy', 'hardGround', 'Twardy grunt', 'Wygraj rundę na Pustyni, ani razu nie grzęznąc w piasku.');
 achFlag('Mapy', 'skater', 'Łyżwiarz', 'Na Zimie zniszcz czołg, ślizgając się po zamarzniętej kałuży.');
 achFlag('Mapy', 'silent', 'Cichy zabójca', 'Wygraj rundę w Nocy w mieście, oddając najwyżej 3 strzały.');
@@ -2377,7 +2525,7 @@ achTiers('Czołgi', 'matchWins_lis', [[1, 'Lisia przebiegłość', 'Wygraj mecz 
 achTiers('Czołgi', 'matchWins_wilk', [[1, 'Wilczy kieł', 'Wygraj mecz Wilkiem.'], [10, 'Mistrz Wilka', 'Wygraj 10 meczów Wilkiem.']]);
 achTiers('Czołgi', 'matchWins_mis', [[1, 'Niedźwiedzia siła', 'Wygraj mecz Niedźwiedziem.'], [10, 'Mistrz Niedźwiedzia', 'Wygraj 10 meczów Niedźwiedziem.']]);
 achTest('Czołgi', 'allTypes', 'Wszechstronny', 'Wygraj mecz każdym z 3 czołgów.',
-  s => TYPE_KEYS.every(k => s['matchWins_' + k]), s => [TYPE_KEYS.filter(k => s['matchWins_' + k]).length, 3]);
+  s => PLAY_KEYS.every(k => s['matchWins_' + k]), s => [PLAY_KEYS.filter(k => s['matchWins_' + k]).length, 3]);
 achFlag('Czołgi', 'david', 'Dawid i Goliat', 'Lisem zniszcz Niedźwiedzia.');
 achFlag('Czołgi', 'roller', 'Walec', 'Niedźwiedziem zniszcz 3 czołgi w jednej rundzie.');
 
@@ -2391,7 +2539,7 @@ achTiers('Wytrwałość', 'days', [[3, 'Stały gość', 'Zagraj w 3 różne dni.
 
 achTiers('Ukryte', 'selfKills', [[1, 'Samobój', 'Zniszcz się własnym rykoszetem.'], [10, 'Pechowiec', 'Zniszcz się własnym rykoszetem 10 razy.']]);
 achFlag('Ukryte', 'kamikaze', 'Kamikaze', 'Zgiń w wybuchu, który zniszczył też przeciwnika.');
-achFlag('Ukryte', 'draw', 'Remis!', 'Zakończ rundę remisem – wszyscy zniszczeni naraz.');
+achFlag('Ukryte', 'draw', 'Remis!', 'Zakończ rundę remisem, gdy wszyscy giną naraz.');
 
 for (const [n, name] of [[25, 'Kolekcjoner'], [50, 'Łowca trofeów'], [75, 'Wielki kolekcjoner']])
   achTest('Kolekcja', 'col' + n, name, `Zdobądź ${n} osiągnięć.`, () => achCount() >= n, () => [Math.min(achCount(), n), n]);
@@ -2414,7 +2562,7 @@ function nextAchToast() {
   const q = achQueue.shift(), el = $('achToast');
   if (!q) { achShowing = false; return; }
   achShowing = true;
-  el.innerHTML = medalSVG('gold') + `<div><b>Osiągnięcie · ${q.n} / ${ACH.length}</b><span>${esc(q.a.name)}</span></div>`;
+  el.innerHTML = medalSVG('gold') + `<div><b>Osiągnięcie ${q.n}/${ACH.length}</b><span>${esc(q.a.name)}</span></div>`;
   el.classList.add('show'); sfx.ach();
   setTimeout(() => { el.classList.remove('show'); setTimeout(nextAchToast, 300); }, 2600);
 }
@@ -2428,7 +2576,7 @@ function achNewGame() {
 }
 function achHit(v, dmg, by, src) { // każde trafienie (src: pocisk, skrzynia albo 'fire')
   if (demo) return;
-  if (!v.isBot) { v.rs.dmg += dmg; if (src === 'fire') v.rs.fireDmg += dmg; }
+  if (!v.isBot) { v.rs.dmg += dmg; v.rs.hitN = (v.rs.hitN || 0) + 1; if (src === 'fire') v.rs.fireDmg += dmg; }
   if (by && !by.isBot && by !== v && src && src.vx !== undefined) { by.rs.hits++; stat('hits'); }
 }
 function achDeath(v, by, src) { // zniszczony czołg v; by – kto go zniszczył
@@ -2444,18 +2592,19 @@ function achDeath(v, by, src) { // zniszczony czołg v; by – kto go zniszczył
   r.lastKillT = roundT;
   if (r.kills >= 3) { flag('hattrick'); if (by.typeKey === 'mis') flag('roller'); }
   if (by.typeKey === 'lis' && v.typeKey === 'mis') flag('david');
-  if (v.vis < 0.5) stat('hiddenKills');
+  if (v.vis < 0.5) { stat('hiddenKills'); r.hiddenK = (r.hiddenK || 0) + 1; }
   if (rule === 'bushes' && inBush(by)) flag('fromBush');
   if (rule === 'slide' && onPuddle(by) && Math.hypot(by.vx, by.vy) > 30) flag('skater');
   if (bullet) {
     if (src.b >= 1) stat('ricochet');
     if (src.b >= 2) stat('bank2');
-    if (src.b >= 3) { flag('bank3'); if (rule === 'lowg') flag('moonBank'); }
+    if (src.b >= 3) { r.bank3 = true; flag('bank3'); if (rule === 'lowg') flag('moonBank'); }
+    if (v.boss && src.b >= 1) r.bossRico = true; // gwiazdka w kampanii
     if (src.b > 0 && src.b >= src.maxB) flag('lastBounce');
     if ((src.dist || 0) > W / 2) stat('longShots');
     if (wind && (src.dist || 0) > 300) flag('withWind');
   }
-  if (blast) stat('crateKills');
+  if (blast) { stat('crateKills'); r.crateK = (r.crateK || 0) + 1; }
   checkAch();
 }
 function achBlast(o, chain) { // po wybuchu skrzyni: Fajerwerki, Kamikaze, Reakcja łańcuchowa
@@ -2485,7 +2634,7 @@ function achRoundEnd(w) { // w – zwycięzca rundy (czołg) albo null (remis)
     if (r.shots >= 3 && r.hits >= r.shots) flag('noMiss');
     if (roundT < 10) flag('blitz');
     if (roundT > 90) flag('marathon');
-    if (nb >= 3 && settings.diff === 'hard') flag('lastStanding');
+    if (tanks.filter(t => t.isBot && (t.diff || settings.diff) === 'hard').length >= 3) flag('lastStanding');
     if (nb >= 3 && r.kills >= nb) flag('cleanField');
     if (rule === 'sand' && !r.stuck) flag('hardGround');
     if (rule === 'fire' && r.fireDmg === 0) flag('fireman');
@@ -2515,7 +2664,7 @@ function achMatchEnd(w) { // w – indeks zwycięzcy meczu
 
 // --- ekrany ---
 function renderVictoryAch() {
-  $('vach').innerHTML = newAch.length ? '<b>Nowe osiągnięcia:</b> ' + newAch.map(a => esc(a.name)).join(', ') + ` · razem ${achPct()}%` : '';
+  $('vach').innerHTML = newAch.length ? '<b>Nowe osiągnięcia:</b> ' + newAch.map(a => esc(a.name)).join(', ') + `. Masz już ${achPct()}%.` : '';
 }
 function renderAch() {
   $('achSum').innerHTML = `<span class="achpct">${achPct()}%</span>Zdobyte: ${achCount()} z ${ACH.length}`
@@ -2530,11 +2679,372 @@ function renderAch() {
         bar = `<div class="pb"><i style="width:${Math.round(100 * c / m)}%"></i></div><div class="pn">${f(c)} / ${f(m)}</div>`;
       }
       return `<div class="ach${has ? ' got' : ''}"><div class="ico">${medalSVG(has ? 'gold' : 'silver')}</div><div>` +
-        `<b>${secret ? '???' : esc(a.name)}</b><small>${secret ? 'Ukryte osiągnięcie – odkryj je w grze.' : esc(a.desc)}</small>${bar}</div></div>`;
+        `<b>${secret ? '???' : esc(a.name)}</b><small>${secret ? 'Ukryte. Odkryj je w grze.' : esc(a.desc)}</small>${bar}</div></div>`;
     }).join('') + '</div>';
   }).join('');
 }
 function goAch() { setScreen('achievements'); renderAch(); }
+
+// ===================== KAMPANIA =====================
+// 8 rozdziałów (po jednym na mapę), w każdym 3 misje: każdą gra się innym czołgiem. Misja to jedna runda ze stałym
+// labiryntem (stałe ziarno losowania), ustalonymi botami i własnym celem. Za misję: 1–3 gwiazdki.
+const CHAPTERS = [
+  { map: 'las', name: 'Las' }, { map: 'pole', name: 'Pole' }, { map: 'pustynia', name: 'Pustynia' }, { map: 'zima', name: 'Zima' },
+  { map: 'miasto', name: 'Miasto' }, { map: 'baza', name: 'Baza' }, { map: 'noc', name: 'Noc' }, { map: 'ksiezyc', name: 'Księżyc' },
+  { map: 'random', name: 'Elita', elite: true }, // misje elitarne: po zdobyciu ELITE_STARS gwiazdek w rozdziałach 1–8
+];
+// cel misji: kill – zniszcz wszystkich (także z kolejnych fal), survive – przetrwaj time s, zone – utrzymaj punkt time s.
+// bots: [{ type, diff, name?, turret? (stoi w miejscu), boss?, mods? (zmienione cechy czołgu, np. hp) }], waves: kolejne grupy botów,
+// repair: ile pancerza gracz odzyskuje przed każdą kolejną falą.
+// stars: dwa warunki na 2. i 3. gwiazdkę – ok(s) dostaje statystyki misji: time, hits (otrzymane trafienia), shots, ammo, bossRico…
+const MISSIONS = [
+  // ---------- 1. Las ----------
+  { id: '1-1', ch: 0, seed: 17, name: 'Pierwsze kroki', tank: 'lis',
+    desc: 'Pierwsze starcie w lesie. Naucz się jeździć i strzelać, zanim ruszysz dalej. Krzaki dobrze ukrywają, także Ciebie.',
+    goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Najwyżej 1 otrzymane trafienie', ok: s => s.hits <= 1 }, { text: 'Wygraj w mniej niż 45 sekund', ok: s => s.time < 45 }] },
+  { id: '1-2', ch: 0, seed: 36, name: 'Zza ściany', tank: 'wilk', ricochetOnly: true,
+    desc: 'Dwa stanowiska strzeleckie schowane za murami. Prosty strzał ich nie rusza, liczą się tylko rykoszety. Długa lufa Wilka bardzo tu pomaga.',
+    goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'easy', turret: true, name: 'Stanowisko 1' }, { type: 'lis', diff: 'easy', turret: true, name: 'Stanowisko 2' }],
+    stars: [{ text: 'Najwyżej 12 pocisków', ok: s => s.shots <= 12 }, { text: 'Bez otrzymania trafienia', ok: s => s.hits === 0 }] },
+  { id: '1-3', ch: 0, seed: 97, name: 'Leśnik', tank: 'mis', boss: true,
+    desc: 'Leśnik zna tu każdy krzak. Jego Wilk ma podwójny pancerz, a pomaga mu szybki Lis. Niedźwiedź wytrzyma najwięcej, więc to Ty idziesz na pierwszą linię.',
+    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'normal', name: 'Leśnik', boss: true, mods: { hp: 8 } }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }, { text: 'Zniszcz Leśnika rykoszetem', ok: s => s.bossRico }] },
+  // ---------- 2. Pole: wiatr ----------
+  { id: '2-1', ch: 1, seed: 3, name: 'Pod wiatr', tank: 'mis',
+    desc: 'Na polu mocno wieje, a ciężkie pociski Niedźwiedzia lecą wolno, więc wiatr znosi je najbardziej. Celuj z poprawką, strzałka na ekranie pokazuje wiatr.',
+    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'normal' }],
+    stars: [{ text: 'Najwyżej 6 pocisków', ok: s => s.shots <= 6 }, { text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }] },
+  { id: '2-2', ch: 1, seed: 37, name: 'Fale', tank: 'lis',
+    desc: 'Cztery Lisy nadjeżdżają jeden po drugim. Twój Lis strzela seriami, więc bierz je po kolei. Między falami czołg się naprawia.',
+    goal: { type: 'kill' }, repair: 2, bots: [{ type: 'lis', diff: 'easy' }], waves: [[{ type: 'lis', diff: 'easy' }], [{ type: 'lis', diff: 'easy' }], [{ type: 'lis', diff: 'normal' }]],
+    stars: [{ text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }, { text: 'Wygraj w mniej niż 90 sekund', ok: s => s.time < 90 }] },
+  { id: '2-3', ch: 1, seed: 7, name: 'Wichura', tank: 'wilk', boss: true,
+    desc: 'Wichura jeździ Niedźwiedziem z podwójnym pancerzem, a jego pociski odbijają się raz więcej. Długa lufa Wilka pozwoli trafić go z daleka.',
+    goal: { type: 'kill' }, bots: [{ type: 'mis', diff: 'normal', name: 'Wichura', boss: true, mods: { hp: 14, bounce: 3 } }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }, { text: 'Zniszcz Wichurę rykoszetem', ok: s => s.bossRico }] },
+  // ---------- 3. Pustynia: grząski piasek ----------
+  { id: '3-1', ch: 2, seed: 37, name: 'Zwiad', tank: 'wilk',
+    desc: 'Dwa szybkie Lisy patrolują pustynię. Jedź z przerwami, bo po długiej jeździe czołg grzęźnie w piasku.',
+    goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'normal' }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Ani razu nie ugrzęźnij w piasku', ok: s => !s.stuck }, { text: 'Wygraj w mniej niż 60 sekund', ok: s => s.time < 60 }] },
+  { id: '3-2', ch: 2, seed: 31, name: 'Przetrwaj', tank: 'mis',
+    desc: 'Dwa szybkie Lisy chcą Cię dopaść. Nie musisz ich niszczyć, wystarczy wytrzymać 40 sekund. Pancerz Niedźwiedzia sporo zniesie.',
+    goal: { type: 'survive', time: 40 }, bots: [{ type: 'lis', diff: 'easy' }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Zniszcz choć jednego przeciwnika', ok: s => s.kills >= 1 }, { text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }] },
+  { id: '3-3', ch: 2, seed: 11, name: 'Skorpion', tank: 'lis', boss: true,
+    desc: 'Skorpion jeździ najszybszym Lisem na pustyni, ma grubszy pancerz i więcej pocisków naraz. Walczy sam, szybkość na szybkość.',
+    goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'normal', name: 'Skorpion', boss: true, mods: { hp: 6, speed: 185, maxB: 9 } }],
+    stars: [{ text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }, { text: 'Wygraj w mniej niż 75 sekund', ok: s => s.time < 75 }] },
+  // ---------- 4. Zima: lód ----------
+  { id: '4-1', ch: 3, seed: 7, name: 'Ślizgawka', tank: 'lis',
+    desc: 'Na lodzie czołg sunie dalej, niż chcesz, a na zamarzniętych kałużach jeszcze bardziej. Hamuj wcześniej i nie wjeżdżaj w rykoszety.',
+    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'wilk', diff: 'easy' }],
+    stars: [{ text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }, { text: 'Wygraj w mniej niż 60 sekund', ok: s => s.time < 60 }] },
+  { id: '4-2', ch: 3, seed: 37, name: 'Ostatnie naboje', tank: 'mis', ammo: 15,
+    desc: 'W magazynie zostało tylko 15 pocisków, a przeciwników jest trzech. Każdy strzał musi się liczyć, rykoszety też.',
+    goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'easy' }, { type: 'lis', diff: 'easy' }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Zostaw co najmniej 3 pociski', ok: s => s.ammo >= 3 }, { text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }] },
+  { id: '4-3', ch: 3, seed: 23, name: 'Bałwan', tank: 'wilk', boss: true,
+    desc: 'Bałwan to Niedźwiedź z grubszym pancerzem, a jego pociski odbijają się aż 4 razy. Na lodzie łatwo wjechać pod własny rykoszet.',
+    goal: { type: 'kill' }, bots: [{ type: 'mis', diff: 'normal', name: 'Bałwan', boss: true, mods: { hp: 12, bounce: 4 } }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }, { text: 'Zniszcz Bałwana rykoszetem', ok: s => s.bossRico }] },
+  // ---------- 5. Miasto: płonące wraki ----------
+  { id: '5-1', ch: 4, seed: 7, name: 'Patrol', tank: 'mis',
+    desc: 'Dwa czołgi patrolują ulice pełne płonących wraków. Żar parzy od razu, więc trzymaj się od nich z daleka.',
+    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Bez poparzenia', ok: s => !s.fire }, { text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }] },
+  { id: '5-2', ch: 4, seed: 43, name: 'Zdobądź punkt', tank: 'lis',
+    desc: 'Zaznaczone skrzyżowanie jest na drugim końcu miasta. Dojedź tam i utrzymaj je przez 6 sekund, zanim boty Cię dopadną.',
+    goal: { type: 'zone', time: 6 }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'lis', diff: 'normal' }],
+    stars: [{ text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }, { text: 'Bez poparzenia', ok: s => !s.fire }] },
+  { id: '5-3', ch: 4, seed: 23, name: 'Strażak', tank: 'wilk', boss: true,
+    desc: 'Strażak nie boi się ognia, żar wraków go nie rani. Jeździ Wilkiem z grubszym pancerzem i walczy sam.',
+    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'normal', name: 'Strażak', boss: true, mods: { hp: 6, fireImmune: true } }],
+    stars: [{ text: 'Bez poparzenia', ok: s => !s.fire }, { text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }] },
+  // ---------- 6. Baza: skrzynie z amunicją ----------
+  { id: '6-1', ch: 5, seed: 7, name: 'Saper', tank: 'wilk',
+    desc: 'Baza jest pełna skrzyń z amunicją. Trafiona skrzynia wybucha i rani wszystko dookoła. Strzelaj w skrzynie, gdy wróg jest obok.',
+    goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'easy' }, { type: 'wilk', diff: 'easy' }],
+    stars: [{ text: 'Zniszcz jednego wybuchem skrzyni', ok: s => s.crateK >= 1 }, { text: 'Zniszcz obu wybuchami skrzyń', ok: s => s.crateK >= 2 }] },
+  { id: '6-2', ch: 5, seed: 7, name: 'Rajd', tank: 'lis',
+    desc: 'Punkt ewakuacji jest po drugiej stronie bazy. Przebij się tam szybkim Lisem, nie musisz niszczyć wrogów. Worki z piaskiem pochłaniają pociski.',
+    goal: { type: 'zone', time: 2 }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'wilk', diff: 'easy' }, { type: 'lis', diff: 'normal' }],
+    stars: [{ text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }, { text: 'Dojedź w mniej niż 40 sekund', ok: s => s.time < 40 }] },
+  { id: '6-3', ch: 5, seed: 3, name: 'Generał', tank: 'mis', boss: true,
+    desc: 'Generał dowodzi bazą z Niedźwiedzia o grubszym pancerzu. Rykoszety tu nie działają, ale skrzynie z amunicją mogą być Twoim sojusznikiem.',
+    goal: { type: 'kill' }, bots: [{ type: 'mis', diff: 'normal', name: 'Generał', boss: true, mods: { hp: 10 } }],
+    stars: [{ text: 'Najwyżej 4 otrzymane trafienia', ok: s => s.hits <= 4 }, { text: 'Zniszcz kogoś wybuchem skrzyni', ok: s => s.crateK >= 1 }] },
+  // ---------- 7. Noc: ciemność ----------
+  { id: '7-1', ch: 6, seed: 19, name: 'Polowanie', tank: 'mis',
+    desc: 'W nocy widać tylko to, co oświetlone. Dwa Lisy czają się w ciemności, a każdy strzał zdradza ich pozycję. Twoją też.',
+    goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'normal' }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Zniszcz czołg, którego nie widać', ok: s => s.hiddenK >= 1 }, { text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }] },
+  { id: '7-2', ch: 6, seed: 3, name: 'Cisza', tank: 'wilk', ammo: 6,
+    desc: 'Masz tylko 6 pocisków, a każdy strzał zdradza Twoją pozycję. Poczekaj, aż przeciwnik wjedzie w światło.',
+    goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'normal' }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Zostaw co najmniej 2 pociski', ok: s => s.ammo >= 2 }, { text: 'Bez otrzymania trafienia', ok: s => s.hits === 0 }] },
+  { id: '7-3', ch: 6, seed: 19, name: 'Duch', tank: 'lis', boss: true,
+    desc: 'Duch jeździ Wilkiem z grubszym pancerzem i strzela bez błysku, więc w ciemności go nie zobaczysz. Szybki Lis pomoże go wytropić.',
+    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'normal', name: 'Duch', boss: true, mods: { hp: 6, silent: true } }],
+    stars: [{ text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }, { text: 'Wygraj w mniej niż 60 sekund', ok: s => s.time < 60 }] },
+  // ---------- 8. Księżyc: nieważkość ----------
+  { id: '8-1', ch: 7, seed: 37, name: 'Dryf', tank: 'lis',
+    desc: 'Na Księżycu czołgi dryfują, a pociski lecą wolniej, ale odbijają się aż 5 razy. Wykorzystaj rykoszety.',
+    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'normal' }, { type: 'wilk', diff: 'normal' }],
+    stars: [{ text: 'Zniszcz czołg po 3 odbiciach pocisku', ok: s => s.bank3 }, { text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }] },
+  { id: '8-2', ch: 7, seed: 37, name: 'Fale w kosmosie', tank: 'mis',
+    desc: 'Cztery czołgi w trzech falach, na koniec dwa naraz. Na Księżycu pociski odbijają się aż 5 razy, więc pilnuj rykoszetów. Między falami czołg się naprawia.',
+    goal: { type: 'kill' }, repair: 4, bots: [{ type: 'wilk', diff: 'easy' }],
+    waves: [[{ type: 'mis', diff: 'easy' }], [{ type: 'wilk', diff: 'easy' }, { type: 'wilk', diff: 'easy' }]],
+    stars: [{ text: 'Najwyżej 5 otrzymanych trafień', ok: s => s.hits <= 5 }, { text: 'Wygraj w mniej niż 180 sekund', ok: s => s.time < 180 }] },
+  { id: '8-3', ch: 7, seed: 37, name: 'Finał', tank: null, boss: true, final: true,
+    desc: 'Wichura, Skorpion i Duch wracają na Księżyc i stają do walki jeden po drugim. Między pojedynkami czołg się naprawia. Wybierz czołg i zakończ kampanię.',
+    goal: { type: 'kill' }, repair: 3, bots: [{ type: 'mis', diff: 'easy', name: 'Wichura', boss: true, mods: { hp: 8, bounce: 3 } }],
+    waves: [[{ type: 'lis', diff: 'easy', name: 'Skorpion', boss: true, mods: { hp: 5, speed: 185, maxB: 9 } }], [{ type: 'wilk', diff: 'easy', name: 'Duch', boss: true, mods: { hp: 5, silent: true } }]],
+    stars: [{ text: 'Najwyżej 6 otrzymanych trafień', ok: s => s.hits <= 6 }, { text: 'Wygraj w mniej niż 150 sekund', ok: s => s.time < 150 }] },
+  // ---------- elita: po zdobyciu 60 gwiazdek ----------
+  { id: 'E-1', ch: 8, seed: 3, map: 'las', name: 'Leśnik elitarny', tank: null, boss: true,
+    desc: 'Leśnik wraca silniejszy: potrójny pancerz i dwa Lisy na poziomie Komandos. Dobry moment, żeby wypróbować Tygrysa.',
+    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'hard', name: 'Leśnik', boss: true, mods: { hp: 12 } }, { type: 'lis', diff: 'hard' }, { type: 'lis', diff: 'hard' }],
+    stars: [{ text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }, { text: 'Wygraj w mniej niż 90 sekund', ok: s => s.time < 90 }] },
+  { id: 'E-2', ch: 8, seed: 31, map: 'baza', name: 'Generał elitarny', tank: null, boss: true,
+    desc: 'Generał z potrójnym pancerzem i Wilk na poziomie Komandos. Bez skrzyń z amunicją będzie bardzo trudno.',
+    goal: { type: 'kill' }, bots: [{ type: 'mis', diff: 'hard', name: 'Generał', boss: true, mods: { hp: 21 } }, { type: 'wilk', diff: 'hard' }],
+    stars: [{ text: 'Najwyżej 4 otrzymane trafienia', ok: s => s.hits <= 4 }, { text: 'Zniszcz kogoś wybuchem skrzyni', ok: s => s.crateK >= 1 }] },
+  { id: 'E-3', ch: 8, seed: 7, map: 'noc', name: 'Duch elitarny', tank: null, boss: true,
+    desc: 'Duch i jego Cień: oba strzelają bez błysku, a Duch ma potrójny pancerz. Najtrudniejsza misja w grze.',
+    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'hard', name: 'Duch', boss: true, mods: { hp: 12, silent: true } }, { type: 'lis', diff: 'hard', name: 'Cień', mods: { silent: true } }],
+    stars: [{ text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }, { text: 'Wygraj w mniej niż 90 sekund', ok: s => s.time < 90 }] },
+];
+for (const m of MISSIONS) m.map = m.map || CHAPTERS[m.ch].map;
+const CAMP_LV = { easy: 'Rekrut', normal: 'Żołnierz', hard: 'Komandos' };
+const EASIER = { hard: 'normal', normal: 'easy', easy: 'easy' };
+
+// postęp: najlepsze gwiazdki i porażki z rzędu w każdej misji (osobno w każdej wersji gry)
+const CAMP_KEY = 'maze-tanks-web-kampania';
+let camp = { stars: {}, fails: {}, sel: 0 };
+try { const v = JSON.parse(localStorage.getItem(CAMP_KEY)); if (v && typeof v === 'object') camp = { stars: v.stars || {}, fails: v.fails || {}, sel: v.sel | 0, tygrys: !!v.tygrys }; } catch (_) {}
+const saveCamp = () => { try { localStorage.setItem(CAMP_KEY, JSON.stringify(camp)); } catch (_) {} };
+const ELITE_STARS = 60;
+const mainStars = () => MISSIONS.filter(m => !CHAPTERS[m.ch].elite).reduce((n, m) => n + (camp.stars[m.id] || 0), 0);
+// kolejna misja po wykonaniu poprzedniej; elitarne – wszystkie naraz po zdobyciu ELITE_STARS gwiazdek
+const missionUnlocked = i => CHAPTERS[MISSIONS[i].ch].elite ? mainStars() >= ELITE_STARS : i === 0 || (camp.stars[MISSIONS[i - 1].id] || 0) > 0;
+const chapterUnlocked = ch => { const i = MISSIONS.findIndex(m => m.ch === ch); return i >= 0 && missionUnlocked(i); };
+
+let mission = null, briefId = null, briefAssist = false, briefTank = null;
+// czołgi do wyboru w misji: przypisany, w finale i elicie dowolny; po kampanii także Tygrys (w ukończonych misjach)
+function missionTanks(m) {
+  const ts = m.tank ? [m.tank] : PLAY_KEYS.slice();
+  if (camp.tygrys && (!m.tank || camp.stars[m.id])) ts.push('tygrys');
+  return ts;
+}
+function goalText(m) {
+  const g = m.goal;
+  let t = g.type === 'survive' ? `Przetrwaj ${g.time} sekund` : g.type === 'zone' ? `Utrzymaj zaznaczony punkt przez ${g.time} sekund`
+    : m.ricochetOnly ? 'Zniszcz wszystkich, tylko rykoszetem' : 'Zniszcz wszystkich przeciwników';
+  if (m.waves) t += `, ${m.waves.length + 1} fale`;
+  if (m.ammo) t += `, masz ${m.ammo} pocisków`;
+  return t;
+}
+
+// ---------- przebieg misji ----------
+function botEntry(b, i, assist) {
+  return { name: b.name || 'Bot ' + (i + 1), isBot: true, type: b.type, diff: assist ? EASIER[b.diff] : b.diff, mods: b.mods || null, turret: !!b.turret, boss: !!b.boss };
+}
+function startMission(id, assist = false, tank = null) {
+  const def = MISSIONS.find(m => m.id === id);
+  tank = tank || def.tank || 'wilk';
+  initAudio();
+  if (document.activeElement && document.activeElement.blur) document.activeElement.blur();
+  mission = { id, def, assist, tank, done: false, hold: 0, waveI: 0, nextWaveT: 0 };
+  roster = [{ name: settings.name || settings.names[0], isBot: false, type: tank, mods: assist ? { hp: TYPES[tank].hp + 2 } : null,
+    ctrl: typeof CONTROLS !== 'undefined' ? CONTROLS[0] : undefined }];
+  def.bots.forEach((b, i) => roster.push(botEntry(b, i, assist)));
+  roster.forEach((p, i) => p.color = COLORS[i % COLORS.length]);
+  scores = roster.map(() => 0);
+  roundNo = 0; matchOver = false; demo = false;
+  achNewGame();
+  stopEngines();
+  newRound();
+  running = true; paused = false;
+  if (typeof resetSticks === 'function') resetSticks();
+  setScreen('game');
+}
+function missionRoundStart() { // po zbudowaniu rundy misji: baner, amunicja, punkt do zdobycia
+  const M = mission, me = tanks.find(t => !t.isBot);
+  banner = M.def.name; bannerSub = goalText(M.def);
+  if (M.def.ammo) me.ammo = M.def.ammo;
+  if (M.def.goal.type === 'zone') { // punkt: komórka najdalej od startu gracza (labirynt stały, więc punkt też)
+    const c0 = cellOf(me), d = distField(c0);
+    let best = 0;
+    const nearFire = i => cars.some(c => circleRect((i % COLS) * CELL + CELL / 2, (i / COLS | 0) * CELL + CELL / 2, CELL * 0.45 + FIRE_ZONE, c));
+    for (let i = 1; i < d.length; i++) if (d[i] > d[best] && !nearFire(i)) best = i; // nie przy płonącym wraku
+    M.zone = { x: (best % COLS) * CELL + CELL / 2, y: (best / COLS | 0) * CELL + CELL / 2 };
+  }
+  updateHud();
+}
+function spawnBots(list) { // kolejna fala: boty wjeżdżają daleko od gracza
+  const me = tanks.find(t => !t.isBot), mc = cellOf(me);
+  for (const b of list) {
+    const p = botEntry(b, roster.length - 1, mission.assist);
+    p.curType = p.type; p.color = COLORS[1 + (roster.length - 1) % (COLORS.length - 1)];
+    let cell = null;
+    for (let tries = 0; tries < 300 && !cell; tries++) {
+      const c = { c: Math.random() * COLS | 0, r: Math.random() * ROWS | 0 };
+      if (Math.abs(c.c - mc.c) + Math.abs(c.r - mc.r) >= (tries < 200 ? 5 : 3) && !tanks.some(t => t.alive && Math.hypot(t.x - (c.c * CELL + CELL / 2), t.y - (c.r * CELL + CELL / 2)) < CELL)) cell = c;
+    }
+    roster.push(p); scores.push(0);
+    const t = makeTank(p, roster.length - 1, cell || { c: 0, r: 0 });
+    pushOut(t); tanks.push(t);
+    explode(t.x, t.y, '#cfd2bd', 8);
+  }
+  updateHud();
+}
+function missionUpdate(dt) { // zamiast zwykłego końca rundy: cel misji
+  const M = mission, me = tanks.find(t => !t.isBot), g = M.def.goal;
+  if (M.done) { M.endT -= dt; if (M.endT <= 0 && !matchOver) showMissionResult(); return; }
+  const waves = M.def.waves || [];
+  if (M.waveI < waves.length && !tanks.some(t => t.isBot && t.alive)) { // poprzednia fala zniszczona – po chwili następna
+    M.nextWaveT += dt;
+    if (M.nextWaveT >= 1.5) {
+      if (M.def.repair && me.alive) { me.hp = Math.min(me.type.hp, me.hp + M.def.repair); banner = 'Naprawa +' + M.def.repair; bannerSub = 'Nadjeżdża kolejna fala'; bannerT = 1.4; }
+      spawnBots(waves[M.waveI]); M.waveI++; M.nextWaveT = 0;
+    }
+  }
+  if (!me.alive) return finishMission(false, 'Twój czołg został zniszczony.');
+  let win = false;
+  if (g.type === 'kill') win = M.waveI >= waves.length && !tanks.some(t => t.isBot && t.alive);
+  else if (g.type === 'survive') win = roundT >= g.time;
+  else if (g.type === 'zone') { if (Math.hypot(me.x - M.zone.x, me.y - M.zone.y) < CELL * 0.45) M.hold += dt; win = M.hold >= g.time; }
+  if (win) finishMission(true);
+  else if (me.ammo === 0 && !bullets.some(b => b.owner === me) && g.type === 'kill') finishMission(false, 'Skończyła się amunicja.');
+}
+function finishMission(win, reason = '') {
+  const M = mission, me = tanks.find(t => !t.isBot);
+  const r = me.rs, s = { time: roundT, hits: r.hitN || 0, shots: r.shots, ammo: me.ammo, bossRico: !!r.bossRico, stuck: r.stuck, fire: r.fireDmg,
+    kills: r.kills, crateK: r.crateK || 0, hiddenK: r.hiddenK || 0, bank3: !!r.bank3, dmgPct: r.dmg / me.type.hp };
+  M.done = true; M.win = win; M.reason = reason; M.endT = 2.2;
+  M.result = win ? [true, ...M.def.stars.map(c => !M.assist && !!c.ok(s))] : [false, false, false];
+  const stars = M.result.filter(Boolean).length;
+  if (win) { if (stars > (camp.stars[M.id] || 0)) camp.stars[M.id] = stars; camp.fails[M.id] = 0; }
+  if (win && M.def.final && !camp.tygrys) { camp.tygrys = true; M.unlocked = true; buildTankCards(); } // nagroda za kampanię
+  else camp.fails[M.id] = (camp.fails[M.id] || 0) + 1;
+  saveCamp();
+  banner = win ? 'Misja wykonana' : 'Misja nieudana'; bannerSub = win ? '' : reason; bannerT = 2.2;
+  if (win) sfx.win(); else sfx.lose();
+  achRoundEnd(win ? me : null);
+}
+
+// ---------- rysowanie w trakcie misji ----------
+function drawZone() { // punkt do zdobycia: pulsujące pole i postęp na okręgu
+  const M = mission;
+  if (M.def.goal.type !== 'zone' || !M.zone) return;
+  const { x, y } = M.zone, R = CELL * 0.42, k = Math.min(1, M.hold / M.def.goal.time), pulse = 0.5 + 0.5 * Math.sin(performance.now() / 250);
+  ctx.fillStyle = `rgba(232,137,42,${0.12 + 0.1 * pulse})`; ctx.fillRect(x - R, y - R, 2 * R, 2 * R);
+  ctx.strokeStyle = 'rgba(232,137,42,0.9)'; ctx.lineWidth = 3; ctx.setLineDash([8, 6]); ctx.strokeRect(x - R, y - R, 2 * R, 2 * R); ctx.setLineDash([]);
+  if (k > 0) { ctx.strokeStyle = '#f2c230'; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(x, y, R * 0.55, -Math.PI / 2, -Math.PI / 2 + k * Math.PI * 2); ctx.stroke(); }
+}
+function missionStatus() {
+  const M = mission, g = M.def.goal, waves = M.def.waves || [];
+  if (g.type === 'survive') return `Przetrwaj: ${Math.max(0, Math.ceil(g.time - roundT))} s`;
+  if (g.type === 'zone') return `Punkt: ${Math.floor(M.hold)} / ${g.time} s`;
+  const left = tanks.filter(t => t.isBot && t.alive).length + waves.slice(M.waveI).reduce((n, w) => n + w.length, 0);
+  return `Przeciwnicy: ${left}` + (waves.length ? `, fala ${Math.min(M.waveI + 1, waves.length + 1)} z ${waves.length + 1}` : '');
+}
+function drawMissionHud() { // pasek celu misji
+  const me = tanks.find(t => !t.isBot);
+  if (!me || mission.done) return;
+  const txt = missionStatus() + (me.ammo !== undefined ? `     Pociski: ${me.ammo}` : '');
+  const cx = W / 2, cy = H - 26;
+  ctx.font = '700 15px "Barlow Semi Condensed", Arial, sans-serif';
+  const w = ctx.measureText(txt).width + 30;
+  ctx.fillStyle = 'rgba(16,22,13,0.85)'; cutRect(ctx, cx - w / 2, cy - 14, w, 28, 7); ctx.fill();
+  ctx.strokeStyle = 'rgba(200,183,122,0.6)'; ctx.lineWidth = 1.5; ctx.stroke();
+  ctx.fillStyle = '#e8dcae'; ctx.textAlign = 'center'; ctx.textBaseline = 'middle'; ctx.fillText(txt, cx, cy + 1); ctx.textBaseline = 'alphabetic';
+}
+
+// ---------- ekrany kampanii ----------
+const starSVG = (on, style = '') => `<svg class="star${on ? ' on' : ''}" viewBox="0 0 24 24" style="${style}"><path d="M12 1.8l3 6.8 7.3.7-5.5 4.9 1.6 7.2L12 17.6l-6.4 3.8 1.6-7.2L1.7 9.3l7.3-.7z"/></svg>`;
+const starRow = n => `<span class="stars">${[0, 1, 2].map(i => starSVG(i < n)).join('')}</span>`;
+function goCampaign() { if (!demo) { stopEngines(); startDemo(); } setScreen('campaign'); renderCampaign(); }
+function renderCampaign() {
+  const got = MISSIONS.reduce((n, m) => n + (camp.stars[m.id] || 0), 0);
+  $('campStars').innerHTML = `${starSVG(true)}${got} / ${MISSIONS.length * 3}`;
+  if (!chapterUnlocked(camp.sel)) camp.sel = 0;
+  $('chapters').innerHTML = CHAPTERS.map((c, i) => {
+    const ms = MISSIONS.filter(m => m.ch === i), open = chapterUnlocked(i);
+    const st = ms.reduce((n, m) => n + (camp.stars[m.id] || 0), 0);
+    return `<button class="chap${i === camp.sel ? ' on' : ''}${open ? '' : ' locked'}" data-ch="${i}" style="background-image:url(${mapThumb(c.map)})">` +
+      `<span class="num">${c.elite ? '★' : i + 1}</span>${open ? '' : `<span class="lock">${c.elite ? mainStars() + '/' + ELITE_STARS + ' ★' : 'Zamknięte'}</span>`}` +
+      `<span class="cn"><b>${c.name}</b><small>${ms.length ? st + '/' + ms.length * 3 : ''}</small></span></button>`;
+  }).join('');
+  $('chapters').querySelectorAll('.chap').forEach(b => b.onclick = () => { const i = +b.dataset.ch; if (chapterUnlocked(i)) { camp.sel = i; saveCamp(); renderCampaign(); } });
+  const c = CHAPTERS[camp.sel], R = c.elite ? null : RULES[THEMES[c.map].rule], ms = MISSIONS.filter(m => m.ch === camp.sel);
+  $('chapter').innerHTML = (c.elite ? `<h3>Misje elitarne</h3><p class="note">Najtrudniejsze wersje szefów. Czołg wybierasz sam.</p>`
+    : `<h3>Rozdział ${camp.sel + 1}: ${c.name}</h3><p class="note">${R.name}. ${R.desc}</p>`) + '<div class="missions">' +
+    ms.map((m, k) => {
+      const open = missionUnlocked(MISSIONS.indexOf(m));
+      const where = c.elite ? THEMES[m.map].name : m.boss ? 'Szef' : 'Misja ' + (k + 1);
+      return `<button class="mis${open ? '' : ' locked'}" data-m="${m.id}"><img src="${tankIcon(m.tank || 'wilk', COLORS[0], true)}" alt="">` +
+        `<span><small>${where}, ${m.tank ? TYPES[m.tank].name : 'czołg do wyboru'}</small><b>${m.name}</b></span>${starRow(camp.stars[m.id] || 0)}</button>`;
+    }).join('') + '</div>';
+  $('chapter').querySelectorAll('.mis').forEach(b => b.onclick = () => { if (missionUnlocked(MISSIONS.findIndex(m => m.id === b.dataset.m))) openBrief(b.dataset.m); });
+}
+function unitCard(b, i) {
+  const notes = [TYPES[b.type].name, CAMP_LV[b.diff]];
+  if (b.turret) notes.push('stoi w miejscu');
+  if (b.mods && b.mods.hp) notes.push(`pancerz ${b.mods.hp}`);
+  return `<div class="unit${b.boss ? ' boss' : ''}"><img src="${tankIcon(b.type, COLORS[1 + i % (COLORS.length - 1)], true)}" alt="">` +
+    `<span><b>${b.name || 'Bot ' + (i + 1)}</b><small>${notes.join(', ')}</small></span></div>`;
+}
+function openBrief(id, assist = false, tank = null) {
+  const m = MISSIONS.find(x => x.id === id), k = MISSIONS.filter(x => x.ch === m.ch).indexOf(m), best = camp.stars[id] || 0;
+  const choice = missionTanks(m);
+  briefId = id; briefAssist = assist; briefTank = choice.includes(tank) ? tank : choice[0];
+  const foes = m.bots.map(unitCard).join('') + (m.waves || []).map((w, wi) => w.map((b, i) => unitCard(b, m.bots.length + i)).join('')).join('');
+  const conds = [goalText(m), ...m.stars.map(c => c.text)].map((t, i) => `<li>${starSVG(i < best)}<span>${t}</span></li>`).join('');
+  $('briefBox').innerHTML = `<div class="kick">${CHAPTERS[m.ch].elite ? 'Misja elitarna, ' + THEMES[m.map].name : `Rozdział ${m.ch + 1}, ${m.boss ? 'szef' : 'misja ' + (k + 1)}`}</div><h2>${m.name}</h2><p>${m.desc}</p>
+    <div class="bteams"><div><span class="lab">${choice.length > 1 ? 'Wybierz czołg' : 'Twój czołg'}</span><div class="brow">${choice.map(t =>
+      `<${choice.length > 1 ? 'button' : 'div'} class="unit me${choice.length > 1 ? ' pick' + (t === briefTank ? ' on' : '') : ''}" data-t="${t}"><img src="${tankIcon(t, COLORS[0], true)}" alt=""><span><b>${TYPES[t].name}</b><small>${TYPE_INFO[t].cls}</small></span></${choice.length > 1 ? 'button' : 'div'}>`).join('')}</div></div>
+      <div><span class="lab">Przeciwnicy</span><div class="brow">${foes}</div></div></div>
+    <div><span class="lab">Gwiazdki</span><ul class="conds">${conds}</ul></div>
+    ${(camp.fails[id] || 0) >= 3 ? `<button class="assist${assist ? ' on' : ''}" id="assistBtn">${assist ? '✓ ' : ''}Wersja ułatwiona: +2 pancerza i słabsze boty, najwyżej 1 gwiazdka</button>` : ''}
+    <div class="bbtns"><button class="ghost" id="briefBack">‹ Kampania</button><button class="cta" id="briefGo">Do boju</button></div>`;
+  $('briefBack').onclick = goCampaign;
+  $('briefGo').onclick = () => startMission(briefId, briefAssist, briefTank);
+  if ($('assistBtn')) $('assistBtn').onclick = () => openBrief(id, !briefAssist, briefTank);
+  $('briefBox').querySelectorAll('.pick').forEach(b => b.onclick = () => openBrief(id, briefAssist, b.dataset.t));
+  setScreen('brief');
+}
+function showMissionResult() {
+  matchOver = true; needsDraw = true;
+  stopEngines();
+  const M = mission, m = M.def, fails = camp.fails[M.id] || 0;
+  let next = MISSIONS[MISSIONS.indexOf(m) + 1];
+  if (next && !missionUnlocked(MISSIONS.indexOf(next))) next = null;
+  const rows = [goalText(m), ...m.stars.map(c => c.text)].map((t, i) => `<li>${starSVG(M.result[i])}<span>${t}</span></li>`).join('');
+  const btns = [];
+  if (M.win && next) btns.push(['cta', 'resNext', 'Dalej']);
+  if (!M.win) btns.push(['cta', 'resRetry', 'Jeszcze raz']);
+  if (!M.win && fails >= 3 && !M.assist) btns.push(['mbtn', 'resEasy', 'Spróbuj łatwiej']);
+  if (M.win) btns.push([next ? 'mbtn' : 'cta', 'resRetry', 'Jeszcze raz']);
+  btns.push(['mbtn', 'resCamp', 'Kampania']);
+  $('resBox').innerHTML = `<div class="kick">${m.name}</div><h2>${M.win ? 'Misja wykonana' : 'Misja nieudana'}</h2>
+    <div class="bigstars">${[0, 1, 2].map(i => starSVG(M.result[i], `animation-delay:${0.2 + i * 0.25}s`)).join('')}</div>
+    ${M.win ? '' : `<p class="note">${M.reason}</p>`}
+    ${M.assist ? '<p class="note">Wersja ułatwiona: najwyżej jedna gwiazdka.</p>' : ''}
+    ${M.unlocked ? `<div class="unlock"><img src="${tankIcon('tygrys', COLORS[0], true)}" alt=""><div><b>Kampania ukończona</b><span>Zdobywasz medal Weteran kampanii i Tygrysa, najlepszy czołg w grze. Wybierz go w garażu albo w misjach, które już przeszedłeś.</span></div></div>` : ''}
+    ${M.win && !next && m.final ? `<p class="note">Misje elitarne otworzą się po zdobyciu ${ELITE_STARS} gwiazdek w rozdziałach 1–8. Masz ${mainStars()}.</p>` : ''}
+    <ul class="conds">${rows}</ul>
+    <div class="vbtns">${btns.map(([c, id, t]) => `<button class="${c}" id="${id}">${t}</button>`).join('')}</div>`;
+  if ($('resNext')) $('resNext').onclick = () => openBrief(next.id);
+  $('resRetry').onclick = () => startMission(M.id, M.assist, M.tank);
+  if ($('resEasy')) $('resEasy').onclick = () => startMission(M.id, true, M.tank);
+  $('resCamp').onclick = goCampaign;
+  setScreen('result');
+}
 
 // ===================== KONIEC MECZU =====================
 function matchWinner() {
@@ -2551,10 +3061,10 @@ function showVictory(w) {
   achMatchEnd(w);
   if (!p.isBot) { medals[p.name] = (medals[p.name] || 0) + 1; saveMedals(); }
   document.getElementById('vmedal').innerHTML = medalSVG('gold', 'big');
-  document.getElementById('vtitle').textContent = p.name + ' wygrywa mecz!';
+  document.getElementById('vtitle').textContent = p.name + ' wygrywa mecz';
   document.getElementById('vsub').textContent = p.isBot
-    ? 'Bot zdobywa złoty medal. Czas na rewanż!'
-    : 'Złoty medal za ' + (settings.winRounds === 3 ? '3 wygrane rundy' : settings.winRounds + ' wygranych rund') + (medals[p.name] > 1 ? ' · to już ' + medals[p.name] + '. medal!' : '!');
+    ? 'Medal zgarnia bot. Czas na rewanż.'
+    : 'Złoty medal za ' + (settings.winRounds === 3 ? '3 wygrane rundy' : settings.winRounds + ' wygranych rund') + '.' + (medals[p.name] > 1 ? ' To już ' + medals[p.name] + '. medal.' : '');
   // ranking: miejsca wg punktów, ex aequo mają to samo miejsce
   const order = roster.map((r, i) => i).sort((a, b) => scores[b] - scores[a]);
   let place = 0, prev = null;
@@ -2571,7 +3081,7 @@ function showVictory(w) {
 }
 // ===================== EKRANY I MENU =====================
 const $ = id => document.getElementById(id);
-const SCREENS = ['splash', 'setup', 'pause', 'victory', 'achievements'];
+const SCREENS = ['splash', 'setup', 'pause', 'victory', 'achievements', 'how', 'medals', 'options', 'campaign', 'brief', 'result'];
 function setScreen(name) {
   screen = name;
   for (const s of SCREENS) $(s).classList.toggle('show', s === name);
@@ -2579,29 +3089,66 @@ function setScreen(name) {
 }
 
 const TYPE_INFO = {
-  lis:  { cls: 'lekki',  desc: 'Najszybszy na polu. Strzela seriami, ale wytrzyma tylko 4 trafienia.', stats: [5, 3, 1, 5] },
-  wilk: { cls: 'średni', desc: 'Uniwersalny: niezła prędkość, pancerz i siła ognia. Dobry na początek.', stats: [3, 3, 3, 3] },
-  mis:  { cls: 'ciężki', desc: 'Wolna forteca z najgrubszym pancerzem. Naraz ma tylko 2 pociski.', stats: [1, 5, 3, 2] },
+  lis:  { cls: 'lekki',  desc: 'Szybki jak błyskawica, strzela seriami. Mało wytrzyma.', stats: [5, 3, 1, 5] },
+  wilk: { cls: 'średni', desc: 'Dobry we wszystkim. Na początek najlepszy.', stats: [3, 3, 3, 3] },
+  mis:  { cls: 'ciężki', desc: 'Powolna forteca. Wytrzyma najwięcej, strzela rzadko.', stats: [1, 5, 3, 2] },
+  tygrys: { cls: 'ultra', desc: 'Nagroda za kampanię. Szybki jak Lis, pancerny jak Niedźwiedź.', stats: [5, 5, 5, 5] },
 };
-const STAT_NAMES = ['Prędkość', 'Pancerz', 'Siła ognia', 'Szybkostrzelność'];
+const STAT_NAMES = ['Prędkość', 'Pancerz', 'Siła ognia', 'Tempo ognia'];
 
 // ikona czołgu rysowana tym samym kodem co w grze
 const iconCache = {};
-function tankIcon(typeKey, color) {
-  const k = typeKey + color;
+function tankIcon(typeKey, color, wide = false) { // wide – czołg poziomo (karty w garażu), inaczej lufą do góry
+  const k = typeKey + color + wide;
   if (iconCache[k]) return iconCache[k];
-  const cv = document.createElement('canvas'); cv.width = cv.height = 168;
-  const c = cv.getContext('2d'), sc = 3, a = -Math.PI / 2;
-  c.translate(84, 92); c.scale(sc, sc);
+  const cv = document.createElement('canvas'), sc = wide ? 3.6 : 3, a = wide ? 0 : -Math.PI / 2;
+  cv.width = wide ? 250 : 168; cv.height = wide ? 176 : 168;
+  const c = cv.getContext('2d');
+  c.translate(wide ? 100 : 84, wide ? 86 : 92); c.scale(sc, sc);
   drawTankShadow(c, 0, 0, a, TYPES[typeKey].r);
   c.rotate(a); drawTankBody(c, typeKey, color, 'ok', sc, 0, 0);
   return (iconCache[k] = cv.toDataURL());
 }
 
+// miniatury map w garażu: ziemia, kawałek labiryntu i kilka przeszkód w barwach mapy (rysowane raz)
+const thumbCache = {};
+function drawThumb(c, key, x, y, w, h) {
+  const th = THEMES[key], s = h / 160, VW = w / s;
+  c.save(); c.beginPath(); c.rect(x, y, w, h); c.clip(); c.translate(x, y); c.scale(s, s);
+  c.fillStyle = th.base; c.fillRect(0, 0, VW, 160);
+  c.globalAlpha = 0.5;
+  for (let i = 0; i < 12; i++) { c.fillStyle = th.patches[i % 4]; c.beginPath(); c.arc((i * 53) % VW, (i * 37) % 160, 22 + (i % 3) * 8, 0, Math.PI * 2); c.fill(); }
+  c.globalAlpha = 1;
+  for (const seg of [{ x: 76, y: -4, w: WT, h: 88 }, { x: -4, y: 76, w: 64, h: WT }, { x: 156, y: 76, w: WT, h: 90 }, { x: 156, y: 76, w: 90, h: WT }, { x: 236, y: -4, w: WT, h: 60 }]) {
+    c.fillStyle = 'rgba(0,0,0,0.28)'; c.fillRect(seg.x + 3, seg.y + 4, seg.w, seg.h);
+    WALLS[th.wall](c, seg);
+  }
+  if (th.rule === 'fire') drawCar(c, { x: 168, y: 30, w: 36, h: 16, horiz: true, seed: 3, col: '#5b3a2e' });
+  [[36, 36, 13], [118, 122, 14], [204, 38, 12], [274, 124, 13]].forEach(([ox, oy, r], i) =>
+    drawTree(c, { x: ox, y: oy, r, kind: th.kinds[i % th.kinds.length], seed: i * 2.1 + 1, col: '#b23a2e' }));
+  if (th.night) {
+    c.fillStyle = 'rgba(4,7,20,0.78)'; c.fillRect(0, 0, VW, 160);
+    const g = c.createRadialGradient(118, 80, 0, 118, 80, 64);
+    g.addColorStop(0, 'rgba(255,214,140,0.55)'); g.addColorStop(1, 'rgba(255,214,140,0)');
+    c.fillStyle = g; c.fillRect(0, 0, VW, 160);
+  }
+  c.restore();
+}
+function mapThumb(key) {
+  if (thumbCache[key]) return thumbCache[key];
+  const cv = document.createElement('canvas'); cv.width = 240; cv.height = 140;
+  const c = cv.getContext('2d');
+  if (key === 'random') ['las', 'pustynia', 'zima', 'miasto'].forEach((k, i) => drawThumb(c, k, (i % 2) * 120, (i >> 1) * 70, 120, 70));
+  else drawThumb(c, key, 0, 0, 240, 140);
+  return (thumbCache[key] = cv.toDataURL());
+}
+
+
 function buildTankCards() {
-  $('tankcards').innerHTML = TYPE_KEYS.map(k => `
+  const keys = camp.tygrys ? [...PLAY_KEYS, 'tygrys'] : PLAY_KEYS;
+  $('tankcards').classList.toggle('four', keys.length > 3);
+  $('tankcards').innerHTML = keys.map(k => `
     <button class="tcard" data-type="${k}">
-      <span class="ok">WYBRANY</span>
       <img alt="">
       <span class="tclass">${TYPE_INFO[k].cls}</span>
       <span class="tname">${TYPES[k].name}</span>
@@ -2609,14 +3156,12 @@ function buildTankCards() {
       ${STAT_NAMES.map((n, i) => `<span class="stat"><span>${n}</span><span class="bar">${[1, 2, 3, 4, 5].map(v => `<i class="${v <= TYPE_INFO[k].stats[i] ? 'f' : ''}"></i>`).join('')}</span></span>`).join('')}
     </button>`).join('');
   $('tankcards').querySelectorAll('.tcard').forEach(b => b.onclick = () => { settings.types[editP] = b.dataset.type; saveSettings(); renderSetup(); });
+  document.querySelectorAll('[data-map]').forEach(b => b.style.backgroundImage = `url(${mapThumb(b.dataset.map)})`);
 }
 
 function renderSplash() {
-  $('winTxt').textContent = settings.winRounds === 3 ? '3 rundy' : settings.winRounds + ' rund';
-  $('stepMedal').innerHTML = medalSVG('gold');
-  $('splashTanks').innerHTML = TYPE_KEYS.map(k => `<div class="mini"><img src="${tankIcon(k, COLORS[0])}" alt=""><b>${TYPES[k].name}</b><small>${TYPE_INFO[k].cls}</small></div>`).join('');
   renderCabinet();
-  $('achBtn').textContent = `Osiągnięcia · ${achPct()}%`;
+  $('achPct').textContent = achPct() + '%';
 }
 
 // przyciski ustawień bitwy: atrybut data-* → odczyt i zapis wartości
@@ -2631,14 +3176,15 @@ const SETUP_OPTS = {
 };
 
 function renderSetup() {
+  settings.types = settings.types.map(t => t === 'tygrys' && !camp.tygrys ? 'wilk' : t); // Tygrys dopiero po kampanii
   if (settings.mode === 1) editP = 0;
   if (settings.mode === 1 && settings.bots === 0) settings.bots = 1;
   if (settings.mode + settings.bots > 5) settings.bots = 5 - settings.mode;
   for (const [attr, o] of Object.entries(SETUP_OPTS))
-    document.querySelectorAll(`#setup [data-${attr}]`).forEach(b => b.classList.toggle('on', b.dataset[attr] === String(o.get())));
+    document.querySelectorAll(`[data-${attr}]`).forEach(b => b.classList.toggle('on', b.dataset[attr] === String(o.get())));
   document.querySelectorAll('#setup [data-bots]').forEach(b => { const n = +b.dataset.bots; b.disabled = (settings.mode === 1 && n === 0) || settings.mode + n > 5; });
-  $('rulenote').textContent = settings.map === 'random' ? 'Każda mapa ma swoją zasadę specjalną, np. poślizg na Zimie.'
-    : RULES[THEMES[settings.map].rule].name + ' ' + RULES[THEMES[settings.map].rule].desc;
+  $('rulenote').textContent = settings.map === 'random' ? 'Co rundę inna mapa, każda z własną zasadą.'
+    : RULES[THEMES[settings.map].rule].name + '. ' + RULES[THEMES[settings.map].rule].desc;
   // zakładki graczy (tylko przy 2 graczach)
   $('ptabs').style.display = settings.mode === 2 ? '' : 'none';
   $('ptabs').innerHTML = [0, 1].map(i => `<button class="ptab${i === editP ? ' on' : ''}" data-p="${i}" style="--pc:${COLORS[i]}">
@@ -2651,19 +3197,21 @@ function renderSetup() {
   inp.placeholder = DEFAULT_NAMES[editP];
   document.querySelectorAll('#tankcards .tcard').forEach(b => {
     b.classList.toggle('on', b.dataset.type === settings.types[editP]);
-    b.querySelector('img').src = tankIcon(b.dataset.type, COLORS[editP]);
+    b.querySelector('img').src = tankIcon(b.dataset.type, COLORS[editP], true);
   });
   // podsumowanie na dole
+  const LV = { easy: 'Rekrut', normal: 'Żołnierz', hard: 'Komandos' };
   const pl = i => `${esc(settings.names[i])} (${TYPES[settings.types[i]].name})`;
   const who = settings.mode === 2 ? `${pl(0)} i ${pl(1)}` : pl(0);
-  const bots = settings.bots ? ` vs ${settings.bots} ${settings.bots === 1 ? 'bot' : 'boty'}` : '';
-  $('summary').innerHTML = `<b>${who}</b>${bots}<br><span>${settings.bots ? 'Boty: ' + { easy: 'łatwe', normal: 'normalne', hard: 'trudne' }[settings.diff] + ' · ' : ''}${settings.map === 'random' ? 'losowa mapa' : THEMES[settings.map].name.toLowerCase()} · mecz do ${settings.winRounds} wygranych</span>`;
+  const foes = settings.bots ? ` kontra ${settings.bots} ${settings.bots === 1 ? 'bot' : 'boty'}` : '';
+  const map = settings.map === 'random' ? 'losowa mapa' : 'mapa ' + THEMES[settings.map].name;
+  $('summary').innerHTML = `<b>${who}${foes}</b><span>${settings.bots ? 'Poziom ' + LV[settings.diff] + ', ' : ''}${map}, mecz do ${settings.winRounds}</span>`;
 }
-const refreshMenu = () => { if (screen === 'setup') renderSetup(); };
+const refreshMenu = () => { if (screen === 'setup' || screen === 'options') renderSetup(); };
 
 // pokazowa bitwa botów w tle menu
 function startDemo() {
-  demo = true; matchOver = false; paused = false;
+  mission = null; demo = true; matchOver = false; paused = false;
   roster = [1, 2, 3].map(i => ({ name: 'Bot', isBot: true, type: null, color: COLORS[i] }));
   scores = roster.map(() => 0); roundNo = 0;
   newRound();
@@ -2678,7 +3226,7 @@ function startGame() {
   newGame();
   setScreen('game');
 }
-function openPause() { if (screen !== 'game') return; paused = true; needsDraw = true; clearKeys(); setScreen('pause'); }
+function openPause() { if (screen !== 'game') return; $('p-setup').textContent = mission ? 'Kampania' : 'Garaż'; paused = true; needsDraw = true; clearKeys(); setScreen('pause'); }
 function resumeGame() { if (screen !== 'pause') return; paused = false; setScreen('game'); }
 
 // przyciski
@@ -2686,16 +3234,24 @@ $('play').onclick = goSetup;
 $('back').onclick = goSplash;
 $('start').onclick = startGame;
 $('p-resume').onclick = resumeGame;
-$('p-restart').onclick = startGame;
-$('p-setup').onclick = goSetup;
+$('p-restart').onclick = () => mission ? startMission(mission.id, mission.assist, mission.tank) : startGame();
+$('p-setup').onclick = () => mission ? goCampaign() : goSetup();
 $('p-menu').onclick = goSplash;
 $('again').onclick = startGame;
 $('v-setup').onclick = goSetup;
 $('tomenu').onclick = goSplash;
 $('achBtn').onclick = goAch;
 $('achBack').onclick = goSplash;
+$('campBtn').onclick = goCampaign;
+$('campBack').onclick = goSplash;
+$('howBtn').onclick = () => { $('howWin').textContent = settings.winRounds; setScreen('how'); };
+$('howBack').onclick = goSplash;
+$('medBtn').onclick = () => { renderCabinet(); setScreen('medals'); };
+$('medBack').onclick = goSplash;
+$('optBtn').onclick = () => { setScreen('options'); renderSetup(); };
+$('optBack').onclick = goSetup;
 for (const [attr, o] of Object.entries(SETUP_OPTS))
-  document.querySelectorAll(`#setup [data-${attr}]`).forEach(b => b.onclick = () => { o.set(b.dataset[attr]); renderSetup(); saveSettings(); });
+  document.querySelectorAll(`[data-${attr}]`).forEach(b => b.onclick = () => { o.set(b.dataset[attr]); renderSetup(); saveSettings(); });
 $('nameInput').addEventListener('input', e => { settings.names[editP] = e.target.value.trim().slice(0, 12) || DEFAULT_NAMES[editP]; saveSettings(); renderSetup(); });
 document.addEventListener('click', e => { if (e.target.closest && e.target.closest('.screen button')) { initAudio(); sfx.click(); } });
 // ===================== APLIKACJA (PWA) =====================
@@ -2723,7 +3279,7 @@ if (ON_WEB && !IS_STANDALONE) { // Safari nie ma przycisku instalacji – pokazu
   if (macSafari) { $('installHint').innerHTML = 'Zainstaluj grę na Macu: w Safari wybierz <b>Plik → Dodaj do Docka</b>.'; $('installHint').hidden = false; }
 }
 if (IS_TOUCH) { // telefon / tablet → podpowiedź o wersji dotykowej
-  $('otherEdition').innerHTML = 'Grasz na telefonie lub tablecie? Wybierz <a href="https://mjwawa.github.io/maze_tanks_mobile/">Maze Tanks Mobile</a> ze sterowaniem dotykowym.';
+  $('otherEdition').innerHTML = 'Grasz na telefonie albo tablecie? <a href="https://mjwawa.github.io/maze_tanks_mobile/">Wersja dotykowa ›</a>';
   $('otherEdition').hidden = false;
 }
 
@@ -2761,7 +3317,7 @@ buildTankCards();
 goSplash();
 requestAnimationFrame(loop);
 // czcionki wczytują się osobno: gdy już są, napisy nad czołgami trzeba zmierzyć od nowa
-if (document.fonts) Promise.all([document.fonts.load('600 11px Rubik', 'Aź'), document.fonts.load('34px "Black Ops One"', 'Aź')])
+if (document.fonts) Promise.all([document.fonts.load('600 12px "Barlow Semi Condensed"', 'Aź'), document.fonts.load('900 50px "Big Shoulders Stencil Display"', 'Aź')])
   .then(() => { for (const t of tanks) t.label = null; needsDraw = true; }).catch(() => {});
 </script>
 </body>
