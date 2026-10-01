@@ -249,10 +249,41 @@
   html { touch-action: manipulation; background: #161b14; }
   body.playing { position: fixed; inset: 0; overflow: hidden; }
   @media (pointer: coarse) { button { padding: 10px 14px; } }
+  /* ---------- osiągnięcia ---------- */
+  #achToast {
+    position: fixed; left: 50%; top: max(52px, calc(env(safe-area-inset-top) + 44px)); z-index: 45; display: flex; align-items: center; gap: 10px;
+    padding: 8px 18px 8px 10px; background: rgba(20,26,17,.95); border: 1px solid #c8b77a; border-radius: 14px; box-shadow: 0 10px 26px rgba(0,0,0,.5);
+    opacity: 0; transform: translate(-50%, -16px); transition: opacity .25s, transform .25s; pointer-events: none;
+  }
+  #achToast.show { opacity: 1; transform: translate(-50%, 0); }
+  #achToast svg { width: 26px; height: 34px; }
+  #achToast b { display: block; font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--khaki); }
+  #achToast span { font-size: 16px; font-weight: 700; }
+  .achs { max-width: 1120px; display: flex; flex-direction: column; gap: 12px; }
+  .achsum { text-align: center; color: var(--muted); font-size: 14px; }
+  .achpct { display: block; font-family: "Black Ops One", Rubik, sans-serif; font-size: 40px; line-height: 1.1; color: var(--khaki); }
+  .achbar { height: 8px; max-width: 420px; margin: 8px auto 0; border-radius: 4px; background: #33402c; overflow: hidden; }
+  .achbar i { display: block; height: 100%; background: linear-gradient(90deg, #b9ab6c, #f2c230); }
+  .achs h3 { margin: 10px 0 8px; font-size: 12px; letter-spacing: .2em; text-transform: uppercase; color: var(--khaki); }
+  .achs h3 span { color: var(--muted); letter-spacing: .05em; margin-left: 6px; }
+  .achgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 8px; }
+  .ach { display: flex; gap: 10px; align-items: flex-start; padding: 10px 12px; background: rgba(28,36,24,.92); border: 1px solid #3a4631; border-radius: 12px; }
+  .ach.got { border-color: #8a7a3e; background: rgba(52,48,26,.92); }
+  .ach .ico svg { width: 22px; height: 29px; }
+  .ach:not(.got) .ico { opacity: .35; }
+  .ach b { display: block; font-size: 14px; line-height: 1.2; }
+  .ach small { display: block; color: var(--muted); font-size: 12px; line-height: 1.35; margin-top: 2px; }
+  .ach .pb { height: 5px; border-radius: 3px; background: #33402c; margin-top: 6px; overflow: hidden; }
+  .ach .pb i { display: block; height: 100%; background: #b9ab6c; }
+  .ach .pn { font-size: 11px; color: var(--muted); margin-top: 3px; }
+  .vach { font-size: 13px; color: #cfd2bd; max-width: 360px; line-height: 1.5; }
+  .vach:empty { display: none; }
+  .vach b { color: var(--khaki); }
 </style>
 </head>
 <body>
 <div id="hud"></div>
+<div id="achToast" aria-live="polite"></div>
 <div id="wrap">
   <canvas id="c"></canvas>
 </div>
@@ -285,6 +316,7 @@
     <div class="installhint" id="installHint" hidden></div>
     <div class="installhint" id="otherEdition" hidden></div>
     <div id="cabinet"></div>
+    <button class="install" id="achBtn">Osiągnięcia</button>
     <div class="hint keys">Enter – graj &nbsp;·&nbsp; M – dźwięk wł./wył.</div>
   </div>
 </div>
@@ -349,6 +381,15 @@
   </div>
 </div>
 
+<!-- ===================== OSIĄGNIĘCIA ===================== -->
+<div class="screen" id="achievements">
+  <div class="inner achs">
+    <div class="topbar"><button class="ghost" id="achBack">← Menu</button><h2>Osiągnięcia</h2><span></span></div>
+    <div class="achsum" id="achSum"></div>
+    <div id="achList"></div>
+  </div>
+</div>
+
 <!-- ===================== ZWYCIĘSTWO ===================== -->
 <div class="screen" id="victory">
   <div class="inner vbox">
@@ -356,6 +397,7 @@
     <h2 id="vtitle"></h2>
     <div class="sub" id="vsub"></div>
     <div class="rank" id="vrank"></div>
+    <div class="vach" id="vach"></div>
     <div class="vbtns">
       <button class="cta" id="again">REWANŻ</button>
       <button class="menu-btn" id="v-setup">Zmień ustawienia</button>
@@ -479,7 +521,7 @@ const DIFF = {
 let screen = 'splash', editP = 0;          // widoczny ekran, gracz edytowany w ustawieniach
 let demo = false, running = false, paused = false, matchOver = false;
 let roundOver = false, endTimer = 0, bannerSub = '', banner = '', bannerT = 0, roundNo = 0;
-let countT = 0, goT = 0;                    // odliczanie przed rundą (gra stoi) i napis „START!” po nim
+let countT = 0, goT = 0, roundT = 0;                    // odliczanie przed rundą (gra stoi) i napis „START!” po nim
 const COUNT_STEP = 0.6;                     // 3, 2, 1 – po 0,6 s
 let tanks = [], bullets = [], particles = [], scores = [], roster = [];
 let needsDraw = true;                       // obraz stoi (pauza, koniec meczu) – rysuj tylko po zmianie
@@ -528,6 +570,7 @@ addEventListener('keydown', e => {
     else if (e.code === 'Enter') { e.preventDefault(); startGame(); }
     return;
   }
+  if (screen === 'achievements') { if (e.code === 'Escape') goSplash(); return; }
   if (screen === 'victory') {
     if (e.code === 'Enter') { e.preventDefault(); startGame(); }
     else if (e.code === 'Escape') goSplash();
@@ -1365,6 +1408,7 @@ const sfx = {
     for (const [f, d, l] of notes) { tone({ type: 'triangle', f0: f, dur: l, vol: 0.2, delay: d }); tone({ type: 'square', f0: f / 2, dur: l, vol: 0.04, delay: d }); }
     noise({ dur: 1.2, vol: 0.08, filter: 'highpass', f0: 6000, delay: 1.3 }); // blask talerza
   },
+  ach() { if (!this.ok()) return; [880, 1175, 1568].forEach((f, i) => tone({ type: 'triangle', f0: f, dur: 0.16, vol: 0.12, delay: i * 0.08 })); },
   click() { if (actx && soundOn) tone({ type: 'square', f0: 1200, f1: 800, dur: 0.035, vol: 0.05 }); },
 };
 
@@ -1479,6 +1523,7 @@ function newGame() {
   roster.forEach((p, i) => p.color = COLORS[i]);
   scores = roster.map(() => 0);
   roundNo = 0; matchOver = false; demo = false;
+  achNewGame();
   stopEngines();
   newRound();
   running = true; paused = false;
@@ -1510,7 +1555,7 @@ function newRound() {
   tanks = roster.map((p, i) => ({
     id: i, name: p.name, isBot: p.isBot, ctrl: p.ctrl, color: p.color,
     typeKey: p.curType, type: TYPES[p.curType], r: TYPES[p.curType].r,
-    hp: TYPES[p.curType].hp, flash: 0, trackD: 0, tread: 0, recoil: 0, vx: 0, vy: 0, sand: 0, vis: 1, fireT: 0, burnT: 0,
+    hp: TYPES[p.curType].hp, flash: 0, trackD: 0, tread: 0, recoil: 0, vx: 0, vy: 0, sand: 0, vis: 1, fireT: 0, burnT: 0, rs: { kills: 0, shots: 0, hits: 0, dmg: 0, fireDmg: 0, stuck: false, lastKillT: -9 }, // rs: statystyki rundy do osiągnięć
     x: cells[i].c * CELL + CELL / 2, y: cells[i].r * CELL + CELL / 2,
     a: (Math.random() * 4 | 0) * Math.PI / 2,
     alive: true, cool: 0.5, fireHeld: true, shots: 0,
@@ -1522,7 +1567,7 @@ function newRound() {
   const top = Math.max(0, ...scores);
   banner = top >= settings.winRounds ? 'Dogrywka! · ' + theme.name : 'Runda ' + roundNo + ' · ' + theme.name;
   bannerSub = rule ? RULES[rule].name : '';
-  countT = demo ? 0 : 3 * COUNT_STEP; goT = 0;
+  countT = demo ? 0 : 3 * COUNT_STEP; goT = 0; roundT = 0;
   bannerT = countT + (rule ? 1.2 : 0.4); // nazwa zasady specjalnej zostaje chwilę po starcie
   updateHud();
   sfx.roundStart();
@@ -1544,7 +1589,8 @@ function fire(t) {
   if (hitsObstacle(bx, by, BULLET_R)) return; // lufa w przeszkodzie – nie strzelaj
   const B = bulletSpec(t);
   bullets.push({ x: bx, y: by, vx: Math.cos(t.a) * B.speed, vy: Math.sin(t.a) * B.speed, b: 0, maxB: B.bounce, dmg: T.dmg, age: 0, owner: t, real: true });
-  t.shots++; t.cool = T.cool; t.fireT = 0.6; t.recoil = 1; // w ciemności strzał na chwilę zdradza pozycję
+  t.shots++; t.cool = T.cool; t.fireT = 0.6; t.recoil = 1;
+  if (!t.isBot && !demo) { stat('shots'); t.rs.shots++; } // w ciemności strzał na chwilę zdradza pozycję
   sfx.shoot(t.typeKey, bx);
   // błysk z lufy
   for (let i = 0; i < 6; i++) {
@@ -1574,7 +1620,7 @@ function moveBullet(b, dt) {
     for (const tr of treeGrid[gridIdx(b.x, b.y)]) {
       const dx = b.x - tr.x, dy = b.y - tr.y, d = Math.hypot(dx, dy), R = tr.r + BULLET_R;
       if (d < R && d > 0.01) {
-        if (tr.explosive) { if (b.real) detonate(tr); return false; } // trafienie w beczkę / skrzynię z amunicją
+        if (tr.explosive) { if (b.real) detonate(tr, b.owner); return false; } // trafienie w beczkę / skrzynię z amunicją
         const nx = dx / d, ny = dy / d, dot = b.vx * nx + b.vy * ny;
         if (dot < 0) { b.vx -= 2 * dot * nx; b.vy -= 2 * dot * ny; b.b++; if (b.real && b.b <= b.maxB) sfx.bounceTree(b.x); }
         b.x = tr.x + nx * R; b.y = tr.y + ny * R;
@@ -1620,6 +1666,7 @@ function driveTank(t, turn, move, dt, turnMult = 1) {
   let mul = 1;
   if (rule === 'sand') { // piasek: długa jazda do przodu = grzęźnięcie, postój lub cofanie uwalnia
     if (move > 0) t.sand = Math.min(1.3, t.sand + dt / 3); else t.sand = Math.max(0, t.sand - dt * (move < 0 ? 2 : 1.2));
+    if (t.sand > 1) t.rs.stuck = true;
     mul = 1 - 0.4 * clamp((t.sand - 0.8) / 0.5, 0, 1);
   }
   if (rule === 'bushes' && inBush(t)) mul *= 0.6;
@@ -1638,6 +1685,7 @@ function driveTank(t, turn, move, dt, turnMult = 1) {
   }
   t.moving = move !== 0 || turn !== 0;
   const moved = Math.hypot(t.x - ox, t.y - oy) + Math.abs(t.a - oa) * t.r;
+  if (!t.isBot && !demo) stat('dist', Math.hypot(t.x - ox, t.y - oy));
   t.trackD += moved;
   t.tread += move < 0 ? -moved : moved; // ogniwa gąsienic jadą do przodu / do tyłu
   if (t.trackD > 5) { t.trackD = 0; stampTracks(t); }
@@ -1789,20 +1837,24 @@ function explode(x, y, color, n) {
 const FIRE_ZONE = 24; // jak blisko wraku zaczyna parzyć (px od karoserii)
 const FIRE_TICK = 0.6; // co ile sekund żar zabiera 1 punkt pancerza
 let lastHumanDown = null; // ostatni zniszczony gracz w tej rundzie (kto go pokonał – zapisane w killer)
-function damageTank(t, dmg, hx, hy, by = null) { // by: czyj pocisk trafił (null = żar, wybuch)
+// by: kto trafił (pocisk albo wybuch, który wywołał; null – żar), src: pocisk, skrzynia albo 'fire'
+function damageTank(t, dmg, hx, hy, by = null, src = null) {
   t.hp -= dmg; t.flash = 0.15;
-  if (t.hp <= 0) { t.hp = 0; t.alive = false; t.killer = by; if (!t.isBot) lastHumanDown = t; explode(t.x, t.y, t.color, 45); scorch(t.x, t.y, t.r * 2.6, 0.75); updateHud(); sfx.explode(t.x); }
+  achHit(t, dmg, by, src);
+  if (t.hp <= 0) { t.hp = 0; t.alive = false; t.killer = by; achDeath(t, by, src); if (!t.isBot) lastHumanDown = t; explode(t.x, t.y, t.color, 45); scorch(t.x, t.y, t.r * 2.6, 0.75); updateHud(); sfx.explode(t.x); }
   else { explode(hx, hy, '#ffb020', 10); scorch(hx, hy, 7, 0.4); sfx.hit(t.x); }
 }
-// wybuch beczki (Miasto) lub skrzyni z amunicją (Baza): rani czołgi w pobliżu i odpala sąsiednie
-function detonate(o) {
+// wybuch skrzyni z amunicją (Baza): rani czołgi w pobliżu i odpala sąsiednie.
+// by – kto go wywołał (strzałem albo najechaniem), chain – wspólny licznik jednej reakcji łańcuchowej
+function detonate(o, by = null, chain = { n: 0 }) {
   if (o.dead) return;
-  o.dead = true;
+  o.dead = true; o.by = by; o.kills = []; chain.n++;
   removeWhere(trees, x => x === o); buildGrid();
   const R = rule === 'ammo' ? 80 : 70, dmg = rule === 'ammo' ? 2 : 1;
   explode(o.x, o.y, '#ff7a1a', 40); scorch(o.x, o.y, R * 0.6, 0.7); sfx.explode(o.x);
-  for (const t of tanks) if (t.alive && dist(t, o) < R + t.r) damageTank(t, dmg, t.x, t.y);
-  for (const n of trees) if (n.explosive && !n.dead && dist(n, o) < R) blasts.push({ o: n, t: 0.18 });
+  for (const t of tanks) if (t.alive && dist(t, o) < R + t.r) damageTank(t, dmg, t.x, t.y, by, o);
+  for (const n of trees) if (n.explosive && !n.dead && dist(n, o) < R) blasts.push({ o: n, t: 0.18, by, chain });
+  achBlast(o, chain);
 }
 function ricochet(x, y, nx, ny) { // odbicie od ściany: iskry (twarde ściany) albo pył (miękkie), lecą od ściany
   const hard = theme.hard, a0 = Math.atan2(ny, nx);
@@ -1823,8 +1875,8 @@ function update(dt) {
     if (countT <= 0) goT = 0.6;
     return;
   }
-  goT -= dt;
-  for (const b of blasts) if ((b.t -= dt) <= 0) detonate(b.o);
+  goT -= dt; roundT += dt;
+  for (const b of blasts) if ((b.t -= dt) <= 0) detonate(b.o, b.by, b.chain);
   for (const c of cars) { // płomienie i dym nad wrakami
     const cx = c.x + c.w / 2, cy = c.y + c.h / 2;
     if (Math.random() < dt * 30) particles.push({ x: cx + rand(-c.w / 2, c.w / 2), y: cy + rand(-c.h / 2, c.h / 2), vx: rand(-8, 8), vy: rand(-30, -10), life: rand(0.3, 0.6), max: 0.6, size: rand(2, 4.5), color: pick(['#ffb020', '#ff7a1a', '#ffd35c', '#e0452f']) });
@@ -1848,11 +1900,11 @@ function update(dt) {
     if (rule === 'fire') { // żar płonącego wraku: 1 punkt pancerza od razu po wjechaniu, potem co FIRE_TICK s
       if (cars.some(c => circleRect(t.x, t.y, t.r + FIRE_ZONE, c))) {
         t.burnT += dt;
-        if (t.burnT >= FIRE_TICK) { t.burnT -= FIRE_TICK; damageTank(t, 1, t.x, t.y); if (!t.alive) continue; }
+        if (t.burnT >= FIRE_TICK) { t.burnT -= FIRE_TICK; damageTank(t, 1, t.x, t.y, null, 'fire'); if (!t.alive) continue; }
       } else t.burnT = FIRE_TICK; // poza żarem licznik „naładowany” – wjazd od razu parzy
     }
     if (rule === 'ammo') for (const o of treeGrid[gridIdx(t.x, t.y)]) // najechanie na skrzynię z amunicją
-      if (o.explosive && dist(t, o) < t.r + o.r + 1.5) { detonate(o); break; }
+      if (o.explosive && dist(t, o) < t.r + o.r + 1.5) { detonate(o, t); break; }
   }
   // czołgi nie przenikają się
   for (let i = 0; i < tanks.length; i++) for (let j = i + 1; j < tanks.length; j++) {
@@ -1867,7 +1919,7 @@ function update(dt) {
   }
   // pociski
   for (const b of bullets) {
-    b.age += dt;
+    b.age += dt; b.dist = (b.dist || 0) + Math.hypot(b.vx, b.vy) * dt; // przebyta droga – do osiągnięć
     if (!moveBullet(b, dt) || b.age > BULLET_LIFE) {
       b.dead = true;
       sfx.fizzle(b.x);
@@ -1877,7 +1929,7 @@ function update(dt) {
     for (const t of tanks) {
       if (t.alive && bulletHits(b, t)) {
         b.dead = true;
-        damageTank(t, b.dmg, b.x, b.y, b.owner);
+        damageTank(t, b.dmg, b.x, b.y, b.owner, b);
         break;
       }
     }
@@ -1900,6 +1952,7 @@ function update(dt) {
       else banner = 'Remis!';
       bannerT = 2.5; bannerSub = ''; updateHud();
       if (alive.length === 1 && !alive[0].isBot) sfx.win(); else sfx.lose();
+      achRoundEnd(alive[0] || null);
     } else if (humans.length && humans.every(t => !t.alive)) {
       // wszyscy gracze zniszczeni, a botów zostało kilka: punkt dostaje tylko bot, który pokonał ostatniego gracza (gdy ten
       // zginął od rykoszetu, żaru lub wybuchu – najmniej uszkodzony bot). Punkt dla każdego żywego bota dawał ciągłe remisy i dogrywki.
@@ -1909,6 +1962,7 @@ function update(dt) {
       scores[w.id]++;
       banner = w.name + ' wygrywa rundę!'; bannerT = 2.5; bannerSub = ''; updateHud();
       sfx.lose();
+      achRoundEnd(w);
     }
   } else {
     endTimer -= dt;
@@ -2226,6 +2280,262 @@ function updateHud() {
   }).join('');
 }
 
+// ===================== OSIĄGNIĘCIA =====================
+// Liczniki (ach.s) rosną przy zdarzeniach w grze; osiągnięcie odblokowuje się, gdy jego warunek jest spełniony.
+// Liczą się tylko czołgi graczy (w trybie 2 graczy – obu) i tylko walka z botami: pojedynek gracza z graczem nie daje
+// zniszczeń ani zwycięstw (inaczej dałoby się je „nabić”). Pokaz w tle menu się nie liczy. Zapis w przeglądarce, osobno dla każdej wersji gry.
+const ACH_KEY = 'maze-tanks-web-osiagniecia';
+let ach = { s: {}, got: {} }, newAch = [];
+try { const v = JSON.parse(localStorage.getItem(ACH_KEY)); if (v && typeof v === 'object') ach = { s: v.s || {}, got: v.got || {} }; } catch (_) {}
+const saveAch = () => { try { localStorage.setItem(ACH_KEY, JSON.stringify(ach)); } catch (_) {} };
+const stat = (k, n = 1) => { ach.s[k] = (ach.s[k] || 0) + n; };
+const flag = k => { ach.s['f_' + k] = 1; };
+const achCount = () => Object.keys(ach.got).length;
+const achPct = () => Math.floor(100 * achCount() / ACH.length); // ogólny postęp w procentach – osiągnięć jest dokładnie 100
+
+const ACH = [];
+// kilka stopni jednego licznika: [próg, nazwa, opis]; fmt – jak pokazać postęp
+function achTiers(cat, key, tiers, fmt) {
+  for (const [n, name, desc] of tiers) ACH.push({ id: key + '_' + n, cat, name, desc, hidden: cat === 'Ukryte', fmt,
+    test: s => (s[key] || 0) >= n, prog: s => [Math.min(s[key] || 0, n), n] });
+}
+const achFlag = (cat, key, name, desc) => ACH.push({ id: key, cat, name, desc, hidden: cat === 'Ukryte', test: s => !!s['f_' + key] });
+const achTest = (cat, id, name, desc, test, prog) => ACH.push({ id, cat, name, desc, test, prog });
+
+achTiers('Strzelanie', 'kills', [
+  [1, 'Pierwsza krew', 'Zniszcz pierwszy czołg przeciwnika.'], [10, 'Czołgista', 'Zniszcz 10 czołgów przeciwnika.'],
+  [50, 'Weteran', 'Zniszcz 50 czołgów przeciwnika.'], [100, 'As pancerny', 'Zniszcz 100 czołgów przeciwnika.'],
+  [500, 'Legenda frontu', 'Zniszcz 500 czołgów przeciwnika.']]);
+achTiers('Strzelanie', 'ricochet', [
+  [1, 'Rykoszet!', 'Zniszcz czołg pociskiem po odbiciu.'], [10, 'Mistrz odbić', 'Zniszcz 10 czołgów rykoszetem.'],
+  [50, 'Geometra', 'Zniszcz 50 czołgów rykoszetem.'], [250, 'Profesor rykoszetów', 'Zniszcz 250 czołgów rykoszetem.']]);
+achTiers('Strzelanie', 'bank2', [
+  [1, 'Bilard', 'Zniszcz czołg pociskiem po co najmniej 2 odbiciach.'], [10, 'Bilardzista', 'Zniszcz 10 czołgów po co najmniej 2 odbiciach.']]);
+achFlag('Strzelanie', 'bank3', 'Trzy bandy', 'Zniszcz czołg pociskiem po 3 odbiciach.');
+achFlag('Strzelanie', 'lastBounce', 'Ostatnia szansa', 'Zniszcz czołg mrugającym pociskiem – na ostatnim odbiciu.');
+achTiers('Strzelanie', 'longShots', [
+  [1, 'Snajper', 'Zniszcz czołg pociskiem, który przeleciał ponad pół planszy.']]);
+achTiers('Strzelanie', 'hiddenKills', [
+  [1, 'Strzał na ślepo', 'Zniszcz czołg, którego nie widać – w ciemności albo w krzakach.'], [10, 'Nocny łowca', 'Zniszcz 10 niewidocznych czołgów.']]);
+achFlag('Strzelanie', 'double', 'Podwójne trafienie', 'Zniszcz 2 czołgi w ciągu 1,5 sekundy.');
+achFlag('Strzelanie', 'hattrick', 'Hat-trick', 'Zniszcz 3 czołgi w jednej rundzie.');
+achFlag('Strzelanie', 'cleanField', 'Czyste pole', 'Sam zniszcz wszystkie boty w rundzie z 3 botami.');
+achTiers('Strzelanie', 'shots', [
+  [100, 'Na rozgrzewkę', 'Wystrzel 100 pocisków.'], [1000, 'Ciężka artyleria', 'Wystrzel 1000 pocisków.']]);
+achTiers('Strzelanie', 'hits', [[100, 'Celne oko', 'Traf przeciwników 100 razy.']]);
+achFlag('Strzelanie', 'noMiss', 'Bez pudła', 'Wygraj rundę, trafiając każdym pociskiem (co najmniej 3 strzały).');
+
+achTiers('Wybuchy i ogień', 'crateKills', [
+  [1, 'Saper', 'Zniszcz czołg wybuchem skrzyni z amunicją.'], [10, 'Pirotechnik', 'Zniszcz 10 czołgów wybuchami skrzyń.']]);
+achFlag('Wybuchy i ogień', 'fireworks', 'Fajerwerki', 'Jednym wybuchem zniszcz 2 czołgi przeciwników.');
+achFlag('Wybuchy i ogień', 'chain', 'Reakcja łańcuchowa', 'Wywołaj wybuch, który odpali 3 skrzynie po kolei.');
+achTiers('Wybuchy i ogień', 'burned', [
+  [1, 'Gorąca pułapka', 'Niech bot spłonie przy płonącym wraku.']]);
+achFlag('Wybuchy i ogień', 'fireman', 'Strażak', 'Wygraj rundę w Mieście bez poparzenia.');
+
+achTiers('Przetrwanie', 'flawless', [
+  [1, 'Bez zadraśnięcia', 'Wygraj rundę bez otrzymania trafienia.'], [10, 'Nietykalny', 'Wygraj 10 rund bez otrzymania trafienia.']]);
+achTiers('Przetrwanie', 'clutch', [
+  [1, 'Na włosku', 'Wygraj rundę z 1 punktem pancerza.'], [10, 'Kot ma 9 żyć', 'Wygraj 10 rund z 1 punktem pancerza.']]);
+achFlag('Przetrwanie', 'iron', 'Żelazny', 'Wygraj mecz, nie tracąc ani punktu pancerza.');
+achFlag('Przetrwanie', 'lastStanding', 'Ostatni na placu', 'Wygraj rundę przeciw 3 trudnym botom.');
+achFlag('Przetrwanie', 'pacifist', 'Pacyfista', 'Wygraj rundę bez oddania strzału.');
+achFlag('Przetrwanie', 'marathon', 'Maraton', 'Wygraj rundę, która trwała ponad 90 sekund.');
+
+achTiers('Zwycięstwa', 'roundWins', [
+  [1, 'Pierwsza runda', 'Wygraj pierwszą rundę.'], [10, 'Dziesiątka', 'Wygraj 10 rund.'], [50, 'Wprawiony', 'Wygraj 50 rund.'],
+  [100, 'Setka', 'Wygraj 100 rund.'], [500, 'Marszałek', 'Wygraj 500 rund.']]);
+achTiers('Zwycięstwa', 'matchWins', [
+  [1, 'Zwycięzca', 'Wygraj pierwszy mecz.'], [5, 'Mistrz turnieju', 'Wygraj 5 meczów.'], [10, 'Czempion', 'Wygraj 10 meczów.'],
+  [50, 'Arcymistrz', 'Wygraj 50 meczów.'], [100, 'Nieśmiertelny', 'Wygraj 100 meczów.']]);
+achTiers('Zwycięstwa', 'bestStreak', [
+  [3, 'Złota seria', 'Wygraj 3 mecze z rzędu.'], [5, 'Nie do pokonania', 'Wygraj 5 meczów z rzędu.'], [10, 'Dynastia', 'Wygraj 10 meczów z rzędu.']]);
+achTiers('Zwycięstwa', 'wins_easy', [[1, 'Rekrut', 'Wygraj mecz z łatwymi botami.']]);
+achTiers('Zwycięstwa', 'wins_normal', [[1, 'Żołnierz', 'Wygraj mecz z normalnymi botami.']]);
+achTiers('Zwycięstwa', 'wins_hard', [[1, 'Komandos', 'Wygraj mecz z trudnymi botami.'], [10, 'Elita', 'Wygraj 10 meczów z trudnymi botami.']]);
+achFlag('Zwycięstwa', 'zero', 'Do zera', 'Wygraj mecz z trudnymi botami, nie oddając żadnej rundy.');
+achFlag('Zwycięstwa', 'comeback', 'Powrót z zaświatów', 'Wygraj mecz, choć przeciwnik prowadził już 3 rundami.');
+achFlag('Zwycięstwa', 'overtime', 'Nerwy ze stali', 'Wygraj mecz w dogrywce.');
+achFlag('Zwycięstwa', 'blitz', 'Błyskawica', 'Wygraj rundę w mniej niż 10 sekund.');
+achFlag('Zwycięstwa', 'oneVsAll', 'Jeden przeciw wszystkim', 'Sam wygraj mecz przeciw 3 trudnym botom.');
+achFlag('Zwycięstwa', 'noAim', 'Bez celownika', 'Wygraj mecz z trudnymi botami przy wyłączonym podglądzie toru.');
+
+const MAP_ACH = { las: ['Władca Lasu', 'w Lesie'], pole: ['Władca Pola', 'na Polu'], pustynia: ['Władca Pustyni', 'na Pustyni'],
+  zima: ['Władca Zimy', 'na mapie Zima'], miasto: ['Władca Miasta', 'w Mieście'], noc: ['Władca Nocy', 'w Nocy w mieście'],
+  baza: ['Władca Bazy', 'w Bazie wojskowej'], ksiezyc: ['Władca Księżyca', 'na Księżycu'] };
+for (const [k, [name, where]] of Object.entries(MAP_ACH)) achTiers('Mapy', 'mapWins_' + k, [[5, name, `Wygraj 5 rund ${where}.`]]);
+achTest('Mapy', 'allMaps', 'Zdobywca krain', 'Wygraj rundę na każdej z 8 map.',
+  s => Object.keys(THEMES).every(k => s['mapWins_' + k]), s => [Object.keys(THEMES).filter(k => s['mapWins_' + k]).length, 8]);
+achFlag('Mapy', 'fromBush', 'Z ukrycia', 'W Lesie zniszcz czołg, stojąc w krzakach.');
+achFlag('Mapy', 'withWind', 'Z wiatrem', 'Na Polu zniszcz czołg z dużej odległości – mimo wiatru.');
+achFlag('Mapy', 'hardGround', 'Twardy grunt', 'Wygraj rundę na Pustyni, ani razu nie grzęznąc w piasku.');
+achFlag('Mapy', 'skater', 'Łyżwiarz', 'Na Zimie zniszcz czołg, ślizgając się po zamarzniętej kałuży.');
+achFlag('Mapy', 'silent', 'Cichy zabójca', 'Wygraj rundę w Nocy w mieście, oddając najwyżej 3 strzały.');
+achFlag('Mapy', 'moonBank', 'Kosmiczny bilard', 'Na Księżycu zniszcz czołg pociskiem po 3 odbiciach.');
+
+achTiers('Czołgi', 'matchWins_lis', [[1, 'Lisia przebiegłość', 'Wygraj mecz Lisem.'], [10, 'Mistrz Lisa', 'Wygraj 10 meczów Lisem.']]);
+achTiers('Czołgi', 'matchWins_wilk', [[1, 'Wilczy kieł', 'Wygraj mecz Wilkiem.'], [10, 'Mistrz Wilka', 'Wygraj 10 meczów Wilkiem.']]);
+achTiers('Czołgi', 'matchWins_mis', [[1, 'Niedźwiedzia siła', 'Wygraj mecz Niedźwiedziem.'], [10, 'Mistrz Niedźwiedzia', 'Wygraj 10 meczów Niedźwiedziem.']]);
+achTest('Czołgi', 'allTypes', 'Wszechstronny', 'Wygraj mecz każdym z 3 czołgów.',
+  s => TYPE_KEYS.every(k => s['matchWins_' + k]), s => [TYPE_KEYS.filter(k => s['matchWins_' + k]).length, 3]);
+achFlag('Czołgi', 'david', 'Dawid i Goliat', 'Lisem zniszcz Niedźwiedzia.');
+achFlag('Czołgi', 'roller', 'Walec', 'Niedźwiedziem zniszcz 3 czołgi w jednej rundzie.');
+
+const km = v => (v / 8000).toFixed(1).replace('.', ',') + ' km'; // 1 kratka labiryntu = 10 m
+achTiers('Wytrwałość', 'dist', [[8000, 'Kierowca', 'Przejedź 1 km (kratka labiryntu to 10 m).'],
+  [80000, 'Długodystansowiec', 'Przejedź 10 km.'], [400000, 'Dookoła świata', 'Przejedź 50 km.']], km);
+achTiers('Wytrwałość', 'matches', [[10, 'Stały bywalec', 'Rozegraj 10 meczów.'],
+  [100, 'Nie do zatrzymania', 'Rozegraj 100 meczów.']]);
+achTiers('Wytrwałość', 'days', [[3, 'Stały gość', 'Zagraj w 3 różne dni.'], [7, 'Tydzień w okopach', 'Zagraj w 7 różnych dni.'],
+  [30, 'Miesiąc na froncie', 'Zagraj w 30 różnych dni.']]);
+
+achTiers('Ukryte', 'selfKills', [[1, 'Samobój', 'Zniszcz się własnym rykoszetem.'], [10, 'Pechowiec', 'Zniszcz się własnym rykoszetem 10 razy.']]);
+achFlag('Ukryte', 'kamikaze', 'Kamikaze', 'Zgiń w wybuchu, który zniszczył też przeciwnika.');
+achFlag('Ukryte', 'draw', 'Remis!', 'Zakończ rundę remisem – wszyscy zniszczeni naraz.');
+
+for (const [n, name] of [[25, 'Kolekcjoner'], [50, 'Łowca trofeów'], [75, 'Wielki kolekcjoner']])
+  achTest('Kolekcja', 'col' + n, name, `Zdobądź ${n} osiągnięć.`, () => achCount() >= n, () => [Math.min(achCount(), n), n]);
+achTest('Kolekcja', 'colAll', 'Komplet', 'Zdobądź wszystkie pozostałe osiągnięcia.',
+  () => achCount() >= ACH.length - 1, () => [Math.min(achCount(), ACH.length - 1), ACH.length - 1]);
+const ACH_CATS = ['Strzelanie', 'Wybuchy i ogień', 'Przetrwanie', 'Zwycięstwa', 'Mapy', 'Czołgi', 'Wytrwałość', 'Kolekcja', 'Ukryte'];
+
+function checkAch() {
+  if (demo) return;
+  let found = true;
+  while (found) { // kolejne przejście – osiągnięcia za liczbę osiągnięć
+    found = false;
+    for (const a of ACH) if (!ach.got[a.id] && a.test(ach.s)) { ach.got[a.id] = Date.now(); newAch.push(a); achToast(a); found = true; }
+  }
+  if (newAch.length) saveAch();
+}
+let achQueue = [], achShowing = false;
+function achToast(a) { achQueue.push(a); if (!achShowing) nextAchToast(); }
+function nextAchToast() {
+  const a = achQueue.shift(), el = $('achToast');
+  if (!a) { achShowing = false; return; }
+  achShowing = true;
+  el.innerHTML = medalSVG('gold') + `<div><b>Osiągnięcie</b><span>${esc(a.name)}</span></div>`;
+  el.classList.add('show'); sfx.ach();
+  setTimeout(() => { el.classList.remove('show'); setTimeout(nextAchToast, 300); }, 2600);
+}
+
+// --- zdarzenia z gry ---
+function achNewGame() {
+  newAch = [];
+  const today = new Date().toLocaleDateString('sv'); // RRRR-MM-DD, czas lokalny
+  if (ach.s.lastDay !== today) { ach.s.lastDay = today; stat('days'); }
+  checkAch(); saveAch();
+}
+function achHit(v, dmg, by, src) { // każde trafienie (src: pocisk, skrzynia albo 'fire')
+  if (demo) return;
+  if (!v.isBot) { v.rs.dmg += dmg; if (src === 'fire') v.rs.fireDmg += dmg; }
+  if (by && !by.isBot && by !== v && src && src.vx !== undefined) { by.rs.hits++; stat('hits'); }
+}
+function achDeath(v, by, src) { // zniszczony czołg v; by – kto go zniszczył
+  if (demo) return;
+  const bullet = src && src.vx !== undefined, blast = src && src.explosive;
+  if (blast) src.kills.push(v);
+  if (v.isBot && src === 'fire') stat('burned');
+  if (by === v && bullet && !v.isBot) stat('selfKills');
+  if (!by || by.isBot || by === v || !v.isBot) { checkAch(); return; }
+  const r = by.rs;
+  stat('kills'); r.kills++;
+  if (roundT - r.lastKillT < 1.5) flag('double');
+  r.lastKillT = roundT;
+  if (r.kills >= 3) { flag('hattrick'); if (by.typeKey === 'mis') flag('roller'); }
+  if (by.typeKey === 'lis' && v.typeKey === 'mis') flag('david');
+  if (v.vis < 0.5) stat('hiddenKills');
+  if (rule === 'bushes' && inBush(by)) flag('fromBush');
+  if (rule === 'slide' && onPuddle(by) && Math.hypot(by.vx, by.vy) > 30) flag('skater');
+  if (bullet) {
+    if (src.b >= 1) stat('ricochet');
+    if (src.b >= 2) stat('bank2');
+    if (src.b >= 3) { flag('bank3'); if (rule === 'lowg') flag('moonBank'); }
+    if (src.b > 0 && src.b >= src.maxB) flag('lastBounce');
+    if ((src.dist || 0) > W / 2) stat('longShots');
+    if (wind && (src.dist || 0) > 300) flag('withWind');
+  }
+  if (blast) stat('crateKills');
+  checkAch();
+}
+function achBlast(o, chain) { // po wybuchu skrzyni: Fajerwerki, Kamikaze, Reakcja łańcuchowa
+  const by = o.by;
+  if (demo || !by || by.isBot) return;
+  const enemies = o.kills.filter(t => t.isBot).length;
+  if (enemies >= 2) flag('fireworks');
+  if (enemies >= 1 && o.kills.includes(by)) flag('kamikaze');
+  if (chain.n >= 3) flag('chain');
+  checkAch();
+}
+function achRoundEnd(w) { // w – zwycięzca rundy (czołg) albo null (remis)
+  if (demo) return;
+  for (const t of tanks) if (!t.isBot) { // do osiągnięć za cały mecz: obrażenia i największa strata do lidera
+    const p = roster[t.id], others = scores.filter((_, i) => i !== t.id);
+    p.dmgMatch = (p.dmgMatch || 0) + t.rs.dmg;
+    if (others.length) p.maxBehind = Math.max(p.maxBehind || 0, Math.max(...others) - scores[t.id]);
+  }
+  if (!w && !tanks.some(t => t.alive)) flag('draw');
+  const nb = tanks.filter(t => t.isBot).length;
+  if (w && !w.isBot && nb > 0) {
+    const r = w.rs;
+    stat('roundWins'); stat('mapWins_' + themeKey);
+    if (r.dmg === 0) stat('flawless');
+    if (w.hp === 1) stat('clutch');
+    if (r.shots === 0) flag('pacifist');
+    if (r.shots >= 3 && r.hits >= r.shots) flag('noMiss');
+    if (roundT < 10) flag('blitz');
+    if (roundT > 90) flag('marathon');
+    if (nb >= 3 && settings.diff === 'hard') flag('lastStanding');
+    if (nb >= 3 && r.kills >= nb) flag('cleanField');
+    if (rule === 'sand' && !r.stuck) flag('hardGround');
+    if (rule === 'fire' && r.fireDmg === 0) flag('fireman');
+    if (rule === 'dark' && r.shots <= 3) flag('silent');
+  }
+  checkAch(); saveAch();
+}
+function achMatchEnd(w) { // w – indeks zwycięzcy meczu
+  if (demo) return;
+  const p = roster[w], humans = roster.filter(q => !q.isBot).length, nb = roster.length - humans;
+  stat('matches');
+  if (nb === 0) { checkAch(); saveAch(); return; } // pojedynek graczy – bez zwycięstw i serii
+  if (p.isBot) { ach.s.streak = 0; checkAch(); saveAch(); return; }
+  stat('matchWins'); stat('matchWins_' + p.type);
+  stat('wins_' + settings.diff);
+  ach.s.streak = (ach.s.streak || 0) + 1;
+  ach.s.bestStreak = Math.max(ach.s.bestStreak || 0, ach.s.streak);
+  const hard = settings.diff === 'hard';
+  if (hard && scores.every((v, i) => i === w || v === 0)) flag('zero');
+  if ((p.maxBehind || 0) >= 3) flag('comeback');
+  if (scores[w] > settings.winRounds) flag('overtime');
+  if (hard && nb >= 3 && humans === 1) flag('oneVsAll');
+  if (hard && !settings.aimLine) flag('noAim');
+  if (!p.dmgMatch) flag('iron');
+  checkAch(); saveAch();
+}
+
+// --- ekrany ---
+function renderVictoryAch() {
+  $('vach').innerHTML = newAch.length ? '<b>Nowe osiągnięcia:</b> ' + newAch.map(a => esc(a.name)).join(', ') + ` · razem ${achPct()}%` : '';
+}
+function renderAch() {
+  $('achSum').innerHTML = `<span class="achpct">${achPct()}%</span>Zdobyte: ${achCount()} z ${ACH.length}`
+    + `<div class="achbar"><i style="width:${achPct()}%"></i></div>`;
+  $('achList').innerHTML = ACH_CATS.map(cat => {
+    const list = ACH.filter(a => a.cat === cat);
+    return `<h3>${cat}<span>${list.filter(a => ach.got[a.id]).length} / ${list.length}</span></h3><div class="achgrid">` + list.map(a => {
+      const has = !!ach.got[a.id], secret = a.hidden && !has;
+      let bar = '';
+      if (!has && a.prog) {
+        const [c, m] = a.prog(ach.s), f = a.fmt || (v => Math.floor(v).toLocaleString('pl-PL'));
+        bar = `<div class="pb"><i style="width:${Math.round(100 * c / m)}%"></i></div><div class="pn">${f(c)} / ${f(m)}</div>`;
+      }
+      return `<div class="ach${has ? ' got' : ''}"><div class="ico">${medalSVG(has ? 'gold' : 'silver')}</div><div>` +
+        `<b>${secret ? '???' : esc(a.name)}</b><small>${secret ? 'Ukryte osiągnięcie – odkryj je w grze.' : esc(a.desc)}</small>${bar}</div></div>`;
+    }).join('') + '</div>';
+  }).join('');
+}
+function goAch() { setScreen('achievements'); renderAch(); }
+
 // ===================== KONIEC MECZU =====================
 function matchWinner() {
   const top = Math.max(...scores);
@@ -2238,6 +2548,7 @@ function showVictory(w) {
   stopEngines();
   updateHud();
   const p = roster[w];
+  achMatchEnd(w);
   if (!p.isBot) { medals[p.name] = (medals[p.name] || 0) + 1; saveMedals(); }
   document.getElementById('vmedal').innerHTML = medalSVG('gold', 'big');
   document.getElementById('vtitle').textContent = p.name + ' wygrywa mecz!';
@@ -2254,12 +2565,13 @@ function showVictory(w) {
     return `<div class="r"><span class="pl">${place}.</span><span class="sw" style="background:${r.color}"></span>
       <span class="nm">${esc(r.name)}</span>${kind ? medalSVG(kind) : ''}<span class="pts">${scores[i]}</span></div>`;
   }).join('');
+  renderVictoryAch();
   setScreen('victory');
   sfx.victory();
 }
 // ===================== EKRANY I MENU =====================
 const $ = id => document.getElementById(id);
-const SCREENS = ['splash', 'setup', 'pause', 'victory'];
+const SCREENS = ['splash', 'setup', 'pause', 'victory', 'achievements'];
 function setScreen(name) {
   screen = name;
   for (const s of SCREENS) $(s).classList.toggle('show', s === name);
@@ -2304,6 +2616,7 @@ function renderSplash() {
   $('stepMedal').innerHTML = medalSVG('gold');
   $('splashTanks').innerHTML = TYPE_KEYS.map(k => `<div class="mini"><img src="${tankIcon(k, COLORS[0])}" alt=""><b>${TYPES[k].name}</b><small>${TYPE_INFO[k].cls}</small></div>`).join('');
   renderCabinet();
+  $('achBtn').textContent = `Osiągnięcia · ${achPct()}%`;
 }
 
 // przyciski ustawień bitwy: atrybut data-* → odczyt i zapis wartości
@@ -2379,6 +2692,8 @@ $('p-menu').onclick = goSplash;
 $('again').onclick = startGame;
 $('v-setup').onclick = goSetup;
 $('tomenu').onclick = goSplash;
+$('achBtn').onclick = goAch;
+$('achBack').onclick = goSplash;
 for (const [attr, o] of Object.entries(SETUP_OPTS))
   document.querySelectorAll(`#setup [data-${attr}]`).forEach(b => b.onclick = () => { o.set(b.dataset[attr]); renderSetup(); saveSettings(); });
 $('nameInput').addEventListener('input', e => { settings.names[editP] = e.target.value.trim().slice(0, 12) || DEFAULT_NAMES[editP]; saveSettings(); renderSetup(); });
