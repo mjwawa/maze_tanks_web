@@ -3145,6 +3145,7 @@ function showMissionResult() {
   if (!M.win && fails >= 3 && !M.assist) btns.push(['mbtn', 'resEasy', 'Spróbuj łatwiej']);
   if (M.win) btns.push([next ? 'mbtn' : 'cta', 'resRetry', 'Jeszcze raz']);
   btns.push(['mbtn', 'resCamp', 'Kampania']);
+  btns.push(['mbtn', 'resMenu', 'Menu główne']);
   $('resBox').innerHTML = `<div class="kick">${m.name}</div><h2>${M.win ? 'Misja wykonana' : 'Misja nieudana'}</h2>
     <div class="bigstars">${[0, 1, 2].map(i => starSVG(M.result[i], `animation-delay:${0.2 + i * 0.25}s`)).join('')}</div>
     ${M.win ? '' : `<p class="note">${M.reason}</p>`}
@@ -3157,6 +3158,7 @@ function showMissionResult() {
   $('resRetry').onclick = () => startMission(M.id, M.assist, M.tank);
   if ($('resEasy')) $('resEasy').onclick = () => startMission(M.id, true, M.tank);
   $('resCamp').onclick = goCampaign;
+  $('resMenu').onclick = goSplash;
   setScreen('result');
 }
 
