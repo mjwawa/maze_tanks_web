@@ -18,7 +18,7 @@ Na telefon i tablet jest osobna wersja ze sterowaniem dotykowym: [Maze Tanks Mob
 
 ## Kampania
 
-Kampania dla jednego gracza: 8 rozdziałów, po jednym na każdą mapę, w każdym 3 misje. Każdą misję w rozdziale gra się innym czołgiem (Lisem, Wilkiem i Niedźwiedziem), a ostatnia to walka z szefem. Misje mają stały labirynt i własny cel, np. zniszczenie wszystkich, przetrwanie albo utrzymanie punktu. Za misję można zdobyć 1–3 gwiazdki. Kolejna misja otwiera się po wykonaniu poprzedniej, a po 3 porażkach z rzędu można spróbować wersji ułatwionej. W finale i w misjach elitarnych czołg wybierasz sam. Za zdobycie 60 gwiazdek w rozdziałach 1–8 otwierają się 3 misje elitarne, a za ukończenie kampanii dostajesz medal Weteran kampanii i Tygrysa: ultra czołg z podwójną lufą, szybki jak Lis i pancerny jak Niedźwiedź (pancerz 8, siła rażenia 3, 6 pocisków naraz). Tygrysa można potem wybrać w garażu i w ukończonych misjach, boty nigdy go nie dostają.
+Kampania dla jednego gracza: 8 rozdziałów, po jednym na każdą mapę, w każdym 10 misji – razem 80. W każdym rozdziale są 3 misje dla Lisa, 3 dla Wilka i 3 dla Niedźwiedzia (na każdej mapie w innej kolejności), a każda kolejna misja danego czołgu jest trudniejsza. Dziesiąta misja to walka z szefem mapy – czołg wybierasz sam, a którym grać najlepiej, trzeba sprawdzić w grze. Misje mają stały labirynt i własny cel, np. zniszczenie wszystkich, fale przeciwników, przetrwanie, utrzymanie punktu, ograniczoną amunicję albo trafianie tylko rykoszetem. Za misję można zdobyć 1–3 gwiazdki. Kolejna misja otwiera się po wykonaniu poprzedniej, a po 3 porażkach z rzędu można spróbować wersji ułatwionej. Za zdobycie 180 gwiazdek w rozdziałach 1–8 otwierają się 3 misje elitarne, a za ukończenie kampanii (finał na Księżycu) dostajesz medal Weteran kampanii i Tygrysa: ultra czołg z podwójną lufą, szybki jak Lis i pancerny jak Niedźwiedź (pancerz 8, siła rażenia 3, strzela z obu luf naraz, 8 pocisków w powietrzu). Tygrysa można potem wybrać w garażu, w misjach z szefem i w misjach już ukończonych, boty nigdy go nie dostają.
 
 ## Tryby i mapy
 
@@ -81,7 +81,7 @@ Wzory zachowują kolor gracza, więc zawsze widać, kto jest kim. Boty jeżdżą
 | | Lis (lekki) | Wilk (średni) | Niedźwiedź (ciężki) |
 |---|---|---|---|
 | Prędkość | szybki | średni | wolny |
-| Pancerz | 4 | 4 | 7 |
+| Pancerz | 3 | 5 | 7 |
 | Siła rażenia | 1 | 2 | 2 |
 | Tempo strzałów | bardzo szybkie | średnie | wolne |
 | Pociski naraz | 6 | 4 | 2 |

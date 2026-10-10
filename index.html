@@ -257,11 +257,16 @@
   .chap.on { border-color: var(--orange); box-shadow: inset 0 0 0 2px var(--orange); }
   .chap.locked { filter: grayscale(1) brightness(.55); }
   .chapter h3 { margin: 0 0 4px; font-family: var(--f-head); font-weight: 900; font-size: 32px; text-transform: uppercase; line-height: 1; color: var(--khaki); }
-  .missions { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
-  .mis { display: grid; grid-template-columns: 92px minmax(0, 1fr) auto; align-items: center; gap: 10px; padding: 6px 12px 6px 6px; background: #1b2116; text-align: left; clip-path: var(--cut); }
-  .mis img { width: 92px; height: 56px; object-fit: contain; }
+  .missions { display: flex; flex-direction: column; gap: 5px; }
+  .mgroup h4 { display: flex; align-items: center; gap: 8px; margin: 12px 0 5px; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: .04em; color: var(--khaki); }
+  .mgroup h4 img { width: 76px; height: 44px; margin: -8px -10px -8px -12px; object-fit: contain; }
+  .mgroup .bossmark { color: #f2c230; font-size: 18px; }
+  .mis { display: grid; grid-template-columns: 34px minmax(0, 1fr) auto; align-items: center; gap: 8px; padding: 6px 12px 6px 6px; background: #1b2116; text-align: left; clip-path: var(--cut); }
+  .mis .mn { font-family: var(--f-head); font-weight: 900; font-size: 24px; color: var(--muted); text-align: center; line-height: 1; }
+  .mis.boss { border-color: #b8913a; }
+  .mis.boss .mn { color: #f2c230; }
   .mis small { display: block; font-size: 13px; font-weight: 700; text-transform: uppercase; color: var(--muted); }
-  .mis b { display: block; font-family: var(--f-head); font-weight: 900; font-size: 24px; text-transform: uppercase; line-height: 1; }
+  .mis b { display: block; font-family: var(--f-head); font-weight: 900; font-size: 21px; text-transform: uppercase; line-height: 1; }
   .mis.locked { opacity: .45; }
   .stars { display: flex; gap: 2px; }
   .star { width: 20px; height: 20px; flex: none; fill: #3a4430; }
@@ -309,9 +314,8 @@
     .chap { height: 62px; }
     .chap .num { font-size: 22px; }
     .chap .cn b { font-size: 16px; }
-    .mis { grid-template-columns: 70px minmax(0, 1fr) auto; }
-    .mis img { width: 70px; height: 40px; }
-    .mis b { font-size: 20px; }
+    .mis { grid-template-columns: 30px minmax(0, 1fr) auto; padding: 4px 10px 4px 4px; }
+    .mis b { font-size: 18px; }
     .briefbox, .resbox { gap: 8px; }
     .briefbox h2, .resbox h2 { font-size: 36px; }
     .briefbox > p { font-size: 15px; }
@@ -547,10 +551,10 @@ const BULLET_LIFE = 10;       // po ilu sekundach pocisk znika
 // speed: px/s, turn: rad/s, hp: pancerz, dmg: siła rażenia, cool: przerwa między strzałami (s),
 // maxB: pociski naraz, bspeed: prędkość pocisku, bounce: odbicia, r: wielkość
 const TYPES = {
-  lis:  { name: 'Lis',        label: 'lekki',  speed: 155, turn: 4.2, hp: 4, dmg: 1, cool: 0.2, maxB: 6, bspeed: 300, bounce: 3, r: 11 },
-  wilk: { name: 'Wilk',       label: 'średni', speed: 115, turn: 3.3, hp: 4, dmg: 2, cool: 0.4, maxB: 4, bspeed: 240, bounce: 3, r: 14 },
+  lis:  { name: 'Lis',        label: 'lekki',  speed: 155, turn: 4.2, hp: 3, dmg: 1, cool: 0.2, maxB: 6, bspeed: 300, bounce: 3, r: 11 },
+  wilk: { name: 'Wilk',       label: 'średni', speed: 115, turn: 3.3, hp: 5, dmg: 2, cool: 0.4, maxB: 4, bspeed: 240, bounce: 3, r: 14 },
   mis:  { name: 'Niedźwiedź', label: 'ciężki', speed: 80,  turn: 2.4, hp: 7, dmg: 2, cool: 0.6, maxB: 2, bspeed: 190, bounce: 2, r: 17 },
-  tygrys: { name: 'Tygrys', label: 'ultra', speed: 155, turn: 4.2, hp: 8, dmg: 3, cool: 0.2, maxB: 6, bspeed: 300, bounce: 3, r: 14 }, // nagroda za kampanię
+  tygrys: { name: 'Tygrys', label: 'ultra', speed: 155, turn: 4.2, hp: 8, dmg: 3, cool: 0.2, maxB: 8, bspeed: 300, bounce: 3, r: 14 }, // nagroda za kampanię; strzela z dwóch luf naraz
 };
 const TYPE_KEYS = Object.keys(TYPES);
 const PLAY_KEYS = ['lis', 'wilk', 'mis']; // zwykłe czołgi; Tygrys to nagroda za kampanię i boty go nie dostają
@@ -1753,17 +1757,19 @@ function bulletSpec(t) {
   const T = t.type;
   return rule === 'lowg' ? { speed: T.bspeed * 0.7, bounce: T.bounce + 2 } : { speed: T.bspeed, bounce: T.bounce };
 }
+// lufy czołgu: przesunięcie w bok od osi (Tygrys ma dwie) i wylot pocisku z danej lufy
+const barrelOffsets = t => { const tw = TANK_LOOK[t.typeKey].twin; return tw ? [-tw * t.r / 14, tw * t.r / 14] : [0]; };
+const muzzle = (t, o) => { const L = barrelLen(t), c = Math.cos(t.a), s = Math.sin(t.a); return { x: t.x + c * L - s * o, y: t.y + s * L + c * o }; };
 function fire(t) {
   if (t.cool > 0 || !t.alive) return;
-  const T = t.type;
-  if (t.shots >= T.maxB) return;
+  const T = t.type, offs = barrelOffsets(t);
+  if (t.shots + offs.length > T.maxB) return;
   if (t.ammo !== undefined && t.ammo <= 0) return; // limit pocisków w misji
-  const L = barrelLen(t);
-  const bx = t.x + Math.cos(t.a) * L, by = t.y + Math.sin(t.a) * L;
-  if (hitsObstacle(bx, by, BULLET_R)) return; // lufa w przeszkodzie – nie strzelaj
-  const B = bulletSpec(t);
-  bullets.push({ x: bx, y: by, vx: Math.cos(t.a) * B.speed, vy: Math.sin(t.a) * B.speed, b: 0, maxB: B.bounce, dmg: T.dmg, age: 0, owner: t, real: true });
-  t.shots++; t.cool = T.cool; t.fireT = T.silent ? 0 : 0.6; t.recoil = 1;
+  const pts = offs.map(o => muzzle(t, o)).filter(p => !hitsObstacle(p.x, p.y, BULLET_R)); // lufa w przeszkodzie – z niej nie strzelaj
+  if (!pts.length) return;
+  const B = bulletSpec(t), bx = pts[0].x, by = pts[0].y;
+  for (const p of pts) bullets.push({ x: p.x, y: p.y, vx: Math.cos(t.a) * B.speed, vy: Math.sin(t.a) * B.speed, b: 0, maxB: B.bounce, dmg: T.dmg, age: 0, owner: t, real: true });
+  t.shots += pts.length; t.cool = T.cool; t.fireT = T.silent ? 0 : 0.6; t.recoil = 1;
   if (t.ammo !== undefined) t.ammo--;
   if (!t.isBot && !demo) { stat('shots'); t.rs.shots++; } // w ciemności strzał na chwilę zdradza pozycję
   sfx.shoot(t.typeKey, bx);
@@ -2159,9 +2165,9 @@ function update(dt) {
 // ===================== PODGLĄD TORU POCISKU =====================
 // Kropki tam, gdzie poleci pocisk z lufy (z wiatrem): do pierwszego odbicia i kawałek po nim, żeby było widać nowy kierunek.
 // Czołgi nie zatrzymują podglądu – inaczej zdradzałby przeciwników ukrytych w ciemności albo w krzakach.
-function aimPath(t) {
-  const L = barrelLen(t), B = bulletSpec(t);
-  const b = { x: t.x + Math.cos(t.a) * L, y: t.y + Math.sin(t.a) * L, vx: Math.cos(t.a) * B.speed, vy: Math.sin(t.a) * B.speed, b: 0, maxB: 1 };
+function aimPath(t, o = 0) {
+  const B = bulletSpec(t), m = muzzle(t, o);
+  const b = { x: m.x, y: m.y, vx: Math.cos(t.a) * B.speed, vy: Math.sin(t.a) * B.speed, b: 0, maxB: 1 };
   if (hitsObstacle(b.x, b.y, BULLET_R)) return null; // lufa w przeszkodzie – strzał i tak nie wyleci
   const pts = [{ x: b.x, y: b.y, after: false }];
   let total = 0, after = 0;
@@ -2174,7 +2180,9 @@ function aimPath(t) {
   return pts;
 }
 function drawAimPath(t) {
-  const pts = aimPath(t);
+  for (const o of barrelOffsets(t)) drawAimLine(aimPath(t, o));
+}
+function drawAimLine(pts) {
   if (!pts) return;
   let acc = 8; // kropka co 12 px wzdłuż toru
   for (let i = 1; i < pts.length; i++) {
@@ -2801,7 +2809,8 @@ function renderAch() {
 function goAch() { setScreen('achievements'); renderAch(); }
 
 // ===================== KAMPANIA =====================
-// 8 rozdziałów (po jednym na mapę), w każdym 3 misje: każdą gra się innym czołgiem. Misja to jedna runda ze stałym
+// 8 rozdziałów (po jednym na mapę), w każdym 10 misji: po 3 dla Lisa, Wilka i Niedźwiedzia (kolejność zależy od mapy)
+// i szef, z którym walczysz dowolnym czołgiem. Misja to jedna runda ze stałym
 // labiryntem (stałe ziarno losowania), ustalonymi botami i własnym celem. Za misję: 1–3 gwiazdki.
 const CHAPTERS = [
   { map: 'las', name: 'Las' }, { map: 'pole', name: 'Pole' }, { map: 'pustynia', name: 'Pustynia' }, { map: 'zima', name: 'Zima' },
@@ -2814,123 +2823,362 @@ const CHAPTERS = [
 // stars: dwa warunki na 2. i 3. gwiazdkę – ok(s) dostaje statystyki misji: time, hits (otrzymane trafienia), shots, ammo, bossRico…
 const MISSIONS = [
   // ---------- 1. Las ----------
-  { id: '1-1', ch: 0, seed: 17, name: 'Pierwsze kroki', tank: 'lis',
+  { id: '1-1', ch: 0, seed: 7, name: 'Pierwsze kroki', tank: 'lis',
     desc: 'Pierwsze starcie w lesie. Naucz się jeździć i strzelać, zanim ruszysz dalej. Krzaki dobrze ukrywają, także Ciebie.',
     goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'easy' }],
     stars: [{ text: 'Najwyżej 1 otrzymane trafienie', ok: s => s.hits <= 1 }, { text: 'Wygraj w mniej niż 45 sekund', ok: s => s.time < 45 }] },
-  { id: '1-2', ch: 0, seed: 36, name: 'Zza ściany', tank: 'wilk', ricochetOnly: true,
+  { id: '1-2', ch: 0, seed: 7, name: 'Strzelnica', tank: 'lis',
+    desc: 'Trzy stanowiska strzeleckie stoją w miejscu i tylko się obracają. Lis strzela seriami – podjedź blisko i nie stój na linii ognia.',
+    goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'easy', turret: true, name: 'Stanowisko 1' }, { type: 'lis', diff: 'easy', turret: true, name: 'Stanowisko 2' }, { type: 'lis', diff: 'easy', turret: true, name: 'Stanowisko 3' }],
+    stars: [{ text: 'Najwyżej 15 pocisków', ok: s => s.shots <= 15 }, { text: 'Najwyżej 1 otrzymane trafienie', ok: s => s.hits <= 1 }] },
+  { id: '1-3', ch: 0, seed: 11, name: 'Zwiadowcy', tank: 'lis',
+    desc: 'Dwa Lisy przeczesują las. Są tak samo szybkie jak Ty, więc wykorzystaj krzaki i zaatakuj pierwszy.',
+    goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'easy' }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }, { text: 'Wygraj w mniej niż 60 sekund', ok: s => s.time < 60 }] },
+  { id: '1-4', ch: 0, seed: 13, name: 'Zza ściany', tank: 'wilk', ricochetOnly: true,
     desc: 'Dwa stanowiska strzeleckie schowane za murami. Prosty strzał ich nie rusza, liczą się tylko rykoszety. Długa lufa Wilka bardzo tu pomaga.',
     goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'easy', turret: true, name: 'Stanowisko 1' }, { type: 'lis', diff: 'easy', turret: true, name: 'Stanowisko 2' }],
     stars: [{ text: 'Najwyżej 12 pocisków', ok: s => s.shots <= 12 }, { text: 'Bez otrzymania trafienia', ok: s => s.hits === 0 }] },
-  { id: '1-3', ch: 0, seed: 97, name: 'Leśnik', tank: 'mis', boss: true,
-    desc: 'Leśnik zna tu każdy krzak. Jego Wilk ma podwójny pancerz, a pomaga mu szybki Lis. Niedźwiedź wytrzyma najwięcej, więc to Ty idziesz na pierwszą linię.',
-    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'normal', name: 'Leśnik', boss: true, mods: { hp: 8 } }, { type: 'lis', diff: 'easy' }],
+  { id: '1-5', ch: 0, seed: 11, name: 'Zasadzka w krzakach', tank: 'wilk',
+    desc: 'Wilk i Lis czają się w krzakach. Czołg schowany w krzaku słabo widać, ale pocisk i tak go trafi.',
+    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Zniszcz czołg, którego nie widać', ok: s => s.hiddenK >= 1 }, { text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }] },
+  { id: '1-6', ch: 0, seed: 19, name: 'Patrol leśny', tank: 'wilk',
+    desc: 'Patrol nadjeżdża falami: najpierw Lis, potem drugi, a na końcu Wilk. Między falami czołg się naprawia.',
+    goal: { type: 'kill' }, repair: 2, bots: [{ type: 'lis', diff: 'easy' }],
+    waves: [[{ type: 'lis', diff: 'easy' }], [{ type: 'wilk', diff: 'easy' }]],
+    stars: [{ text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }, { text: 'Wygraj w mniej niż 120 sekund', ok: s => s.time < 120 }] },
+  { id: '1-7', ch: 0, seed: 7, name: 'Ciężki krok', tank: 'mis',
+    desc: 'Niedźwiedź jest wolny, ale wytrzyma najwięcej. Dwa Lisy będą krążyć wokół Ciebie – nie goń ich, poczekaj, aż same podjadą.',
+    goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'easy' }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }, { text: 'Wygraj w mniej niż 75 sekund', ok: s => s.time < 75 }] },
+  { id: '1-8', ch: 0, seed: 13, name: 'Polana', tank: 'mis',
+    desc: 'Utrzymaj się na polanie przez 30 sekund. Wilk i Lis spróbują Cię z niej wykurzyć.',
+    goal: { type: 'survive', time: 30 }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Zniszcz choć jednego przeciwnika', ok: s => s.kills >= 1 }, { text: 'Najwyżej 4 otrzymane trafienia', ok: s => s.hits <= 4 }] },
+  { id: '1-9', ch: 0, seed: 13, name: 'Przełamanie', tank: 'mis',
+    desc: 'Przejścia przez las bronią dwa Lisy i Wilk – wyjeżdżają jeden po drugim. Między falami czołg się naprawia.',
+    goal: { type: 'kill' }, repair: 2, bots: [{ type: 'lis', diff: 'easy' }],
+    waves: [[{ type: 'lis', diff: 'easy' }], [{ type: 'wilk', diff: 'easy' }]],
+    stars: [{ text: 'Najwyżej 4 otrzymane trafienia', ok: s => s.hits <= 4 }, { text: 'Wygraj w mniej niż 120 sekund', ok: s => s.time < 120 }] },
+  { id: '1-10', ch: 0, seed: 7, name: 'Leśnik', tank: null, boss: true,
+    desc: 'Leśnik zna tu każdy krzak. Jeździ Wilkiem z grubszym pancerzem, a pomaga mu szybki Lis.',
+    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'easy', name: 'Leśnik', boss: true, mods: { hp: 8 } }, { type: 'lis', diff: 'easy' }],
     stars: [{ text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }, { text: 'Zniszcz Leśnika rykoszetem', ok: s => s.bossRico }] },
-  // ---------- 2. Pole: wiatr ----------
-  { id: '2-1', ch: 1, seed: 3, name: 'Pod wiatr', tank: 'mis',
+  // ---------- 2. Pole ----------
+  { id: '2-1', ch: 1, seed: 7, name: 'Pod wiatr', tank: 'mis',
     desc: 'Na polu mocno wieje, a ciężkie pociski Niedźwiedzia lecą wolno, więc wiatr znosi je najbardziej. Celuj z poprawką, strzałka na ekranie pokazuje wiatr.',
     goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'normal' }],
     stars: [{ text: 'Najwyżej 6 pocisków', ok: s => s.shots <= 6 }, { text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }] },
-  { id: '2-2', ch: 1, seed: 37, name: 'Fale', tank: 'lis',
-    desc: 'Cztery Lisy nadjeżdżają jeden po drugim. Twój Lis strzela seriami, więc bierz je po kolei. Między falami czołg się naprawia.',
-    goal: { type: 'kill' }, repair: 2, bots: [{ type: 'lis', diff: 'easy' }], waves: [[{ type: 'lis', diff: 'easy' }], [{ type: 'lis', diff: 'easy' }], [{ type: 'lis', diff: 'normal' }]],
-    stars: [{ text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }, { text: 'Wygraj w mniej niż 90 sekund', ok: s => s.time < 90 }] },
-  { id: '2-3', ch: 1, seed: 7, name: 'Wichura', tank: 'wilk', boss: true,
-    desc: 'Wichura jeździ Niedźwiedziem z podwójnym pancerzem, a jego pociski odbijają się raz więcej. Długa lufa Wilka pozwoli trafić go z daleka.',
+  { id: '2-2', ch: 1, seed: 13, name: 'Strachy na wróble', tank: 'mis',
+    desc: 'Trzy stanowiska stoją za kamiennymi murkami. Wiatr znosi ciężkie pociski Niedźwiedzia, więc celuj z poprawką.',
+    goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'easy', turret: true, name: 'Stanowisko 1' }, { type: 'lis', diff: 'easy', turret: true, name: 'Stanowisko 2' }, { type: 'lis', diff: 'easy', turret: true, name: 'Stanowisko 3' }],
+    stars: [{ text: 'Najwyżej 10 pocisków', ok: s => s.shots <= 10 }, { text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }] },
+  { id: '2-3', ch: 1, seed: 23, name: 'Żniwa', tank: 'mis',
+    desc: 'Wytrzymaj 35 sekund na środku pola. Wilk i Lis będą atakować z różnych stron.',
+    goal: { type: 'survive', time: 35 }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Zniszcz choć jednego przeciwnika', ok: s => s.kills >= 1 }, { text: 'Najwyżej 4 otrzymane trafienia', ok: s => s.hits <= 4 }] },
+  { id: '2-4', ch: 1, seed: 97, name: 'Fale', tank: 'lis',
+    desc: 'Trzy Lisy nadjeżdżają jeden po drugim. Twój Lis strzela seriami, więc bierz je po kolei. Między falami czołg się naprawia.',
+    goal: { type: 'kill' }, repair: 2, bots: [{ type: 'lis', diff: 'easy' }],
+    waves: [[{ type: 'lis', diff: 'easy' }], [{ type: 'lis', diff: 'easy' }]],
+    stars: [{ text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }, { text: 'Wygraj w mniej niż 75 sekund', ok: s => s.time < 75 }] },
+  { id: '2-5', ch: 1, seed: 13, name: 'Z wiatrem', tank: 'lis',
+    desc: 'Dojedź na drugi koniec pola i utrzymaj zaznaczony punkt przez 4 sekundy. Dwa Wilki będą Ci deptać po piętach.',
+    goal: { type: 'zone', time: 4 }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'wilk', diff: 'easy' }],
+    stars: [{ text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }, { text: 'Wygraj w mniej niż 45 sekund', ok: s => s.time < 45 }] },
+  { id: '2-6', ch: 1, seed: 71, name: 'Polowanie na polu', tank: 'lis',
+    desc: 'Wilk i Lis polują na otwartym polu. Twoja szybkość to najlepsza osłona.',
+    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'normal' }, { type: 'lis', diff: 'normal' }],
+    stars: [{ text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }, { text: 'Wygraj w mniej niż 75 sekund', ok: s => s.time < 75 }] },
+  { id: '2-7', ch: 1, seed: 7, name: 'Długi strzał', tank: 'wilk',
+    desc: 'Wilk i Lis rozstawieni daleko od siebie. Strzelaj z dystansu i celuj z poprawką na wiatr.',
+    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Najwyżej 10 pocisków', ok: s => s.shots <= 10 }, { text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }] },
+  { id: '2-8', ch: 1, seed: 31, name: 'Ostatni magazynek', tank: 'wilk', ammo: 10,
+    desc: 'Masz tylko 10 pocisków na dwóch przeciwników, a wiatr znosi każdy strzał. Nie strzelaj na ślepo.',
+    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Zostaw co najmniej 2 pociski', ok: s => s.ammo >= 2 }, { text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }] },
+  { id: '2-9', ch: 1, seed: 59, name: 'Burza', tank: 'wilk',
+    desc: 'Trzy fale czołgów nadciągają jak burza. Między falami czołg się naprawia.',
+    goal: { type: 'kill' }, repair: 3, bots: [{ type: 'wilk', diff: 'easy' }],
+    waves: [[{ type: 'lis', diff: 'easy' }, { type: 'lis', diff: 'easy' }], [{ type: 'wilk', diff: 'easy' }]],
+    stars: [{ text: 'Najwyżej 4 otrzymane trafienia', ok: s => s.hits <= 4 }, { text: 'Wygraj w mniej niż 150 sekund', ok: s => s.time < 150 }] },
+  { id: '2-10', ch: 1, seed: 17, name: 'Wichura', tank: null, boss: true,
+    desc: 'Wichura jeździ Niedźwiedziem z podwójnym pancerzem, a jego pociski odbijają się raz więcej. Pomaga mu szybki Lis.',
     goal: { type: 'kill' }, bots: [{ type: 'mis', diff: 'normal', name: 'Wichura', boss: true, mods: { hp: 14, bounce: 3 } }, { type: 'lis', diff: 'easy' }],
     stars: [{ text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }, { text: 'Zniszcz Wichurę rykoszetem', ok: s => s.bossRico }] },
-  // ---------- 3. Pustynia: grząski piasek ----------
-  { id: '3-1', ch: 2, seed: 37, name: 'Zwiad', tank: 'wilk',
+  // ---------- 3. Pustynia ----------
+  { id: '3-1', ch: 2, seed: 7, name: 'Zwiad', tank: 'wilk',
     desc: 'Dwa szybkie Lisy patrolują pustynię. Jedź z przerwami, bo po długiej jeździe czołg grzęźnie w piasku.',
     goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'normal' }, { type: 'lis', diff: 'easy' }],
     stars: [{ text: 'Ani razu nie ugrzęźnij w piasku', ok: s => !s.stuck }, { text: 'Wygraj w mniej niż 60 sekund', ok: s => s.time < 60 }] },
-  { id: '3-2', ch: 2, seed: 31, name: 'Przetrwaj', tank: 'mis',
+  { id: '3-2', ch: 2, seed: 7, name: 'Konwój', tank: 'wilk',
+    desc: 'Konwój przejeżdża przez pustynię: najpierw Wilk, potem dwa Lisy naraz. Jedź z przerwami, żeby nie ugrzęznąć.',
+    goal: { type: 'kill' }, repair: 2, bots: [{ type: 'wilk', diff: 'easy' }],
+    waves: [[{ type: 'lis', diff: 'easy' }, { type: 'lis', diff: 'easy' }]],
+    stars: [{ text: 'Ani razu nie ugrzęźnij w piasku', ok: s => !s.stuck }, { text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }] },
+  { id: '3-3', ch: 2, seed: 41, name: 'Oaza', tank: 'wilk',
+    desc: 'Oaza jest na drugim końcu pustyni. Dojedź do niej i utrzymaj ją przez 3 sekundy.',
+    goal: { type: 'zone', time: 3 }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }, { text: 'Ani razu nie ugrzęźnij w piasku', ok: s => !s.stuck }] },
+  { id: '3-4', ch: 2, seed: 7, name: 'Przetrwaj', tank: 'mis',
     desc: 'Dwa szybkie Lisy chcą Cię dopaść. Nie musisz ich niszczyć, wystarczy wytrzymać 40 sekund. Pancerz Niedźwiedzia sporo zniesie.',
     goal: { type: 'survive', time: 40 }, bots: [{ type: 'lis', diff: 'easy' }, { type: 'lis', diff: 'easy' }],
     stars: [{ text: 'Zniszcz choć jednego przeciwnika', ok: s => s.kills >= 1 }, { text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }] },
-  { id: '3-3', ch: 2, seed: 11, name: 'Skorpion', tank: 'lis', boss: true,
-    desc: 'Skorpion jeździ najszybszym Lisem na pustyni, ma grubszy pancerz i więcej pocisków naraz. Walczy sam, szybkość na szybkość.',
-    goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'normal', name: 'Skorpion', boss: true, mods: { hp: 6, speed: 185, maxB: 9 } }],
+  { id: '3-5', ch: 2, seed: 7, name: 'Burza piaskowa', tank: 'mis',
+    desc: 'Trzy Lisy wyskakują zza glinianych murów: najpierw dwa, potem trzeci. Niedźwiedź jest powolny, więc pozwól im podjechać.',
+    goal: { type: 'kill' }, repair: 2, bots: [{ type: 'lis', diff: 'easy' }, { type: 'lis', diff: 'easy' }],
+    waves: [[{ type: 'lis', diff: 'easy' }]],
+    stars: [{ text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }, { text: 'Wygraj w mniej niż 90 sekund', ok: s => s.time < 90 }] },
+  { id: '3-6', ch: 2, seed: 13, name: 'Ostatni bastion', tank: 'mis',
+    desc: 'Cztery czołgi w trzech falach, na koniec dwa Lisy naraz. Między falami czołg się naprawia.',
+    goal: { type: 'kill' }, repair: 3, bots: [{ type: 'wilk', diff: 'easy' }],
+    waves: [[{ type: 'mis', diff: 'easy' }], [{ type: 'lis', diff: 'easy' }, { type: 'lis', diff: 'easy' }]],
+    stars: [{ text: 'Najwyżej 5 otrzymanych trafień', ok: s => s.hits <= 5 }, { text: 'Wygraj w mniej niż 180 sekund', ok: s => s.time < 180 }] },
+  { id: '3-7', ch: 2, seed: 17, name: 'Pustynny lis', tank: 'lis',
+    desc: 'Jeden Wilk, ale doświadczony. Jesteś szybszy, ale piasek zatrzyma Cię, jeśli będziesz jechać bez przerwy.',
+    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'normal' }],
+    stars: [{ text: 'Ani razu nie ugrzęźnij w piasku', ok: s => !s.stuck }, { text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }] },
+  { id: '3-8', ch: 2, seed: 37, name: 'Ucieczka', tank: 'lis',
+    desc: 'Punkt ewakuacji jest daleko, a gonią Cię trzy czołgi. Dojedź tam i wytrzymaj na nim 3 sekundy.',
+    goal: { type: 'zone', time: 3 }, bots: [{ type: 'lis', diff: 'normal' }, { type: 'lis', diff: 'easy' }, { type: 'wilk', diff: 'easy' }],
+    stars: [{ text: 'Najwyżej 1 otrzymane trafienie', ok: s => s.hits <= 1 }, { text: 'Dojedź w mniej niż 35 sekund', ok: s => s.time < 35 }] },
+  { id: '3-9', ch: 2, seed: 3, name: 'Pościg', tank: 'lis',
+    desc: 'Lis i Wilk ruszają w pościg. Kto pierwszy ugrzęźnie w piasku, ten przegra.',
+    goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'easy' }, { type: 'wilk', diff: 'easy' }],
+    stars: [{ text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }, { text: 'Wygraj w mniej niż 75 sekund', ok: s => s.time < 75 }] },
+  { id: '3-10', ch: 2, seed: 7, name: 'Skorpion', tank: null, boss: true,
+    desc: 'Skorpion jeździ najszybszym Lisem na pustyni, ma grubszy pancerz i więcej pocisków naraz. Walczy sam.',
+    goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'normal', name: 'Skorpion', boss: true, mods: { hp: 5, speed: 185, maxB: 9 } }],
     stars: [{ text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }, { text: 'Wygraj w mniej niż 75 sekund', ok: s => s.time < 75 }] },
-  // ---------- 4. Zima: lód ----------
-  { id: '4-1', ch: 3, seed: 7, name: 'Ślizgawka', tank: 'lis',
+  // ---------- 4. Zima ----------
+  { id: '4-1', ch: 3, seed: 23, name: 'Ślizgawka', tank: 'lis',
     desc: 'Na lodzie czołg sunie dalej, niż chcesz, a na zamarzniętych kałużach jeszcze bardziej. Hamuj wcześniej i nie wjeżdżaj w rykoszety.',
     goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'wilk', diff: 'easy' }],
     stars: [{ text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }, { text: 'Wygraj w mniej niż 60 sekund', ok: s => s.time < 60 }] },
-  { id: '4-2', ch: 3, seed: 37, name: 'Ostatnie naboje', tank: 'mis', ammo: 15,
-    desc: 'W magazynie zostało tylko 15 pocisków, a przeciwników jest trzech. Każdy strzał musi się liczyć, rykoszety też.',
-    goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'easy' }, { type: 'lis', diff: 'easy' }, { type: 'lis', diff: 'easy' }],
+  { id: '4-2', ch: 3, seed: 36, name: 'Lodowa strzelnica', tank: 'lis', ricochetOnly: true,
+    desc: 'Trzy stanowiska trafisz tylko rykoszetem. Na lodzie trudno stanąć w miejscu, więc strzelaj w ruchu.',
+    goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'easy', turret: true, name: 'Stanowisko 1' }, { type: 'lis', diff: 'easy', turret: true, name: 'Stanowisko 2' }, { type: 'lis', diff: 'easy', turret: true, name: 'Stanowisko 3' }],
+    stars: [{ text: 'Najwyżej 18 pocisków', ok: s => s.shots <= 18 }, { text: 'Najwyżej 1 otrzymane trafienie', ok: s => s.hits <= 1 }] },
+  { id: '4-3', ch: 3, seed: 17, name: 'Zamieć', tank: 'lis',
+    desc: 'Trzy fale: dwa Lisy, a na końcu Wilk. Między falami czołg się naprawia.',
+    goal: { type: 'kill' }, repair: 2, bots: [{ type: 'lis', diff: 'easy' }],
+    waves: [[{ type: 'lis', diff: 'easy' }], [{ type: 'wilk', diff: 'easy' }]],
+    stars: [{ text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }, { text: 'Wygraj w mniej niż 120 sekund', ok: s => s.time < 120 }] },
+  { id: '4-4', ch: 3, seed: 11, name: 'Ostatnie naboje', tank: 'mis', ammo: 15,
+    desc: 'W magazynie zostało tylko 15 pocisków, a przeciwników jest dwóch. Każdy strzał musi się liczyć, rykoszety też.',
+    goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'easy' }, { type: 'lis', diff: 'easy' }],
     stars: [{ text: 'Zostaw co najmniej 3 pociski', ok: s => s.ammo >= 3 }, { text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }] },
-  { id: '4-3', ch: 3, seed: 23, name: 'Bałwan', tank: 'wilk', boss: true,
-    desc: 'Bałwan to Niedźwiedź z grubszym pancerzem, a jego pociski odbijają się aż 4 razy. Na lodzie łatwo wjechać pod własny rykoszet.',
-    goal: { type: 'kill' }, bots: [{ type: 'mis', diff: 'normal', name: 'Bałwan', boss: true, mods: { hp: 12, bounce: 4 } }, { type: 'lis', diff: 'easy' }],
+  { id: '4-5', ch: 3, seed: 23, name: 'Lodowa twierdza', tank: 'mis',
+    desc: 'Wytrzymaj 35 sekund. Wilk i Lis będą próbować zepchnąć Cię z pozycji.',
+    goal: { type: 'survive', time: 35 }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Zniszcz choć jednego przeciwnika', ok: s => s.kills >= 1 }, { text: 'Najwyżej 4 otrzymane trafienia', ok: s => s.hits <= 4 }] },
+  { id: '4-6', ch: 3, seed: 36, name: 'Lawina', tank: 'mis',
+    desc: 'Ze stoku zjeżdżają trzy czołgi, jeden po drugim. Na lodzie łatwo wjechać pod własny rykoszet.',
+    goal: { type: 'kill' }, repair: 2, bots: [{ type: 'lis', diff: 'easy' }],
+    waves: [[{ type: 'wilk', diff: 'easy' }], [{ type: 'lis', diff: 'easy' }]],
+    stars: [{ text: 'Najwyżej 4 otrzymane trafienia', ok: s => s.hits <= 4 }, { text: 'Wygraj w mniej niż 120 sekund', ok: s => s.time < 120 }] },
+  { id: '4-7', ch: 3, seed: 83, name: 'Cienki lód', tank: 'wilk',
+    desc: 'Dwa Lisy na zamarzniętym jeziorze. Kałuże są śliskie – nie wjeżdżaj na nie w czasie walki.',
+    goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'easy' }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }, { text: 'Wygraj w mniej niż 60 sekund', ok: s => s.time < 60 }] },
+  { id: '4-8', ch: 3, seed: 11, name: 'Igloo', tank: 'wilk',
+    desc: 'Zaznaczony punkt jest na drugim końcu mapy. Utrzymaj go przez 5 sekund, choć bronią go Wilk i Lis.',
+    goal: { type: 'zone', time: 5 }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }, { text: 'Wygraj w mniej niż 75 sekund', ok: s => s.time < 75 }] },
+  { id: '4-9', ch: 3, seed: 3, name: 'Mroźny patrol', tank: 'wilk',
+    desc: 'Cztery czołgi w trzech falach, na koniec dwa Lisy naraz. Między falami czołg się naprawia.',
+    goal: { type: 'kill' }, repair: 2, bots: [{ type: 'wilk', diff: 'easy' }],
+    waves: [[{ type: 'mis', diff: 'easy' }], [{ type: 'lis', diff: 'easy' }, { type: 'lis', diff: 'easy' }]],
+    stars: [{ text: 'Najwyżej 4 otrzymane trafienia', ok: s => s.hits <= 4 }, { text: 'Wygraj w mniej niż 150 sekund', ok: s => s.time < 150 }] },
+  { id: '4-10', ch: 3, seed: 23, name: 'Bałwan', tank: null, boss: true,
+    desc: 'Bałwan to Niedźwiedź z grubszym pancerzem, a jego pociski odbijają się aż 4 razy. Pomaga mu szybki Lis.',
+    goal: { type: 'kill' }, bots: [{ type: 'mis', diff: 'normal', name: 'Bałwan', boss: true, mods: { hp: 10, bounce: 4 } }, { type: 'lis', diff: 'easy' }],
     stars: [{ text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }, { text: 'Zniszcz Bałwana rykoszetem', ok: s => s.bossRico }] },
-  // ---------- 5. Miasto: płonące wraki ----------
-  { id: '5-1', ch: 4, seed: 7, name: 'Patrol', tank: 'mis',
+  // ---------- 5. Miasto ----------
+  { id: '5-1', ch: 4, seed: 19, name: 'Patrol', tank: 'mis',
     desc: 'Dwa czołgi patrolują ulice pełne płonących wraków. Żar parzy od razu, więc trzymaj się od nich z daleka.',
-    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'lis', diff: 'easy' }],
+    goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'easy' }, { type: 'lis', diff: 'easy' }],
     stars: [{ text: 'Bez poparzenia', ok: s => !s.fire }, { text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }] },
-  { id: '5-2', ch: 4, seed: 43, name: 'Zdobądź punkt', tank: 'lis',
-    desc: 'Zaznaczone skrzyżowanie jest na drugim końcu miasta. Dojedź tam i utrzymaj je przez 6 sekund, zanim boty Cię dopadną.',
-    goal: { type: 'zone', time: 6 }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'lis', diff: 'normal' }],
+  { id: '5-2', ch: 4, seed: 13, name: 'Barykada', tank: 'mis',
+    desc: 'Wytrzymaj 30 sekund za barykadą. Dwa Lisy będą próbować Cię okrążyć.',
+    goal: { type: 'survive', time: 30 }, bots: [{ type: 'lis', diff: 'easy' }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Zniszcz choć jednego przeciwnika', ok: s => s.kills >= 1 }, { text: 'Bez poparzenia', ok: s => !s.fire }] },
+  { id: '5-3', ch: 4, seed: 29, name: 'Szturm', tank: 'mis',
+    desc: 'Szturm na ulice: najpierw Wilk, a potem Wilk i Lis naraz. Między falami czołg się naprawia.',
+    goal: { type: 'kill' }, repair: 3, bots: [{ type: 'wilk', diff: 'easy' }],
+    waves: [[{ type: 'wilk', diff: 'easy' }, { type: 'lis', diff: 'easy' }]],
+    stars: [{ text: 'Najwyżej 4 otrzymane trafienia', ok: s => s.hits <= 4 }, { text: 'Bez poparzenia', ok: s => !s.fire }] },
+  { id: '5-4', ch: 4, seed: 17, name: 'Ulica', tank: 'wilk',
+    desc: 'Wilk i Lis krążą między płonącymi wrakami. Żar parzy od razu, więc nie podjeżdżaj blisko.',
+    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'lis', diff: 'normal' }],
+    stars: [{ text: 'Bez poparzenia', ok: s => !s.fire }, { text: 'Wygraj w mniej niż 75 sekund', ok: s => s.time < 75 }] },
+  { id: '5-5', ch: 4, seed: 11, name: 'Dachy', tank: 'wilk', ricochetOnly: true,
+    desc: 'Trzy stanowiska strzelają z ukrycia za murami. Trafisz je tylko rykoszetem.',
+    goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'easy', turret: true, name: 'Stanowisko 1' }, { type: 'lis', diff: 'easy', turret: true, name: 'Stanowisko 2' }, { type: 'lis', diff: 'easy', turret: true, name: 'Stanowisko 3' }],
+    stars: [{ text: 'Najwyżej 18 pocisków', ok: s => s.shots <= 18 }, { text: 'Bez poparzenia', ok: s => !s.fire }] },
+  { id: '5-6', ch: 4, seed: 3, name: 'Pożar', tank: 'wilk', ammo: 10,
+    desc: 'Masz 10 pocisków na dwóch przeciwników. Wraki płoną, więc uważaj, którędy jedziesz.',
+    goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'easy' }, { type: 'wilk', diff: 'easy' }],
+    stars: [{ text: 'Zostaw co najmniej 3 pociski', ok: s => s.ammo >= 3 }, { text: 'Bez poparzenia', ok: s => !s.fire }] },
+  { id: '5-7', ch: 4, seed: 13, name: 'Zdobądź punkt', tank: 'lis',
+    desc: 'Zaznaczone skrzyżowanie jest na drugim końcu miasta. Dojedź tam i utrzymaj je przez 4 sekundy, zanim boty Cię dopadną.',
+    goal: { type: 'zone', time: 4 }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'lis', diff: 'normal' }],
     stars: [{ text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }, { text: 'Bez poparzenia', ok: s => !s.fire }] },
-  { id: '5-3', ch: 4, seed: 23, name: 'Strażak', tank: 'wilk', boss: true,
+  { id: '5-8', ch: 4, seed: 3, name: 'Kurier', tank: 'lis',
+    desc: 'Zawieź meldunek na drugi koniec miasta i zatrzymaj się na punkcie na 3 sekundy. Trzy czołgi spróbują Cię zatrzymać.',
+    goal: { type: 'zone', time: 3 }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'wilk', diff: 'easy' }, { type: 'lis', diff: 'normal' }],
+    stars: [{ text: 'Najwyżej 1 otrzymane trafienie', ok: s => s.hits <= 1 }, { text: 'Dojedź w mniej niż 40 sekund', ok: s => s.time < 40 }] },
+  { id: '5-9', ch: 4, seed: 3, name: 'Uliczna wojna', tank: 'lis',
+    desc: 'Wilk i Lis zastawiają ulice. Wykorzystaj szybkość i nie daj się zapędzić pod płonący wrak.',
+    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Bez poparzenia', ok: s => !s.fire }, { text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }] },
+  { id: '5-10', ch: 4, seed: 53, name: 'Strażak', tank: null, boss: true,
     desc: 'Strażak nie boi się ognia, żar wraków go nie rani. Jeździ Wilkiem z grubszym pancerzem i walczy sam.',
     goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'normal', name: 'Strażak', boss: true, mods: { hp: 6, fireImmune: true } }],
     stars: [{ text: 'Bez poparzenia', ok: s => !s.fire }, { text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }] },
-  // ---------- 6. Baza: skrzynie z amunicją ----------
+  // ---------- 6. Baza ----------
   { id: '6-1', ch: 5, seed: 7, name: 'Saper', tank: 'wilk',
     desc: 'Baza jest pełna skrzyń z amunicją. Trafiona skrzynia wybucha i rani wszystko dookoła. Strzelaj w skrzynie, gdy wróg jest obok.',
     goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'easy' }, { type: 'wilk', diff: 'easy' }],
     stars: [{ text: 'Zniszcz jednego wybuchem skrzyni', ok: s => s.crateK >= 1 }, { text: 'Zniszcz obu wybuchami skrzyń', ok: s => s.crateK >= 2 }] },
-  { id: '6-2', ch: 5, seed: 7, name: 'Rajd', tank: 'lis',
+  { id: '6-2', ch: 5, seed: 11, name: 'Magazyn', tank: 'wilk', ammo: 10,
+    desc: 'Masz tylko 10 pocisków, ale skrzynie z amunicją wybuchają za darmo. Dwa czołgi pilnują magazynu.',
+    goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'normal' }, { type: 'wilk', diff: 'easy' }],
+    stars: [{ text: 'Zniszcz kogoś wybuchem skrzyni', ok: s => s.crateK >= 1 }, { text: 'Zostaw co najmniej 2 pociski', ok: s => s.ammo >= 2 }] },
+  { id: '6-3', ch: 5, seed: 3, name: 'Alarm', tank: 'wilk',
+    desc: 'Baza ogłasza alarm: cztery czołgi w trzech falach. Między falami czołg się naprawia.',
+    goal: { type: 'kill' }, repair: 2, bots: [{ type: 'wilk', diff: 'easy' }],
+    waves: [[{ type: 'lis', diff: 'easy' }, { type: 'lis', diff: 'easy' }], [{ type: 'mis', diff: 'easy' }]],
+    stars: [{ text: 'Najwyżej 4 otrzymane trafienia', ok: s => s.hits <= 4 }, { text: 'Wygraj w mniej niż 150 sekund', ok: s => s.time < 150 }] },
+  { id: '6-4', ch: 5, seed: 7, name: 'Rajd', tank: 'lis',
     desc: 'Punkt ewakuacji jest po drugiej stronie bazy. Przebij się tam szybkim Lisem, nie musisz niszczyć wrogów. Worki z piaskiem pochłaniają pociski.',
     goal: { type: 'zone', time: 2 }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'wilk', diff: 'easy' }, { type: 'lis', diff: 'normal' }],
     stars: [{ text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }, { text: 'Dojedź w mniej niż 40 sekund', ok: s => s.time < 40 }] },
-  { id: '6-3', ch: 5, seed: 3, name: 'Generał', tank: 'mis', boss: true,
+  { id: '6-5', ch: 5, seed: 11, name: 'Dywersja', tank: 'lis',
+    desc: 'Dwa Wilki pilnują skrzyń z amunicją. Lis ma słabe pociski, więc niech skrzynie zrobią robotę za Ciebie.',
+    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'wilk', diff: 'easy' }],
+    stars: [{ text: 'Zniszcz kogoś wybuchem skrzyni', ok: s => s.crateK >= 1 }, { text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }] },
+  { id: '6-6', ch: 5, seed: 7, name: 'Przebicie', tank: 'lis',
+    desc: 'Punkt zbiórki leży za liniami wroga. Utrzymaj go przez 3 sekundy, choć bronią go Wilk i Niedźwiedź.',
+    goal: { type: 'zone', time: 3 }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'mis', diff: 'easy' }],
+    stars: [{ text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }, { text: 'Wygraj w mniej niż 60 sekund', ok: s => s.time < 60 }] },
+  { id: '6-7', ch: 5, seed: 7, name: 'Bunkier', tank: 'mis',
+    desc: 'Wytrzymaj 35 sekund w bunkrze. Dwa Lisy będą atakować z każdej strony.',
+    goal: { type: 'survive', time: 35 }, bots: [{ type: 'lis', diff: 'easy' }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Zniszcz co najmniej 2 przeciwników', ok: s => s.kills >= 2 }, { text: 'Najwyżej 5 otrzymanych trafień', ok: s => s.hits <= 5 }] },
+  { id: '6-8', ch: 5, seed: 7, name: 'Hangar', tank: 'mis',
+    desc: 'Niedźwiedź i Wilk bronią hangaru. Worki z piaskiem pochłaniają pociski, więc rykoszety tu nie pomogą.',
+    goal: { type: 'kill' }, bots: [{ type: 'mis', diff: 'easy' }, { type: 'wilk', diff: 'easy' }],
+    stars: [{ text: 'Zniszcz kogoś wybuchem skrzyni', ok: s => s.crateK >= 1 }, { text: 'Najwyżej 4 otrzymane trafienia', ok: s => s.hits <= 4 }] },
+  { id: '6-9', ch: 5, seed: 13, name: 'Kontratak', tank: 'mis',
+    desc: 'Cztery czołgi w trzech falach. Między falami czołg się naprawia, ale ostatnia fala to dwa Lisy naraz.',
+    goal: { type: 'kill' }, repair: 3, bots: [{ type: 'wilk', diff: 'easy' }],
+    waves: [[{ type: 'mis', diff: 'easy' }], [{ type: 'lis', diff: 'easy' }, { type: 'lis', diff: 'easy' }]],
+    stars: [{ text: 'Najwyżej 6 otrzymanych trafień', ok: s => s.hits <= 6 }, { text: 'Wygraj w mniej niż 180 sekund', ok: s => s.time < 180 }] },
+  { id: '6-10', ch: 5, seed: 7, name: 'Generał', tank: null, boss: true,
     desc: 'Generał dowodzi bazą z Niedźwiedzia o grubszym pancerzu. Rykoszety tu nie działają, ale skrzynie z amunicją mogą być Twoim sojusznikiem.',
     goal: { type: 'kill' }, bots: [{ type: 'mis', diff: 'normal', name: 'Generał', boss: true, mods: { hp: 10 } }],
     stars: [{ text: 'Najwyżej 4 otrzymane trafienia', ok: s => s.hits <= 4 }, { text: 'Zniszcz kogoś wybuchem skrzyni', ok: s => s.crateK >= 1 }] },
-  // ---------- 7. Noc: ciemność ----------
+  // ---------- 7. Noc ----------
   { id: '7-1', ch: 6, seed: 19, name: 'Polowanie', tank: 'mis',
     desc: 'W nocy widać tylko to, co oświetlone. Dwa Lisy czają się w ciemności, a każdy strzał zdradza ich pozycję. Twoją też.',
     goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'normal' }, { type: 'lis', diff: 'easy' }],
     stars: [{ text: 'Zniszcz czołg, którego nie widać', ok: s => s.hiddenK >= 1 }, { text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }] },
-  { id: '7-2', ch: 6, seed: 3, name: 'Cisza', tank: 'wilk', ammo: 6,
-    desc: 'Masz tylko 6 pocisków, a każdy strzał zdradza Twoją pozycję. Poczekaj, aż przeciwnik wjedzie w światło.',
+  { id: '7-2', ch: 6, seed: 37, name: 'Nocna warta', tank: 'mis',
+    desc: 'Wytrzymaj 35 sekund do świtu. Dwa Lisy krążą w ciemności i strzelają z ukrycia.',
+    goal: { type: 'survive', time: 35 }, bots: [{ type: 'lis', diff: 'normal' }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Zniszcz choć jednego przeciwnika', ok: s => s.kills >= 1 }, { text: 'Najwyżej 4 otrzymane trafienia', ok: s => s.hits <= 4 }] },
+  { id: '7-3', ch: 6, seed: 19, name: 'Ciemna ulica', tank: 'mis',
+    desc: 'Trzy czołgi, jeden po drugim. W ciemności widzisz tylko to, co oświetlone. Między falami czołg się naprawia.',
+    goal: { type: 'kill' }, repair: 4, bots: [{ type: 'lis', diff: 'easy' }],
+    waves: [[{ type: 'lis', diff: 'easy' }], [{ type: 'wilk', diff: 'easy' }]],
+    stars: [{ text: 'Najwyżej 5 otrzymanych trafień', ok: s => s.hits <= 5 }, { text: 'Zniszcz czołg, którego nie widać', ok: s => s.hiddenK >= 1 }] },
+  { id: '7-4', ch: 6, seed: 41, name: 'Łowy w mroku', tank: 'lis',
+    desc: 'Dwa Wilki czają się w ciemności. Każdy strzał zdradza pozycję – ich i Twoją.',
+    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'wilk', diff: 'easy' }],
+    stars: [{ text: 'Zniszcz czołg, którego nie widać', ok: s => s.hiddenK >= 1 }, { text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }] },
+  { id: '7-5', ch: 6, seed: 7, name: 'Latarnia', tank: 'lis',
+    desc: 'Zaznaczony punkt świeci pod latarnią na drugim końcu miasta. Utrzymaj go przez 4 sekundy.',
+    goal: { type: 'zone', time: 4 }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'lis', diff: 'normal' }],
+    stars: [{ text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }, { text: 'Wygraj w mniej niż 60 sekund', ok: s => s.time < 60 }] },
+  { id: '7-6', ch: 6, seed: 97, name: 'Nocny rajd', tank: 'lis',
+    desc: 'Trzy fale w ciemności: dwa Lisy, a na końcu Wilk. Między falami czołg się naprawia.',
+    goal: { type: 'kill' }, repair: 2, bots: [{ type: 'lis', diff: 'easy' }],
+    waves: [[{ type: 'lis', diff: 'easy' }], [{ type: 'wilk', diff: 'easy' }]],
+    stars: [{ text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }, { text: 'Wygraj w mniej niż 150 sekund', ok: s => s.time < 150 }] },
+  { id: '7-7', ch: 6, seed: 19, name: 'Cisza', tank: 'wilk', ammo: 8,
+    desc: 'Masz tylko 8 pocisków, a każdy strzał zdradza Twoją pozycję. Poczekaj, aż przeciwnik wjedzie w światło.',
     goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'normal' }, { type: 'lis', diff: 'easy' }],
     stars: [{ text: 'Zostaw co najmniej 2 pociski', ok: s => s.ammo >= 2 }, { text: 'Bez otrzymania trafienia', ok: s => s.hits === 0 }] },
-  { id: '7-3', ch: 6, seed: 19, name: 'Duch', tank: 'lis', boss: true,
-    desc: 'Duch jeździ Wilkiem z grubszym pancerzem i strzela bez błysku, więc w ciemności go nie zobaczysz. Szybki Lis pomoże go wytropić.',
+  { id: '7-8', ch: 6, seed: 37, name: 'Zasadzka', tank: 'wilk',
+    desc: 'Dwa czołgi czekają w ciemności na Twój pierwszy strzał. Nie daj się wciągnąć w pułapkę.',
+    goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'normal' }, { type: 'wilk', diff: 'easy' }],
+    stars: [{ text: 'Zniszcz czołg, którego nie widać', ok: s => s.hiddenK >= 1 }, { text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }] },
+  { id: '7-9', ch: 6, seed: 43, name: 'Ostatnie światło', tank: 'wilk', ammo: 10,
+    desc: 'Masz 10 pocisków na dwóch przeciwników. W ciemności każdy strzał zdradza Twoją pozycję.',
+    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'lis', diff: 'normal' }],
+    stars: [{ text: 'Zostaw co najmniej 2 pociski', ok: s => s.ammo >= 2 }, { text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }] },
+  { id: '7-10', ch: 6, seed: 67, name: 'Duch', tank: null, boss: true,
+    desc: 'Duch jeździ Wilkiem z grubszym pancerzem i strzela bez błysku, więc w ciemności go nie zobaczysz.',
     goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'normal', name: 'Duch', boss: true, mods: { hp: 6, silent: true } }],
     stars: [{ text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }, { text: 'Wygraj w mniej niż 60 sekund', ok: s => s.time < 60 }] },
-  // ---------- 8. Księżyc: nieważkość ----------
-  { id: '8-1', ch: 7, seed: 37, name: 'Dryf', tank: 'lis',
+  // ---------- 8. Księżyc ----------
+  { id: '8-1', ch: 7, seed: 47, name: 'Dryf', tank: 'lis',
     desc: 'Na Księżycu czołgi dryfują, a pociski lecą wolniej, ale odbijają się aż 5 razy. Wykorzystaj rykoszety.',
     goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'normal' }, { type: 'wilk', diff: 'normal' }],
     stars: [{ text: 'Zniszcz czołg po 3 odbiciach pocisku', ok: s => s.bank3 }, { text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }] },
-  { id: '8-2', ch: 7, seed: 37, name: 'Fale w kosmosie', tank: 'mis',
-    desc: 'Cztery czołgi w trzech falach, na koniec dwa naraz. Na Księżycu pociski odbijają się aż 5 razy, więc pilnuj rykoszetów. Między falami czołg się naprawia.',
-    goal: { type: 'kill' }, repair: 4, bots: [{ type: 'wilk', diff: 'easy' }],
-    waves: [[{ type: 'mis', diff: 'easy' }], [{ type: 'wilk', diff: 'easy' }, { type: 'wilk', diff: 'easy' }]],
-    stars: [{ text: 'Najwyżej 5 otrzymanych trafień', ok: s => s.hits <= 5 }, { text: 'Wygraj w mniej niż 180 sekund', ok: s => s.time < 180 }] },
-  { id: '8-3', ch: 7, seed: 37, name: 'Finał', tank: null, boss: true, final: true,
-    desc: 'Wichura, Skorpion i Duch wracają na Księżyc i stają do walki jeden po drugim. Między pojedynkami czołg się naprawia. Wybierz czołg i zakończ kampanię.',
-    goal: { type: 'kill' }, repair: 3, bots: [{ type: 'mis', diff: 'easy', name: 'Wichura', boss: true, mods: { hp: 8, bounce: 3 } }],
-    waves: [[{ type: 'lis', diff: 'easy', name: 'Skorpion', boss: true, mods: { hp: 5, speed: 185, maxB: 9 } }], [{ type: 'wilk', diff: 'easy', name: 'Duch', boss: true, mods: { hp: 5, silent: true } }]],
+  { id: '8-2', ch: 7, seed: 43, name: 'Kosmiczna strzelnica', tank: 'lis', ricochetOnly: true,
+    desc: 'Trzy stanowiska trafisz tylko rykoszetem. Na Księżycu pociski odbijają się aż 5 razy.',
+    goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'easy', turret: true, name: 'Stanowisko 1' }, { type: 'lis', diff: 'easy', turret: true, name: 'Stanowisko 2' }, { type: 'lis', diff: 'easy', turret: true, name: 'Stanowisko 3' }],
+    stars: [{ text: 'Najwyżej 20 pocisków', ok: s => s.shots <= 20 }, { text: 'Zniszcz czołg po 3 odbiciach pocisku', ok: s => s.bank3 }] },
+  { id: '8-3', ch: 7, seed: 47, name: 'Meteoryt', tank: 'lis',
+    desc: 'Dojedź do krateru po meteorycie i utrzymaj go przez 4 sekundy. Wilk i Lis są już w drodze.',
+    goal: { type: 'zone', time: 4 }, bots: [{ type: 'wilk', diff: 'normal' }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Najwyżej 2 otrzymane trafienia', ok: s => s.hits <= 2 }, { text: 'Wygraj w mniej niż 60 sekund', ok: s => s.time < 60 }] },
+  { id: '8-4', ch: 7, seed: 31, name: 'Krater', tank: 'wilk',
+    desc: 'Wilk i Lis czekają w kraterach. Czołgi dryfują, więc hamuj wcześniej i wykorzystuj rykoszety.',
+    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Zniszcz czołg po 3 odbiciach pocisku', ok: s => s.bank3 }, { text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }] },
+  { id: '8-5', ch: 7, seed: 59, name: 'Baza księżycowa', tank: 'wilk',
+    desc: 'Wytrzymaj 35 sekund w bazie. Atakują dwa Lisy, a na Księżycu pociski odbijają się aż 5 razy.',
+    goal: { type: 'survive', time: 35 }, bots: [{ type: 'lis', diff: 'normal' }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Zniszcz co najmniej 2 przeciwników', ok: s => s.kills >= 2 }, { text: 'Najwyżej 4 otrzymane trafienia', ok: s => s.hits <= 4 }] },
+  { id: '8-6', ch: 7, seed: 7, name: 'Nieważkość', tank: 'wilk', ammo: 12,
+    desc: 'Masz 12 pocisków na dwóch przeciwników. Każdy pocisk odbija się kilka razy, więc może trafić także Ciebie.',
+    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'lis', diff: 'easy' }],
+    stars: [{ text: 'Zostaw co najmniej 2 pociski', ok: s => s.ammo >= 2 }, { text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }] },
+  { id: '8-7', ch: 7, seed: 13, name: 'Stanowiska', tank: 'mis',
+    desc: 'Trzy stanowiska strzeleckie stoją na skraju krateru. Na Księżycu pociski Niedźwiedzia lecą wolno, ale stanowiska się nie ruszają.',
+    goal: { type: 'kill' }, bots: [{ type: 'lis', diff: 'easy', turret: true, name: 'Stanowisko 1' }, { type: 'lis', diff: 'easy', turret: true, name: 'Stanowisko 2' }, { type: 'lis', diff: 'easy', turret: true, name: 'Stanowisko 3' }],
+    stars: [{ text: 'Najwyżej 12 pocisków', ok: s => s.shots <= 12 }, { text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }] },
+  { id: '8-8', ch: 7, seed: 83, name: 'Ostatni szaniec', tank: 'mis',
+    desc: 'Wytrzymaj 35 sekund. Wilk i Niedźwiedź będą Cię ostrzeliwać z każdej strony.',
+    goal: { type: 'survive', time: 35 }, bots: [{ type: 'wilk', diff: 'easy' }, { type: 'mis', diff: 'easy' }],
+    stars: [{ text: 'Zniszcz choć jednego przeciwnika', ok: s => s.kills >= 1 }, { text: 'Najwyżej 5 otrzymanych trafień', ok: s => s.hits <= 5 }] },
+  { id: '8-9', ch: 7, seed: 36, name: 'Inwazja', tank: 'mis',
+    desc: 'Trzy Lisy lądują jeden po drugim. Na Księżycu pociski odbijają się aż 5 razy, więc pilnuj rykoszetów. Między falami czołg się naprawia.',
+    goal: { type: 'kill' }, repair: 5, bots: [{ type: 'lis', diff: 'easy' }],
+    waves: [[{ type: 'lis', diff: 'easy' }], [{ type: 'lis', diff: 'easy' }]],
+    stars: [{ text: 'Najwyżej 5 otrzymanych trafień', ok: s => s.hits <= 5 }, { text: 'Wygraj w mniej niż 150 sekund', ok: s => s.time < 150 }] },
+  { id: '8-10', ch: 7, seed: 53, name: 'Finał', tank: null, boss: true, final: true,
+    desc: 'Wichura, Skorpion i Duch wracają na Księżyc i stają do walki jeden po drugim. Między pojedynkami czołg się naprawia. Zakończ kampanię.',
+    goal: { type: 'kill' }, repair: 4, bots: [{ type: 'mis', diff: 'easy', name: 'Wichura', boss: true, mods: { hp: 8, bounce: 3 } }],
+    waves: [[{ type: 'lis', diff: 'easy', name: 'Skorpion', boss: true, mods: { hp: 4, speed: 185, maxB: 9 } }], [{ type: 'wilk', diff: 'easy', name: 'Duch', boss: true, mods: { hp: 6, silent: true } }]],
     stars: [{ text: 'Najwyżej 6 otrzymanych trafień', ok: s => s.hits <= 6 }, { text: 'Wygraj w mniej niż 150 sekund', ok: s => s.time < 150 }] },
-  // ---------- elita: po zdobyciu 60 gwiazdek ----------
+  // ---------- elita: po zdobyciu ELITE_STARS gwiazdek w rozdziałach 1–8 ----------
   { id: 'E-1', ch: 8, seed: 3, map: 'las', name: 'Leśnik elitarny', tank: null, boss: true,
     desc: 'Leśnik wraca silniejszy: potrójny pancerz i dwa Lisy na poziomie Komandos. Dobry moment, żeby wypróbować Tygrysa.',
-    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'hard', name: 'Leśnik', boss: true, mods: { hp: 12 } }, { type: 'lis', diff: 'hard' }, { type: 'lis', diff: 'hard' }],
+    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'hard', name: 'Leśnik', boss: true, mods: { hp: 15 } }, { type: 'lis', diff: 'hard' }, { type: 'lis', diff: 'hard' }],
     stars: [{ text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }, { text: 'Wygraj w mniej niż 90 sekund', ok: s => s.time < 90 }] },
   { id: 'E-2', ch: 8, seed: 31, map: 'baza', name: 'Generał elitarny', tank: null, boss: true,
-    desc: 'Generał z potrójnym pancerzem i Wilk na poziomie Komandos. Bez skrzyń z amunicją będzie bardzo trudno.',
-    goal: { type: 'kill' }, bots: [{ type: 'mis', diff: 'hard', name: 'Generał', boss: true, mods: { hp: 21 } }, { type: 'wilk', diff: 'hard' }],
+    desc: 'Generał z bardzo grubym pancerzem i Wilk na poziomie Komandos. Bez skrzyń z amunicją będzie bardzo trudno.',
+    goal: { type: 'kill' }, bots: [{ type: 'mis', diff: 'hard', name: 'Generał', boss: true, mods: { hp: 16 } }, { type: 'wilk', diff: 'hard' }],
     stars: [{ text: 'Najwyżej 4 otrzymane trafienia', ok: s => s.hits <= 4 }, { text: 'Zniszcz kogoś wybuchem skrzyni', ok: s => s.crateK >= 1 }] },
   { id: 'E-3', ch: 8, seed: 7, map: 'noc', name: 'Duch elitarny', tank: null, boss: true,
     desc: 'Duch i jego Cień: oba strzelają bez błysku, a Duch ma potrójny pancerz. Najtrudniejsza misja w grze.',
-    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'hard', name: 'Duch', boss: true, mods: { hp: 12, silent: true } }, { type: 'lis', diff: 'hard', name: 'Cień', mods: { silent: true } }],
+    goal: { type: 'kill' }, bots: [{ type: 'wilk', diff: 'hard', name: 'Duch', boss: true, mods: { hp: 15, silent: true } }, { type: 'lis', diff: 'hard', name: 'Cień', mods: { silent: true } }],
     stars: [{ text: 'Najwyżej 3 otrzymane trafienia', ok: s => s.hits <= 3 }, { text: 'Wygraj w mniej niż 90 sekund', ok: s => s.time < 90 }] },
 ];
 for (const m of MISSIONS) m.map = m.map || CHAPTERS[m.ch].map;
@@ -2938,11 +3186,12 @@ const CAMP_LV = { easy: 'Rekrut', normal: 'Żołnierz', hard: 'Komandos' };
 const EASIER = { hard: 'normal', normal: 'easy', easy: 'easy' };
 
 // postęp: najlepsze gwiazdki i porażki z rzędu w każdej misji (osobno w każdej wersji gry)
-const CAMP_KEY = 'maze-tanks-web-kampania';
+const CAMP_KEY = 'maze-tanks-web-kampania-v2', OLD_CAMP_KEY = 'maze-tanks-web-kampania';
 let camp = { stars: {}, fails: {}, sel: 0 };
 try { const v = JSON.parse(localStorage.getItem(CAMP_KEY)); if (v && typeof v === 'object') camp = { stars: v.stars || {}, fails: v.fails || {}, sel: v.sel | 0, tygrys: !!v.tygrys }; } catch (_) {}
+try { const v = JSON.parse(localStorage.getItem(OLD_CAMP_KEY)); if (v && v.tygrys) camp.tygrys = true; } catch (_) {}
 const saveCamp = () => { try { localStorage.setItem(CAMP_KEY, JSON.stringify(camp)); } catch (_) {} };
-const ELITE_STARS = 60;
+const ELITE_STARS = 180;
 const mainStars = () => MISSIONS.filter(m => !CHAPTERS[m.ch].elite).reduce((n, m) => n + (camp.stars[m.id] || 0), 0);
 // kolejna misja po wykonaniu poprzedniej; elitarne – wszystkie naraz po zdobyciu ELITE_STARS gwiazdek
 const missionUnlocked = i => CHAPTERS[MISSIONS[i].ch].elite ? mainStars() >= ELITE_STARS : i === 0 || (camp.stars[MISSIONS[i - 1].id] || 0) > 0;
@@ -3102,14 +3351,27 @@ function renderCampaign() {
   $('chapters').querySelectorAll('.chap').forEach(b => b.onclick = () => { const i = +b.dataset.ch; if (chapterUnlocked(i)) { camp.sel = i; saveCamp(); renderCampaign(); } });
   const c = CHAPTERS[camp.sel], R = c.elite ? null : RULES[THEMES[c.map].rule], ms = MISSIONS.filter(m => m.ch === camp.sel);
   $('chapter').innerHTML = (c.elite ? `<h3>Misje elitarne</h3><p class="note">Najtrudniejsze wersje szefów. Czołg wybierasz sam.</p>`
-    : `<h3>Rozdział ${camp.sel + 1}: ${c.name}</h3><p class="note">${R.name}. ${R.desc}</p>`) + '<div class="missions">' +
-    ms.map((m, k) => {
-      const open = missionUnlocked(MISSIONS.indexOf(m));
-      const where = c.elite ? THEMES[m.map].name : m.boss ? 'Szef' : 'Misja ' + (k + 1);
-      return `<button class="mis${open ? '' : ' locked'}" data-m="${m.id}"><img src="${tankIcon(m.tank || 'wilk', COLORS[0], true, myPaint())}" alt="">` +
-        `<span><small>${where}, ${m.tank ? TYPES[m.tank].name : 'czołg do wyboru'}</small><b>${m.name}</b></span>${starRow(camp.stars[m.id] || 0)}</button>`;
-    }).join('') + '</div>';
+    : `<h3>Rozdział ${camp.sel + 1}: ${c.name}</h3><p class="note">${R.name}. ${R.desc}</p>`) + groups(ms).map(g => `<div class="mgroup">${groupHead(g)}<div class="missions">${g.list.map(m => {
+      const open = missionUnlocked(MISSIONS.indexOf(m)), n = ms.indexOf(m) + 1;
+      return `<button class="mis${open ? '' : ' locked'}${m.boss && !c.elite ? ' boss' : ''}" data-m="${m.id}"><span class="mn">${m.boss ? '★' : n}</span>` +
+        `<span>${c.elite ? `<small>${THEMES[m.map].name}</small>` : ''}<b>${m.name}</b></span>${starRow(camp.stars[m.id] || 0)}</button>`;
+    }).join('')}</div></div>`).join('');
   $('chapter').querySelectorAll('.mis').forEach(b => b.onclick = () => { if (missionUnlocked(MISSIONS.findIndex(m => m.id === b.dataset.m))) openBrief(b.dataset.m); });
+}
+// misje rozdziału w grupach: kolejne misje tego samego czołgu razem, szef osobno
+function groups(ms) {
+  const out = [];
+  for (const m of ms) {
+    const key = CHAPTERS[m.ch].elite ? 'elite' : m.tank || 'boss';
+    if (!out.length || out[out.length - 1].key !== key) out.push({ key, list: [] });
+    out[out.length - 1].list.push(m);
+  }
+  return out;
+}
+function groupHead(g) {
+  if (g.key === 'elite') return '';
+  if (g.key === 'boss') return `<h4><span class="bossmark">★</span>${'Szef'} · ${'czołg do wyboru'}</h4>`;
+  return `<h4><img src="${tankIcon(g.key, COLORS[0], true, myPaint())}" alt="">${TYPES[g.key].name}</h4>`;
 }
 function unitCard(b, i) {
   const notes = [TYPES[b.type].name, CAMP_LV[b.diff]];
@@ -3210,10 +3472,10 @@ function setScreen(name) {
 }
 
 const TYPE_INFO = {
-  lis:  { cls: 'lekki',  desc: 'Szybki jak błyskawica, strzela seriami. Mało wytrzyma.', stats: [5, 3, 1, 5] },
+  lis:  { cls: 'lekki',  desc: 'Szybki jak błyskawica, strzela seriami. Mało wytrzyma.', stats: [5, 2, 1, 5] },
   wilk: { cls: 'średni', desc: 'Dobry we wszystkim. Na początek najlepszy.', stats: [3, 3, 3, 3] },
   mis:  { cls: 'ciężki', desc: 'Powolna forteca. Wytrzyma najwięcej, strzela rzadko.', stats: [1, 5, 3, 2] },
-  tygrys: { cls: 'ultra', desc: 'Nagroda za kampanię. Szybki jak Lis, pancerny jak Niedźwiedź.', stats: [5, 5, 5, 5] },
+  tygrys: { cls: 'ultra', desc: 'Nagroda za kampanię. Szybki jak Lis, pancerny jak Niedźwiedź, strzela z dwóch luf naraz.', stats: [5, 5, 5, 5] },
 };
 const STAT_NAMES = ['Prędkość', 'Pancerz', 'Siła ognia', 'Tempo ognia'];
 
